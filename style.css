@@ -1,0 +1,114 @@
+:root {
+  --frame: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 100svh;
+  padding: 16px;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, #14385f 0%, #0a1f3c 45%, #050d1f 100%);
+  color: #cfe2f2;
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#stage {
+  position: relative;
+  width: min(96vw, 128vh);
+  aspect-ratio: 4 / 3;
+}
+
+#game {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--frame);
+  background: #04122e;
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.55),
+    0 0 0 2px rgba(150, 200, 240, 0.12) inset;
+  touch-action: none;
+  cursor: pointer;
+}
+
+/* On-screen touch controls (also usable with a mouse) */
+#touch {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 18px;
+  pointer-events: none;
+}
+
+.tbtn {
+  pointer-events: auto;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: clamp(18px, 3.4vmin, 30px);
+  color: #eaf4ff;
+  background: rgba(10, 30, 56, 0.42);
+  border: 1.5px solid rgba(180, 215, 245, 0.35);
+  border-radius: 999px;
+  width: clamp(58px, 11vmin, 92px);
+  height: clamp(58px, 11vmin, 92px);
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(3px);
+  transition: transform 0.06s ease, background 0.12s ease;
+}
+
+.tbtn--cast {
+  width: auto;
+  min-width: clamp(96px, 18vmin, 150px);
+  height: clamp(52px, 9.5vmin, 78px);
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  background: rgba(40, 110, 170, 0.5);
+}
+
+.tbtn:active {
+  transform: scale(0.93);
+  background: rgba(70, 150, 210, 0.6);
+}
+
+#hint {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: #8fb4d6;
+  opacity: 0.85;
+}
+
+/* On touch devices the on-screen buttons are the controls, so the keyboard
+   hint is just noise — hide it. */
+@media (hover: none) and (pointer: coarse) {
+  #hint { display: none; }
+}
+
+/* On devices that clearly have a keyboard/mouse, the on-screen buttons are
+   optional; keep them but make them subtle. */
+@media (hover: hover) and (pointer: fine) {
+  #touch { opacity: 0.55; }
+  #touch:hover { opacity: 1; }
+}
