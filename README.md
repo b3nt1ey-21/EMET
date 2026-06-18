@@ -1,103 +1,75 @@
-# 🎣 Reel Frenzy
+# 🕹️ EMET Arcade
 
-A fast, polished arcade fishing game you can play **right in the browser**.
-Cast deep, dodge the fish on the way down, then snag as many as you can on the
-way up — chain catches for combo multipliers and chase a high score against a
-90-second clock.
+A small collection of **free, original browser games** — no downloads, no
+sign-up, no build step. Open the homepage, pick a game, press play. Works on
+desktop and mobile.
 
-Built with the HTML5 **Canvas** and **Web Audio** APIs in plain JavaScript —
-no framework, no build step, no assets. There's also a desktop **pygame**
-version of the same game (see [below](#-desktop-version-pygame)).
-
-![gameplay](docs/gameplay.png)
-
-## ▶️ Play it
+## ▶️ Play / run it
 
 It's a static site, so any of these work:
 
-* **Just open it** — double-click `index.html` (runs straight from `file://`).
-* **Serve it locally** — `python3 -m http.server` then visit
+* **Just open it** — double-click `index.html`.
+* **Serve it locally** — `python3 -m http.server`, then visit
   <http://localhost:8000>.
-* **Host it** — drop the repo on GitHub Pages / Netlify / any static host.
-  Point it at the repo root; `index.html` is the entry point.
+* **Host it** — see [Put it online for free](#-put-it-online-for-free-github-pages).
 
-Works on desktop and mobile (with on-screen touch controls).
+## 🎮 Games
 
-## The hook (literally)
+| Game        | Type    | About                                                   |
+| ----------- | ------- | ------------------------------------------------------- |
+| Reel Frenzy | Arcade  | Two-phase fishing — dodge on the dive, hook on the way up |
+| Snake       | Classic | Eat, grow, don't bite your tail; it speeds up as you go  |
 
-The twist is the two-phase cast:
+*(More on the way.)*
 
-1. **Dive** – when you cast, the hook sinks. Steer **left / right** to *dodge*
-   the fish. Touching a fish (or hitting the seabed) ends your descent, so a
-   clean dive reaches the deeper, more valuable water.
-2. **Reel** – on the way back up, steer *into* fish to hook them. Snag several
-   in a single trip and they stack into a **combo multiplier**.
-
-Deeper, rarer species are worth far more — and the elusive **Gold Koi** is the
-big payday. You have 90 seconds. Make it count.
-
-## Controls
-
-| Input            | Action                              |
-| ---------------- | ----------------------------------- |
-| `SPACE` / `↑` / tap **CAST** | Cast, then start reeling early |
-| `←` `→` / `A` `D` / ◀ ▶ buttons | Steer the hook            |
-| Tap / click the water | Cast (also starts / restarts) |
-| `P`              | Pause / resume                      |
-| `R`              | Restart (on the game-over screen)   |
-
-Your best score is saved in the browser (`localStorage`).
-
-## Fish & payouts
-
-| Species     | Value | Where it swims        |
-| ----------- | ----- | --------------------- |
-| Sardine     | $5    | shallow               |
-| Mackerel    | $10   | shallow–mid           |
-| Clownfish   | $18   | mid                   |
-| Bass        | $28   | mid–deep              |
-| Tuna        | $55   | deep                  |
-| Anglerfish  | $95   | the deepest water     |
-| Gold Koi    | $150  | rare, anywhere        |
-
-Combo bonus: `+25%` per extra fish landed in the same trip.
-
-## Project layout
+## 🗂️ Project layout
 
 ```
-index.html     # page + canvas + on-screen touch controls
-style.css      # responsive page / canvas / button styling
-game.js        # the whole game (logic, rendering, procedural audio)
-fishing_game.py# the original desktop pygame version
+index.html             # homepage (the arcade hub)
+assets/arcade.css      # hub styling
+assets/game.css        # shared frame for game pages (the "← Arcade" bar)
+assets/hub.js          # the game list + homepage rendering
+games/<id>/index.html  # each game lives in its own folder
+fishing_game.py        # the original desktop (pygame) build of Reel Frenzy
 ```
 
-## Headless smoke test
+## ➕ Add a game
+
+1. Create a folder `games/<your-game>/` with an `index.html` (and its script).
+   The quickest start is to **copy an existing folder** like `games/snake/`.
+2. Add **one entry** to the `GAMES` list in `assets/hub.js`.
+
+That's it — the card shows up on the homepage automatically.
+
+## 🌐 Put it online for free (GitHub Pages)
+
+1. Push this repo to GitHub.
+2. In the repo: **Settings → Pages → Build and deployment → Deploy from a
+   branch**.
+3. Choose your branch and the `/ (root)` folder, then **Save**.
+4. After a minute it's live at `https://<your-username>.github.io/<repo>/` —
+   a real link you can open anywhere and share.
+
+## 🧪 Reel Frenzy smoke test
 
 `game.js` doubles as a Node module and ships a headless self-test (a fake
-canvas drives the full update/draw loop, no browser or audio needed):
+canvas drives the full update/draw loop, no browser needed):
 
 ```bash
-node game.js --selftest 600
+node games/reel-frenzy/game.js --selftest 600
 ```
 
 ## 🖥️ Desktop version (pygame)
 
-The original desktop build lives in `fishing_game.py`:
+The original desktop build of Reel Frenzy lives in `fishing_game.py`:
 
 ```bash
 pip install -r requirements.txt   # pygame
 python fishing_game.py
 ```
 
-It has the same gameplay and a matching headless check:
-
-```bash
-python fishing_game.py --selftest 600
-```
-
 ## Notes
 
-* The art is drawn with canvas primitives and the sound effects are
-  synthesized at runtime, so the web game is just three small static files.
-* Tested with a native canvas renderer to confirm the visuals; the
-  screenshot above is rendered straight from `game.js`.
+All games are original. The art is drawn with canvas/DOM primitives and sound
+effects are synthesized at runtime, so the whole site is just small static
+files.

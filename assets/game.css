@@ -1,0 +1,98 @@
+/* Shared frame for every game page (the "← Arcade" bar + centered stage) */
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  color: #e8eeff;
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  background:
+    radial-gradient(1000px 600px at 50% -10%, #1a2a5e 0%, #0b1330 50%, #060a1c 100%);
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gamebar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px clamp(14px, 4vw, 28px);
+  border-bottom: 1px solid rgba(140, 170, 255, 0.16);
+  background: rgba(7, 11, 31, 0.5);
+}
+.gamebar .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  color: #e8eeff;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(140, 170, 255, 0.22);
+  background: rgba(20, 28, 60, 0.55);
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+.gamebar .back:hover { background: rgba(40, 60, 120, 0.6); }
+.gamebar .back:active { transform: scale(0.96); }
+.gamebar .title {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: clamp(16px, 2.6vw, 22px);
+}
+.gamebar .spacer { margin-left: auto; }
+.gamebar .score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: clamp(15px, 2.4vw, 20px);
+  color: #bcd0ff;
+}
+
+main.stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: clamp(12px, 3vw, 26px);
+}
+
+canvas.board {
+  display: block;
+  max-width: min(94vw, 80vh);
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  background: #04102a;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55),
+              0 0 0 2px rgba(150, 200, 240, 0.12) inset;
+  touch-action: none;
+}
+
+.hint {
+  margin: 0;
+  color: #8fb4d6;
+  font-size: 14px;
+  text-align: center;
+  opacity: 0.85;
+}
+
+.btn {
+  font: inherit;
+  font-weight: 700;
+  color: #04102a;
+  background: linear-gradient(135deg, #6f7bff, #21d4fd);
+  border: none;
+  border-radius: 999px;
+  padding: 11px 22px;
+  cursor: pointer;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: scale(0.96); }

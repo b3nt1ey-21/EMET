@@ -2,22 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#06122e">
-  <title>Reel Frenzy — arcade fishing</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%F0%9F%8E%A3%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b1f">
+  <title>EMET Arcade — play free games</title>
+  <meta name="description" content="A little arcade of free, original browser games. No download, no sign-up — just play.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%F0%9F%95%B9%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/arcade.css">
 </head>
 <body>
-  <main id="stage">
-    <canvas id="game" width="960" height="720" aria-label="Reel Frenzy fishing game"></canvas>
-    <div id="touch" aria-hidden="true">
-      <button id="btn-left" class="tbtn" type="button">◀</button>
-      <button id="btn-cast" class="tbtn tbtn--cast" type="button">CAST</button>
-      <button id="btn-right" class="tbtn" type="button">▶</button>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">🕹️</span>
+      <span>EMET <span class="accent">ARCADE</span></span>
     </div>
-  </main>
-  <p id="hint">SPACE cast &nbsp;·&nbsp; ← → steer &nbsp;·&nbsp; P pause &nbsp;·&nbsp; R restart</p>
-  <script src="game.js"></script>
+    <div class="search">
+      <input id="search" type="search" placeholder="Search games…" aria-label="Search games" autocomplete="off">
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Pick a game. <span class="accent">Press play.</span></h1>
+    <p>A growing collection of free, original browser games. Nothing to install — they run right here.</p>
+  </section>
+
+  <main id="grid" class="grid" aria-label="Games"></main>
+
+  <footer>
+    Built with the EMET Arcade · all games are original and free to play
+  </footer>
+
+  <script src="assets/hub.js"></script>
 </body>
 </html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0b1330">
+  <title>Snake — EMET Arcade</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%F0%9F%90%8D%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../assets/game.css">
+</head>
+<body>
+  <header class="gamebar">
+    <a class="back" href="../../index.html">← Arcade</a>
+    <span class="title">🐍 Snake</span>
+    <span class="spacer"></span>
+    <span class="score">Score <b id="score">0</b> · Best <b id="best">0</b></span>
+  </header>
+  <main class="stage">
+    <canvas id="board" class="board" width="480" height="480"></canvas>
+    <p class="hint">Arrow keys / WASD or swipe · <b>P</b> to pause</p>
+  </main>
+  <script src="snake.js"></script>
+</body>
+</html>
