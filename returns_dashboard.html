@@ -89,7 +89,7 @@
       <input type="number" id="rate" value="10" step="0.5">
     </div>
     <div class="field">
-      <label>Firm Fee (% of profit)</label>
+      <label>Firm Fee (call for estimate fee %)</label>
       <input type="number" id="fee" value="10" step="0.5">
     </div>
     <div class="field">
@@ -109,7 +109,7 @@
     <div class="card"><div class="k">Starting Balance</div><div class="v" id="c-start">$1,000.00</div></div>
     <div class="card"><div class="k">Gross End Balance</div><div class="v green" id="c-gross">$3,138.43</div></div>
     <div class="card"><div class="k">Total Profit</div><div class="v green" id="c-profit">$100.00</div></div>
-    <div class="card"><div class="k">Firm Fee (10%)</div><div class="v gold" id="c-fee">$10.00</div></div>
+    <div class="card"><div class="k">Firm Fee (call for estimate fee %)</div><div class="v gold" id="c-fee">$10.00</div></div>
     <div class="card"><div class="k">Client Net Profit</div><div class="v green" id="c-net">$90.00</div></div>
     <div class="card"><div class="k">Client Net Balance</div><div class="v" id="c-netbal">$1,090.00</div></div>
   </div>
@@ -164,7 +164,7 @@ function calc() {
   $("c-gross").textContent = fmt(gross);
   $("c-profit").textContent = fmt(profit);
   $("c-fee").textContent = fmt(firmFee);
-  $("c-fee").previousElementSibling.textContent = "Firm Fee (" + ($("fee").value || 0) + "%)";
+  $("c-fee").previousElementSibling.textContent = "Firm Fee (call for estimate fee %)";
   $("c-net").textContent = fmt(clientNetProfit);
   $("c-netbal").textContent = fmt(clientNetBal);
 
