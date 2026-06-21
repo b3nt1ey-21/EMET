@@ -6,10 +6,12 @@
 <title>Claude Trading Desk — Live</title>
 <style>
   :root{
-    --bg:#0b0e14; --panel:#141925; --panel2:#1b2233; --line:#26304a;
-    --txt:#e6e9f0; --mut:#8a93a6; --grn:#3ddc97; --red:#ff5d6c;
-    --yel:#ffcf5c; --blu:#5cc8ff; --pur:#b98cff;
+    --bg:#f4f6fa; --panel:#ffffff; --panel2:#eef1f7; --line:#e2e7f0;
+    --txt:#1a2233; --mut:#6b7488; --grn:#12a36b; --red:#e23744;
+    --yel:#b5820f; --blu:#1f7ae0; --pur:#7a4dd6;
   }
+  body{box-shadow:none}
+  .card{box-shadow:0 1px 3px rgba(20,30,60,.06)}
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--txt);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:18px}
   h1{font-size:20px;letter-spacing:.3px}
@@ -32,7 +34,7 @@
   .thought .t{color:var(--blu);font-size:11px;font-weight:600}
   table{width:100%;border-collapse:collapse;font-size:13px}
   th{text-align:left;color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line)}
-  td{padding:6px 8px;border-bottom:1px solid #1c2235}
+  td{padding:6px 8px;border-bottom:1px solid var(--line)}
   .tag{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px}
   .st-entry{background:rgba(61,220,151,.15);color:var(--grn)}
   .st-pullback{background:rgba(92,200,255,.15);color:var(--blu)}
