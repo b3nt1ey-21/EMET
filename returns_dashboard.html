@@ -67,6 +67,26 @@
   tfoot td { font-weight: 700; background: #eaeef3; color: var(--navy); }
   .note { color: var(--muted); font-size: 12px; margin-top: 16px; line-height: 1.6; }
   .note strong { color: var(--text); }
+  .sections { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 40px; }
+  .section {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+    box-shadow: 0 1px 3px rgba(16,24,40,.06);
+  }
+  .section h2 { margin: 0 0 14px; font-size: 17px; color: var(--navy); display: flex; align-items: center; gap: 9px; }
+  .section h2 .ico {
+    width: 30px; height: 30px; border-radius: 8px; background: var(--panel2);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 16px; flex: 0 0 auto;
+  }
+  .section p { margin: 0 0 10px; font-size: 14px; line-height: 1.6; color: var(--text); }
+  .section .label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); font-weight: 600; margin-top: 12px; }
+  .section a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .section a:hover { text-decoration: underline; }
+  .btn {
+    display: inline-block; margin-top: 14px; background: var(--navy); color: #fff;
+    padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none;
+  }
+  .btn:hover { background: #142c45; text-decoration: none; }
+  footer { margin-top: 40px; text-align: center; color: var(--muted); font-size: 12px; }
 </style>
 </head>
 <body>
@@ -132,9 +152,42 @@
 
   <p class="note" id="note"></p>
 
+  <div class="sections">
+    <div class="section">
+      <h2><span class="ico">📍</span> Where to Find Us</h2>
+      <p>Visit our office or schedule a meeting with one of our advisors.</p>
+      <div class="label">Headquarters</div>
+      <p>Whitaker Financial<br>123 Market Street, Suite 400<br>Your City, ST 00000</p>
+      <div class="label">Hours</div>
+      <p>Monday – Friday, 9:00 AM – 5:00 PM</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="ico">🤝</span> Apply to the Team</h2>
+      <p>We're growing and always looking for driven professionals who want to help clients build wealth.</p>
+      <div class="label">Now Hiring</div>
+      <p>Financial Advisors · Analysts · Client Relations</p>
+      <p>Send your résumé and a short note about why you'd be a great fit.</p>
+      <a class="btn" href="mailto:careers@whitakerfinancial.com?subject=Application%20-%20Whitaker%20Financial">Apply Now</a>
+    </div>
+
+    <div class="section">
+      <h2><span class="ico">✉️</span> Contact Us</h2>
+      <p>Questions about returns, fees, or getting started? We're here to help.</p>
+      <div class="label">Phone</div>
+      <p><a href="tel:+10000000000">(000) 000-0000</a></p>
+      <div class="label">Email</div>
+      <p><a href="mailto:info@whitakerfinancial.com">info@whitakerfinancial.com</a></p>
+      <a class="btn" href="mailto:info@whitakerfinancial.com?subject=Estimate%20Request%20-%20Whitaker%20Financial">Request an Estimate</a>
+    </div>
+  </div>
+
+  <footer>© <span id="year"></span> Whitaker Financial. For illustration purposes only — not a guarantee of returns.</footer>
+
 <script>
 const $ = id => document.getElementById(id);
 const fmt = n => "$" + n.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+document.getElementById("year").textContent = new Date().getFullYear();
 
 function calc() {
   const principal = parseFloat($("principal").value) || 0;
