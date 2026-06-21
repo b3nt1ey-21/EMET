@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Returns &amp; Firm Fee Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #1a2129;
+    --panel2: #222c37;
+    --accent: #2ecc71;
+    --accent2: #f1c40f;
+    --text: #e6edf3;
+    --muted: #8b98a5;
+    --border: #2d3742;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px;
+  }
+  h1 { margin: 0 0 4px; font-size: 24px; }
+  .sub { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    background: var(--panel); padding: 18px; border-radius: 12px;
+    border: 1px solid var(--border); margin-bottom: 24px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .field input, .field select {
+    background: var(--panel2); border: 1px solid var(--border); color: var(--text);
+    padding: 9px 11px; border-radius: 8px; font-size: 15px; width: 160px;
+  }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px;
+  }
+  .card .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .card .v { font-size: 26px; font-weight: 700; margin-top: 6px; }
+  .green { color: var(--accent); }
+  .gold { color: var(--accent2); }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 12px; overflow: hidden; }
+  th, td { padding: 11px 14px; text-align: right; font-size: 14px; border-bottom: 1px solid var(--border); }
+  th { background: var(--panel2); color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: .5px; }
+  td:first-child, th:first-child { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  tfoot td { font-weight: 700; background: var(--panel2); }
+  .note { color: var(--muted); font-size: 12px; margin-top: 16px; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <h1>Returns &amp; Firm Fee Dashboard</h1>
+  <p class="sub">Investment growth with your firm's profit share. Edit any value to recalculate.</p>
+
+  <div class="controls">
+    <div class="field">
+      <label>Principal ($)</label>
+      <input type="number" id="principal" value="1000" min="0" step="100">
+    </div>
+    <div class="field">
+      <label>Annual Return (%)</label>
+      <input type="number" id="rate" value="10" step="0.5">
+    </div>
+    <div class="field">
+      <label>Firm Fee (% of profit)</label>
+      <input type="number" id="fee" value="10" step="0.5">
+    </div>
+    <div class="field">
+      <label>Compounding</label>
+      <select id="mode">
+        <option value="monthly">Monthly (10%/yr ÷ 12)</option>
+        <option value="annual">Simple annual</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="k">Starting Balance</div><div class="v" id="c-start">$1,000.00</div></div>
+    <div class="card"><div class="k">Gross End Balance</div><div class="v green" id="c-gross">$1,100.00</div></div>
+    <div class="card"><div class="k">Total Profit</div><div class="v green" id="c-profit">$100.00</div></div>
+    <div class="card"><div class="k">Firm Fee (10%)</div><div class="v gold" id="c-fee">$10.00</div></div>
+    <div class="card"><div class="k">Client Net Profit</div><div class="v green" id="c-net">$90.00</div></div>
+    <div class="card"><div class="k">Client Net Balance</div><div class="v" id="c-netbal">$1,090.00</div></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Start Balance</th>
+        <th>Return</th>
+        <th>End Balance</th>
+        <th>Cumulative Profit</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+    <tfoot>
+      <tr id="foot"></tr>
+    </tfoot>
+  </table>
+
+  <p class="note" id="note"></p>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => "$" + n.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+function calc() {
+  const principal = parseFloat($("principal").value) || 0;
+  const rate = (parseFloat($("rate").value) || 0) / 100;
+  const fee = (parseFloat($("fee").value) || 0) / 100;
+  const mode = $("mode").value;
+
+  const months = [];
+  let bal = principal;
+
+  if (mode === "monthly") {
+    const mRate = rate / 12;
+    for (let m = 1; m <= 12; m++) {
+      const start = bal;
+      const ret = start * mRate;
+      bal = start + ret;
+      months.push({ m, start, ret, end: bal, cum: bal - principal });
+    }
+  } else {
+    // simple annual: one lump at end of year, shown evenly for the table
+    const totalRet = principal * rate;
+    for (let m = 1; m <= 12; m++) {
+      const start = principal + totalRet * (m - 1) / 12;
+      const ret = totalRet / 12;
+      const end = start + ret;
+      months.push({ m, start, ret, end, cum: end - principal });
+    }
+    bal = principal + totalRet;
+  }
+
+  const gross = bal;
+  const profit = gross - principal;
+  const firmFee = profit * fee;
+  const clientNetProfit = profit - firmFee;
+  const clientNetBal = principal + clientNetProfit;
+
+  $("c-start").textContent = fmt(principal);
+  $("c-gross").textContent = fmt(gross);
+  $("c-profit").textContent = fmt(profit);
+  $("c-fee").textContent = fmt(firmFee);
+  $("c-fee").previousElementSibling.textContent = "Firm Fee (" + ($("fee").value || 0) + "%)";
+  $("c-net").textContent = fmt(clientNetProfit);
+  $("c-netbal").textContent = fmt(clientNetBal);
+
+  $("rows").innerHTML = months.map(r =>
+    `<tr><td>${r.m}</td><td>${fmt(r.start)}</td><td class="green">${fmt(r.ret)}</td><td>${fmt(r.end)}</td><td class="green">${fmt(r.cum)}</td></tr>`
+  ).join("");
+
+  $("foot").innerHTML =
+    `<td>Year</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
+
+  $("note").innerHTML =
+    `<strong>How the firm's cut works:</strong> The firm takes ${($("fee").value||0)}% of the <em>profit only</em> (not the principal). ` +
+    `Gross profit of <strong>${fmt(profit)}</strong> → firm keeps <strong>${fmt(firmFee)}</strong>, client keeps <strong>${fmt(clientNetProfit)}</strong>. ` +
+    `Client walks away with <strong>${fmt(clientNetBal)}</strong>.`;
+}
+
+["principal","rate","fee","mode"].forEach(id => $(id).addEventListener("input", calc));
+calc();
+</script>
+</body>
+</html>
