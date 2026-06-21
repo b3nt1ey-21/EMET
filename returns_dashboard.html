@@ -81,8 +81,13 @@
     transition: box-shadow .25s ease;
   }
   .chartwrap:hover { box-shadow: 0 6px 18px rgba(16,24,40,.08); }
-  .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
   .chart-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); font-weight: 600; }
+  .legend .lg { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .lg i { width: 16px; height: 3px; border-radius: 2px; display: inline-block; }
+  .legend .lg-us i { background: var(--accent); }
+  .legend .lg-sp i { background: var(--accent2); background-image: linear-gradient(90deg, var(--accent2) 60%, transparent 60%); background-size: 7px 3px; }
   .chart-end { font-size: 18px; font-weight: 700; color: var(--accent); }
   #chart { width: 100%; height: 200px; display: block; overflow: visible; }
   #chart-line { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); }
@@ -178,11 +183,19 @@
         <option value="12">Years</option>
       </select>
     </div>
+    <div class="field">
+      <label>S&amp;P 500 (avg annual %)</label>
+      <input type="number" id="sp" value="10" step="0.5">
+    </div>
   </div>
 
   <div class="chartwrap reveal">
     <div class="chart-head">
       <span class="chart-title">Watch it grow</span>
+      <span class="legend">
+        <span class="lg lg-us"><i></i>Whitaker</span>
+        <span class="lg lg-sp"><i></i>S&amp;P 500</span>
+      </span>
       <span class="chart-end" id="chart-end"></span>
     </div>
     <svg id="chart" viewBox="0 0 640 200" preserveAspectRatio="none" aria-hidden="true">
@@ -193,6 +206,7 @@
         </linearGradient>
       </defs>
       <path id="chart-area" fill="url(#fillGrad)" stroke="none"></path>
+      <path id="chart-sp" fill="none" stroke="#b8860b" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round" stroke-linejoin="round"></path>
       <path id="chart-line" fill="none" stroke="#1a7a4c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
       <circle id="chart-dot" r="5" fill="#1a7a4c" stroke="#fff" stroke-width="2.5" opacity="0"></circle>
       <g id="chart-car" opacity="0">
@@ -295,9 +309,12 @@ function calc() {
   const fee = (parseFloat($("fee").value) || 0) / 100;
   const unit = parseInt($("unit").value, 10);          // 1 = months, 12 = years
   const totalMonths = Math.max(1, Math.round((parseFloat($("duration").value) || 1) * unit));
+  const spAnnual = (parseFloat($("sp").value) || 0) / 100;
+  const spMonthly = Math.pow(1 + spAnnual, 1 / 12) - 1;  // equivalent monthly rate
 
   const months = [];
-  let bal = principal;
+  let bal = principal, spBal = principal;
+  const spBalances = [principal];
 
   // Compound at the monthly rate for the chosen number of months
   for (let m = 1; m <= totalMonths; m++) {
@@ -305,7 +322,10 @@ function calc() {
     const ret = start * mRate;
     bal = start + ret;
     months.push({ m, start, ret, end: bal, cum: bal - principal });
+    spBal = spBal * (1 + spMonthly);
+    spBalances.push(spBal);
   }
+  const spGross = spBal;
 
   const gross = bal;
   const profit = gross - principal;
@@ -313,7 +333,7 @@ function calc() {
   const clientNetProfit = profit - firmFee;
   const clientNetBal = principal + clientNetProfit;
 
-  renderChart(principal, months, gross);
+  renderChart(principal, months, gross, spBalances, spGross);
 
   setMoney("c-start", principal);
   setMoney("c-gross", gross);
@@ -329,29 +349,39 @@ function calc() {
   $("foot").innerHTML =
     `<td>Total (${totalMonths} mo)</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
 
+  const vsSp = clientNetBal - spGross;
+  const spLine = vsSp >= 0
+    ? `That's <strong>${fmt(vsSp)}</strong> more than the same money in the S&amp;P 500 (${fmt(spGross)}) over the same stretch.`
+    : `The S&amp;P 500 would have reached <strong>${fmt(spGross)}</strong> over the same stretch — ${fmt(Math.abs(vsSp))} ahead.`;
+
   $("note").innerHTML =
     `<strong>Here's the honest breakdown:</strong> over ${totalMonths} month${totalMonths === 1 ? "" : "s"}, your ${fmt(principal)} grows to <strong>${fmt(gross)}</strong> — that's <strong>${fmt(profit)}</strong> in profit. ` +
     `We only earn when you do, so our ${($("fee").value||0)}% comes out of the <em>profit</em> (never your original deposit): <strong>${fmt(firmFee)}</strong> to us, <strong>${fmt(clientNetProfit)}</strong> stays with you. ` +
-    `You walk away with <strong>${fmt(clientNetBal)}</strong>.`;
+    `You walk away with <strong>${fmt(clientNetBal)}</strong>. ${spLine}`;
 }
 
 // Draw the money-growing-over-time curve and animate it in
-function renderChart(principal, months, gross) {
+function renderChart(principal, months, gross, spBalances, spGross) {
   const W = 640, H = 200, padX = 14, padTop = 34, padBot = 14;
   const balances = [principal, ...months.map(m => m.end)];
   const n = balances.length - 1;
-  const min = Math.min(...balances), max = Math.max(...balances);
+  // scale to fit BOTH series so the comparison is fair
+  const all = balances.concat(spBalances);
+  const min = Math.min(...all), max = Math.max(...all);
   const span = (max - min) || 1;
 
   const x = i => padX + (i / n) * (W - padX * 2);
   const y = v => padTop + (1 - (v - min) / span) * (H - padTop - padBot);
 
-  const pts = balances.map((v, i) => [x(i), y(v)]);
-  const line = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+  const toPath = arr => arr.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+  const line = toPath(balances);
+  const spLine = toPath(spBalances);
   const area = line + ` L ${x(n).toFixed(1)} ${H} L ${x(0).toFixed(1)} ${H} Z`;
 
-  const lineEl = $("chart-line"), areaEl = $("chart-area"), dot = $("chart-dot"), car = $("chart-car");
+  const lineEl = $("chart-line"), areaEl = $("chart-area"), dot = $("chart-dot"),
+        car = $("chart-car"), spEl = $("chart-sp");
   lineEl.setAttribute("d", line);
+  spEl.setAttribute("d", spLine);
   areaEl.setAttribute("d", area);
   dot.setAttribute("cx", x(n));
   dot.setAttribute("cy", y(balances[n]));
@@ -361,12 +391,20 @@ function renderChart(principal, months, gross) {
 
   if (reduceMotion) {
     lineEl.style.setProperty("--len", "0");
+    spEl.style.opacity = "1";
     areaEl.classList.add("show"); dot.classList.add("show");
     const p = lineEl.getPointAtLength(len);
     car.setAttribute("transform", `translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
     car.setAttribute("opacity", "1");
     return;
   }
+
+  // S&P line fades in alongside ours
+  spEl.style.transition = "none";
+  spEl.style.opacity = "0";
+  void spEl.getBoundingClientRect();
+  spEl.style.transition = "opacity 1.2s ease .3s";
+  requestAnimationFrame(() => { spEl.style.opacity = "1"; });
 
   // restart the draw animation each time the numbers change
   lineEl.style.setProperty("--len", len);
@@ -404,7 +442,7 @@ function driveCar(lineEl, car, len) {
   carAnim = requestAnimationFrame(frame);
 }
 
-["principal","rate","fee","duration","unit"].forEach(id => $(id).addEventListener("input", calc));
+["principal","rate","fee","duration","unit","sp"].forEach(id => $(id).addEventListener("input", calc));
 calc();
 
 // Reveal sections/cards as they scroll into view, with a gentle stagger
