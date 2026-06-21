@@ -196,6 +196,7 @@
   .ix-tabs button:hover { color: var(--navy); }
   .ix-tabs button.active { background: var(--navy); color: #fff; box-shadow: 0 2px 6px rgba(27,58,91,.25); }
   .ix-period { font-size: 16px; font-weight: 700; }
+  .ix-period .ix-pct { font-size: 12px; font-weight: 700; }
   .ix-period.up { color: var(--accent); }
   .ix-period.down { color: #c0392b; }
   #ixchart { width: 100%; flex: 1; min-height: 150px; display: block; overflow: visible; }
@@ -387,12 +388,12 @@ const IX = {
 
 // Timeframe presets: which dataset and how many trailing bars
 const TF = {
-  "1M":  { src: "daily",   bars: 22,    label: "1 month" },
-  "3M":  { src: "daily",   bars: 64,    label: "3 months" },
-  "6M":  { src: "daily",   bars: 127,   label: "6 months" },
-  "1Y":  { src: "daily",   bars: 252,   label: "1 year" },
-  "5Y":  { src: "monthly", bars: 60,    label: "5 years" },
-  "MAX": { src: "monthly", bars: 9999,  label: "since 2014" }
+  "1M":  { src: "daily",   bars: 22,    label: "1 month",   mo: 1 },
+  "3M":  { src: "daily",   bars: 64,    label: "3 months",  mo: 3 },
+  "6M":  { src: "daily",   bars: 127,   label: "6 months",  mo: 6 },
+  "1Y":  { src: "daily",   bars: 252,   label: "1 year",    mo: 12 },
+  "5Y":  { src: "monthly", bars: 60,    label: "5 years",   mo: 60 },
+  "MAX": { src: "monthly", bars: 9999,  label: "since 2014", mo: 148 }
 };
 
 function ixData(key, tf) {
@@ -519,7 +520,11 @@ const ixState = { key: "spx", tf: "1Y" };
 // ---- the index chart ----
 function renderIxChart() {
   const ix = IX[ixState.key];
-  const data = ixData(ixState.key, ixState.tf);
+  const prices = ixData(ixState.key, ixState.tf);
+  // Show how the CLIENT'S money would have grown if invested in this index
+  const principal = parseFloat($("principal").value) || 0;
+  const data = prices.map(p => principal * p / prices[0]);
+
   const W = 640, H = 200, padX = 6, padTop = 16, padBot = 12;
   const n = data.length - 1;
   const min = Math.min(...data), max = Math.max(...data);
@@ -533,6 +538,7 @@ function renderIxChart() {
   const up = data[n] >= data[0];
   const color = up ? "#1a7a4c" : "#c0392b";
   const pct = (data[n] / data[0] - 1) * 100;
+  const idxEnd = data[n];
 
   const lineEl = $("ix-line"), areaEl = $("ix-area"), dot = $("ix-dot");
   lineEl.setAttribute("d", line);
@@ -543,14 +549,20 @@ function renderIxChart() {
 
   $("ix-name").textContent = `${ix.name} (${ix.etf})`;
   const per = $("ix-period");
-  per.textContent = `${up ? "▲ +" : "▼ "}${pct.toFixed(2)}% · ${TF[ixState.tf].label}`;
+  per.innerHTML = `${fmt(idxEnd)} <span class="ix-pct">${up ? "▲ +" : "▼ "}${pct.toFixed(2)}%</span>`;
   per.className = "ix-period " + (up ? "up" : "down");
 
-  const src = TF[ixState.tf].src === "daily"
-    ? `daily closes through ${DAILY_THROUGH}` : `monthly closes through ${MONTHLY_THROUGH}`;
+  // Compare against OUR returns over the same timeframe
+  const mRate = (parseFloat($("rate").value) || 0) / 100;
+  const mo = TF[ixState.tf].mo;
+  const ourEnd = principal * Math.pow(1 + mRate, mo);
+  const diff = ourEnd - idxEnd;
+  const verdict = diff >= 0
+    ? `Your Whitaker plan would be <strong>${fmt(ourEnd)}</strong> — <strong>${fmt(diff)}</strong> more.`
+    : `Your Whitaker plan would be <strong>${fmt(ourEnd)}</strong> (${fmt(Math.abs(diff))} less).`;
   $("ix-note").innerHTML =
-    `Real ${ix.name} price history — ${src} (dividend-adjusted ${ix.etf}). ` +
-    `Live quote sourced from <strong>StockTwits</strong>.`;
+    `${fmt(principal)} in ${ix.name} over ${TF[ixState.tf].label} → <strong>${fmt(idxEnd)}</strong>. ${verdict} ` +
+    `<em>Real ${ix.etf} prices (dividend-adjusted); live quote via StockTwits.</em>`;
 
   const len = lineEl.getTotalLength();
   if (reduceMotion) {
@@ -597,6 +609,8 @@ $("ix-tabs").addEventListener("click", e => {
   [...$("ix-tabs").children].forEach(b => b.classList.toggle("active", b === btn));
   renderIxChart();
 });
+// keep the index dollar values in sync with the calculator inputs
+["principal", "rate"].forEach(id => $(id).addEventListener("input", renderIxChart));
 renderIxChart();
 loadQuote();
 
