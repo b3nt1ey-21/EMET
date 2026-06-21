@@ -35,6 +35,19 @@ window.DASHBOARD_DATA = {
   // ---- US market movement (drives the plane ✈️ + tiger 🐅 scene) ----
   market: { label: "US Market (last close)", changePct: 0.5 },  // + = plane climbs, tiger sprints
 
+  // ---- Main sectors / themes in play (heat: hot | warm | cold) ----
+  sectors: [
+    { name:"AI Data Centers & Power", icon:"🏢", heat:"hot",  tickers:["KEEL","APLD","TSSI","SLNH"], note:"The next-bull-run thesis — compute + electricity for AI." },
+    { name:"Semiconductors / AI Hardware", icon:"💻", heat:"hot", tickers:["SMCI","APLD"], note:"SOXX +8% Friday; Micron (MU) earnings this week." },
+    { name:"Quantum Computing", icon:"⚛️", heat:"warm", tickers:["QBTS"], note:"Real catalysts (CHIPS Act, $35 PT) but extended / hype-driven." },
+    { name:"Bitcoin Miners / Crypto", icon:"₿", heat:"cold", tickers:["MARA","HIVE","SLNH","COIN"], note:"Crypto in Extreme Fear, BTC < $70k — headwind." },
+    { name:"Solar / Renewable Energy", icon:"☀️", heat:"warm", tickers:["TE"], note:"TE profitable + KORE deal; rate/tariff sensitive." },
+    { name:"Space & Satellites", icon:"🛰️", heat:"warm", tickers:["SPCX","ASTS","LUNR","RDW","SPCE"], note:"SpaceX (SPCX) hot IPO; ASTS pulled back." },
+    { name:"Drones / Defense Autonomy", icon:"🚁", heat:"warm", tickers:["RCAT","ONDS"], note:"Autonomous systems theme." },
+    { name:"AI Software", icon:"🤖", heat:"warm", tickers:["NOW","ZETA","BBAI","TEAM"], note:"Mixed; rate-sensitive into a hawkish Fed." },
+    { name:"Biotech / Gene Editing", icon:"🧪", heat:"warm", tickers:["CRSP"], note:"CRISPR maturing; binary catalysts." },
+  ],
+
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
     { t: "Sun 17:15Z", text: "Weekend — markets closed, nothing actionable. All monitors armed for Mon open." },

@@ -169,6 +169,19 @@
   .step{padding:6px 0;color:var(--mut);font-size:13px} .step b{color:var(--txt)}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--grn);display:inline-block;margin-right:7px;
     box-shadow:0 0 0 0 rgba(16,185,129,.5);animation:beat 2s infinite}
+  /* sectors / themes */
+  .secgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:12px}
+  .sec{border:1px solid var(--line);border-radius:12px;padding:13px;border-left-width:4px;background:var(--panel2);transition:transform .15s}
+  .sec:hover{transform:translateY(-2px)}
+  .sec.hot{border-left-color:var(--red)} .sec.warm{border-left-color:var(--yel)} .sec.cold{border-left-color:var(--blu)}
+  .sec h4{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+  .heat{font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px;margin-left:auto}
+  .heat.hot{background:rgba(239,68,68,.14);color:var(--red)}
+  .heat.warm{background:rgba(217,119,6,.15);color:var(--yel)}
+  .heat.cold{background:rgba(59,130,246,.14);color:var(--blu)}
+  .tick{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;background:var(--panel);
+    border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin:3px 3px 0 0}
+  .sec .n{color:var(--mut);font-size:11px;margin-top:8px}
   .foot{color:var(--mut);font-size:11px;text-align:center;margin-top:22px}
 </style>
 </head>
@@ -295,6 +308,12 @@
       <div class="mut" style="font-size:11px;margin-top:7px">Plane climbs on green days, dives &amp; crashes on a &gt;1.5% drop · tiger sprints with momentum</div>
     </div>
 
+    <!-- Sectors / themes heatmap -->
+    <div class="card col12">
+      <h2>🗂️ Sectors &amp; Themes — what's hot now</h2>
+      <div class="secgrid" id="sectors"></div>
+    </div>
+
     <!-- Live thought process (animated) -->
     <div class="card col6">
       <div class="think-head">
@@ -413,6 +432,14 @@
   // typewriter for newest thought
   if(TH[0]){ const el=$("tw0"); const s=TH[0].text; let i=0;
     (function tick(){ if(el && i<=s.length){ el.textContent=s.slice(0,i++); setTimeout(tick,16);} })(); }
+
+  // sectors / themes
+  $("sectors").innerHTML = (D.sectors||[]).map(s=>
+    `<div class="sec ${s.heat}">
+      <h4>${s.icon} ${s.name}<span class="heat ${s.heat}">${s.heat}</span></h4>
+      <div>${(s.tickers||[]).map(t=>`<span class="tick">${t}</span>`).join("")}</div>
+      <div class="n">${s.note||""}</div>
+    </div>`).join("");
 
   // plan + alerts
   $("plantitle").textContent = (D.plan?.title? "🗺️ "+D.plan.title : "🗺️ Plan");
