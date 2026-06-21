@@ -24,6 +24,27 @@
     color: var(--text);
     padding: 32px;
   }
+
+  /* ---- animations ---- */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-4px); }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to   { background-position: 200% 0; }
+  }
+  .reveal { opacity: 0; }
+  .reveal.in { animation: rise .6s cubic-bezier(.2,.7,.3,1) forwards; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal.in { opacity: 1 !important; animation: none !important; }
+    * { transition: none !important; }
+  }
+
   .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
   .brand .logo {
     width: 48px; height: 48px; border-radius: 10px; flex: 0 0 auto;
@@ -31,7 +52,10 @@
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: 20px; color: #ffffff; letter-spacing: -1px;
     box-shadow: 0 2px 6px rgba(27,58,91,.25);
+    animation: floaty 4s ease-in-out infinite;
+    transition: transform .3s ease, box-shadow .3s ease;
   }
+  .brand .logo:hover { transform: scale(1.08) rotate(-3deg); box-shadow: 0 6px 16px rgba(27,58,91,.35); }
   .brand .name { font-size: 23px; font-weight: 800; letter-spacing: .3px; color: var(--navy); }
   .brand .tag { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
   h1 { margin: 0 0 4px; font-size: 24px; }
@@ -47,15 +71,19 @@
   .field input, .field select {
     background: #fff; border: 1px solid var(--border); color: var(--text);
     padding: 9px 11px; border-radius: 8px; font-size: 15px; width: 160px;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
   }
-  .field input:focus, .field select:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(27,58,91,.12); }
+  .field input:hover, .field select:hover { border-color: #c3ccd6; }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(27,58,91,.12); transform: translateY(-1px); }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .card {
     background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px;
     box-shadow: 0 1px 3px rgba(16,24,40,.06);
+    transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s ease, border-color .25s ease;
   }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 10px 24px rgba(16,24,40,.12); border-color: #d4dde7; }
   .card .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
-  .card .v { font-size: 26px; font-weight: 700; margin-top: 6px; color: var(--navy); }
+  .card .v { font-size: 26px; font-weight: 700; margin-top: 6px; color: var(--navy); transition: color .2s ease; }
   .green { color: var(--accent); }
   .gold { color: var(--accent2); }
   table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(16,24,40,.06); }
@@ -63,6 +91,8 @@
   th { background: var(--navy); color: #fff; text-transform: uppercase; font-size: 11px; letter-spacing: .5px; }
   td:first-child, th:first-child { text-align: left; }
   tbody tr:nth-child(even) { background: var(--panel2); }
+  tbody tr { animation: rise .45s ease both; transition: background .15s ease; }
+  tbody tr:hover { background: #eef6f1; }
   tr:last-child td { border-bottom: none; }
   tfoot td { font-weight: 700; background: #eaeef3; color: var(--navy); }
   .note { color: var(--muted); font-size: 12px; margin-top: 16px; line-height: 1.6; }
@@ -71,12 +101,16 @@
   .section {
     background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px;
     box-shadow: 0 1px 3px rgba(16,24,40,.06);
+    transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s ease;
   }
+  .section:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(16,24,40,.12); }
   .section h2 { margin: 0 0 14px; font-size: 17px; color: var(--navy); display: flex; align-items: center; gap: 9px; }
   .section h2 .ico {
     width: 30px; height: 30px; border-radius: 8px; background: var(--panel2);
     display: inline-flex; align-items: center; justify-content: center; font-size: 16px; flex: 0 0 auto;
+    transition: transform .3s ease, background .3s ease;
   }
+  .section:hover h2 .ico { transform: scale(1.15) rotate(6deg); background: #e3eaf1; }
   .section p { margin: 0 0 10px; font-size: 14px; line-height: 1.6; color: var(--text); }
   .section .label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); font-weight: 600; margin-top: 12px; }
   .section a { color: var(--accent); text-decoration: none; font-weight: 600; }
@@ -84,9 +118,14 @@
   .btn {
     display: inline-block; margin-top: 14px; background: var(--navy); color: #fff;
     padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    box-shadow: 0 2px 6px rgba(27,58,91,.2);
   }
-  .btn:hover { background: #142c45; text-decoration: none; }
+  .btn:hover { background: #142c45; text-decoration: none; transform: translateY(-2px); box-shadow: 0 8px 18px rgba(27,58,91,.3); }
+  .btn:active { transform: translateY(0); }
   footer { margin-top: 40px; text-align: center; color: var(--muted); font-size: 12px; }
+  .controls { transition: box-shadow .25s ease; }
+  .controls:hover { box-shadow: 0 6px 18px rgba(16,24,40,.08); }
 </style>
 </head>
 <body>
@@ -97,9 +136,9 @@
       <div class="tag">Returns &amp; Profit-Share Dashboard</div>
     </div>
   </div>
-  <p class="sub">Investment growth with Whitaker Financial's profit share. Edit any value to recalculate.</p>
+  <p class="sub">See how your money could grow with us — then watch exactly what you keep. Tweak any number below and the whole picture updates instantly.</p>
 
-  <div class="controls">
+  <div class="controls reveal">
     <div class="field">
       <label>Principal ($)</label>
       <input type="number" id="principal" value="1000" min="0" step="100">
@@ -126,15 +165,15 @@
   </div>
 
   <div class="cards">
-    <div class="card"><div class="k">Starting Balance</div><div class="v" id="c-start">$1,000.00</div></div>
-    <div class="card"><div class="k">Gross End Balance</div><div class="v green" id="c-gross">$3,138.43</div></div>
-    <div class="card"><div class="k">Total Profit</div><div class="v green" id="c-profit">$100.00</div></div>
-    <div class="card"><div class="k">Firm Fee (call for estimate fee %)</div><div class="v gold" id="c-fee">$10.00</div></div>
-    <div class="card"><div class="k">Client Net Profit</div><div class="v green" id="c-net">$90.00</div></div>
-    <div class="card"><div class="k">Client Net Balance</div><div class="v" id="c-netbal">$1,090.00</div></div>
+    <div class="card reveal"><div class="k">Starting Balance</div><div class="v" id="c-start">$1,000.00</div></div>
+    <div class="card reveal"><div class="k">Gross End Balance</div><div class="v green" id="c-gross">$3,138.43</div></div>
+    <div class="card reveal"><div class="k">Total Profit</div><div class="v green" id="c-profit">$100.00</div></div>
+    <div class="card reveal"><div class="k">Firm Fee (call for estimate fee %)</div><div class="v gold" id="c-fee">$10.00</div></div>
+    <div class="card reveal"><div class="k">Client Net Profit</div><div class="v green" id="c-net">$90.00</div></div>
+    <div class="card reveal"><div class="k">What You Take Home</div><div class="v" id="c-netbal">$1,090.00</div></div>
   </div>
 
-  <table>
+  <table class="reveal">
     <thead>
       <tr>
         <th>Month</th>
@@ -153,41 +192,59 @@
   <p class="note" id="note"></p>
 
   <div class="sections">
-    <div class="section">
+    <div class="section reveal">
       <h2><span class="ico">📍</span> Where to Find Us</h2>
-      <p>Visit our office or schedule a meeting with one of our advisors.</p>
-      <div class="label">Headquarters</div>
+      <p>Coffee's always on. Swing by the office, or grab a time that works for you and we'll sit down together — in person or over a call.</p>
+      <div class="label">Our Office</div>
       <p>Whitaker Financial<br>123 Market Street, Suite 400<br>Your City, ST 00000</p>
-      <div class="label">Hours</div>
-      <p>Monday – Friday, 9:00 AM – 5:00 PM</p>
+      <div class="label">When We're Around</div>
+      <p>Monday through Friday, 9 to 5 — and we answer emails after hours too.</p>
     </div>
 
-    <div class="section">
+    <div class="section reveal">
       <h2><span class="ico">🤝</span> Apply to the Team</h2>
-      <p>We're growing and always looking for driven professionals who want to help clients build wealth.</p>
-      <div class="label">Now Hiring</div>
-      <p>Financial Advisors · Analysts · Client Relations</p>
-      <p>Send your résumé and a short note about why you'd be a great fit.</p>
-      <a class="btn" href="mailto:careers@whitakerfinancial.com?subject=Application%20-%20Whitaker%20Financial">Apply Now</a>
+      <p>We're a small team that takes our clients' goals personally, and we're looking for people who feel the same way.</p>
+      <div class="label">Who We're Looking For</div>
+      <p>Advisors, analysts, and folks who love helping people — experience matters, but attitude matters more.</p>
+      <p>Tell us a little about yourself and why this work speaks to you. We read every note.</p>
+      <a class="btn" href="mailto:careers@whitakerfinancial.com?subject=Application%20-%20Whitaker%20Financial">Say Hello</a>
     </div>
 
-    <div class="section">
+    <div class="section reveal">
       <h2><span class="ico">✉️</span> Contact Us</h2>
-      <p>Questions about returns, fees, or getting started? We're here to help.</p>
-      <div class="label">Phone</div>
+      <p>Curious about the numbers, the fee, or just where to start? Reach out — a real person will get back to you, usually same day.</p>
+      <div class="label">Call or Text</div>
       <p><a href="tel:+10000000000">(000) 000-0000</a></p>
       <div class="label">Email</div>
       <p><a href="mailto:info@whitakerfinancial.com">info@whitakerfinancial.com</a></p>
-      <a class="btn" href="mailto:info@whitakerfinancial.com?subject=Estimate%20Request%20-%20Whitaker%20Financial">Request an Estimate</a>
+      <a class="btn" href="mailto:info@whitakerfinancial.com?subject=Estimate%20Request%20-%20Whitaker%20Financial">Get Your Estimate</a>
     </div>
   </div>
 
-  <footer>© <span id="year"></span> Whitaker Financial. For illustration purposes only — not a guarantee of returns.</footer>
+  <footer>© <span id="year"></span> Whitaker Financial · Built for real people, not just spreadsheets. Figures shown are illustrations, not a promise of returns.</footer>
 
 <script>
 const $ = id => document.getElementById(id);
 const fmt = n => "$" + n.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 document.getElementById("year").textContent = new Date().getFullYear();
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Smoothly count a card's number from its old value up/down to the new one
+function setMoney(id, target) {
+  const el = $(id);
+  const from = parseFloat(el.dataset.val || "0");
+  el.dataset.val = target;
+  if (reduceMotion || from === target) { el.textContent = fmt(target); return; }
+  const start = performance.now(), dur = 650;
+  function tick(now) {
+    const t = Math.min(1, (now - start) / dur);
+    const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+    el.textContent = fmt(from + (target - from) * eased);
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
 
 function calc() {
   const principal = parseFloat($("principal").value) || 0;
@@ -213,30 +270,46 @@ function calc() {
   const clientNetProfit = profit - firmFee;
   const clientNetBal = principal + clientNetProfit;
 
-  $("c-start").textContent = fmt(principal);
-  $("c-gross").textContent = fmt(gross);
-  $("c-profit").textContent = fmt(profit);
-  $("c-fee").textContent = fmt(firmFee);
-  $("c-fee").previousElementSibling.textContent = "Firm Fee (call for estimate fee %)";
-  $("c-net").textContent = fmt(clientNetProfit);
-  $("c-netbal").textContent = fmt(clientNetBal);
+  setMoney("c-start", principal);
+  setMoney("c-gross", gross);
+  setMoney("c-profit", profit);
+  setMoney("c-fee", firmFee);
+  setMoney("c-net", clientNetProfit);
+  setMoney("c-netbal", clientNetBal);
 
-  $("rows").innerHTML = months.map(r =>
-    `<tr><td>${r.m}</td><td>${fmt(r.start)}</td><td class="green">${fmt(r.ret)}</td><td>${fmt(r.end)}</td><td class="green">${fmt(r.cum)}</td></tr>`
+  $("rows").innerHTML = months.map((r, i) =>
+    `<tr style="animation-delay:${Math.min(i * 35, 600)}ms"><td>${r.m}</td><td>${fmt(r.start)}</td><td class="green">${fmt(r.ret)}</td><td>${fmt(r.end)}</td><td class="green">${fmt(r.cum)}</td></tr>`
   ).join("");
 
   $("foot").innerHTML =
     `<td>Total (${totalMonths} mo)</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
 
   $("note").innerHTML =
-    `<strong>How Whitaker Financial's cut works:</strong> The firm takes ${($("fee").value||0)}% of the <em>profit only</em> (not the principal), ` +
-    `over a ${totalMonths}-month compounding period. ` +
-    `Gross profit of <strong>${fmt(profit)}</strong> → firm keeps <strong>${fmt(firmFee)}</strong>, client keeps <strong>${fmt(clientNetProfit)}</strong>. ` +
-    `Client walks away with <strong>${fmt(clientNetBal)}</strong>.`;
+    `<strong>Here's the honest breakdown:</strong> over ${totalMonths} month${totalMonths === 1 ? "" : "s"}, your ${fmt(principal)} grows to <strong>${fmt(gross)}</strong> — that's <strong>${fmt(profit)}</strong> in profit. ` +
+    `We only earn when you do, so our ${($("fee").value||0)}% comes out of the <em>profit</em> (never your original deposit): <strong>${fmt(firmFee)}</strong> to us, <strong>${fmt(clientNetProfit)}</strong> stays with you. ` +
+    `You walk away with <strong>${fmt(clientNetBal)}</strong>.`;
 }
 
 ["principal","rate","fee","duration","unit"].forEach(id => $(id).addEventListener("input", calc));
 calc();
+
+// Reveal sections/cards as they scroll into view, with a gentle stagger
+const revealEls = document.querySelectorAll(".reveal");
+if (reduceMotion) {
+  revealEls.forEach(el => el.classList.add("in"));
+} else {
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        el.style.animationDelay = (i * 80) + "ms";
+        el.classList.add("in");
+        obs.unobserve(el);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+}
 </script>
 </body>
 </html>
