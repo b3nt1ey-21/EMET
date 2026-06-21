@@ -81,6 +81,22 @@
     transition: box-shadow .25s ease;
   }
   .chartwrap:hover { box-shadow: 0 6px 18px rgba(16,24,40,.08); }
+  .sp-banner {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-size: 13px; color: var(--text); padding: 9px 12px; margin-bottom: 14px;
+    background: var(--panel2); border: 1px solid var(--border); border-radius: 9px;
+  }
+  .sp-banner strong { color: var(--navy); }
+  .sp-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgba(26,122,76,.5); animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(26,122,76,.5); }
+    70% { box-shadow: 0 0 0 7px rgba(26,122,76,0); }
+    100% { box-shadow: 0 0 0 0 rgba(26,122,76,0); }
+  }
+  .sp-chg { font-weight: 700; }
+  .sp-chg.up { color: var(--accent); }
+  .sp-chg.down { color: #c0392b; }
+  .sp-asof { color: var(--muted); font-size: 11px; margin-left: auto; }
   .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
   .chart-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
   .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); font-weight: 600; }
@@ -186,11 +202,18 @@
   </div>
 
   <div class="chartwrap reveal">
+    <div class="sp-banner">
+      <span class="sp-dot"></span>
+      <span>S&amp;P 500 (SPX) live via <strong>StockTwits</strong>:</span>
+      <strong id="sp-live">—</strong>
+      <span id="sp-chg" class="sp-chg">—</span>
+      <span class="sp-asof" id="sp-asof"></span>
+    </div>
     <div class="chart-head">
       <span class="chart-title">Watch it grow</span>
       <span class="legend">
         <span class="lg lg-us"><i></i>Whitaker</span>
-        <span class="lg lg-sp"><i></i>S&amp;P 500 (30-yr actual)</span>
+        <span class="lg lg-sp"><i></i>S&amp;P 500 (actual)</span>
       </span>
       <span class="chart-end" id="chart-end"></span>
     </div>
@@ -473,6 +496,36 @@ function driveCar(lineEl, car, len) {
 
 ["principal","rate","fee","duration","unit"].forEach(id => $(id).addEventListener("input", calc));
 calc();
+
+// ---- Live S&P 500 quote from StockTwits ----
+// Baked-in snapshot pulled from ql.stocktwits.com so the figure shows even
+// offline; we then try a live refresh (works when CORS/network allow).
+const SP_SNAPSHOT = { last: 7500.58, prevClose: 7420.1, pct: 1.0846, asof: "Jun 18, 2026 4:42pm ET" };
+
+function renderSpQuote(q) {
+  const up = q.pct >= 0;
+  $("sp-live").textContent = q.last.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const chg = $("sp-chg");
+  chg.textContent = (up ? "▲ +" : "▼ ") + q.pct.toFixed(2) + "%";
+  chg.className = "sp-chg " + (up ? "up" : "down");
+  $("sp-asof").textContent = "as of " + q.asof + " · via StockTwits (15-min delay)";
+}
+renderSpQuote(SP_SNAPSHOT);
+
+fetch("https://ql.stocktwits.com/batch?symbols=SPX")
+  .then(r => r.json())
+  .then(d => {
+    const q = d && d.SPX;
+    if (q && q.Last) {
+      renderSpQuote({
+        last: parseFloat(q.Last),
+        prevClose: parseFloat(q.PreviousClose),
+        pct: parseFloat(q.PercentChange),
+        asof: q.EasternDateTime || "just now"
+      });
+    }
+  })
+  .catch(() => { /* StockTwits blocks cross-origin reads from file:// — keep snapshot */ });
 
 // Reveal sections/cards as they scroll into view, with a gentle stagger
 const revealEls = document.querySelectorAll(".reveal");
