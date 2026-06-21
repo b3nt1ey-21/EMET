@@ -99,12 +99,13 @@
   .sp-asof { color: var(--muted); font-size: 11px; margin-left: auto; }
   .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
   .chart-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
-  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); font-weight: 600; }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); font-weight: 600; flex-wrap: wrap; }
   .legend .lg { display: inline-flex; align-items: center; gap: 6px; }
   .legend .lg i { width: 16px; height: 3px; border-radius: 2px; display: inline-block; }
-  .legend .lg-us i { background: var(--accent); }
-  .legend .lg-sp i { background: var(--accent2); background-image: linear-gradient(90deg, var(--accent2) 60%, transparent 60%); background-size: 7px 3px; }
+  .legend .lg.dash i { background-image: linear-gradient(90deg, currentColor 60%, transparent 60%); background-size: 7px 3px; }
   .chart-end { font-size: 18px; font-weight: 700; color: var(--accent); }
+  .chart-note { margin: 10px 2px 4px; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+  .chart-note strong { color: var(--text); }
   #chart { width: 100%; height: 200px; display: block; overflow: visible; }
   #chart-line { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); }
   #chart-line.draw { transition: stroke-dashoffset 1.4s cubic-bezier(.22,.7,.25,1); stroke-dashoffset: 0; }
@@ -199,6 +200,27 @@
         <option value="12">Years</option>
       </select>
     </div>
+    <div class="field">
+      <label>Compare Against</label>
+      <select id="index">
+        <option value="spx">S&amp;P 500</option>
+        <option value="nasdaq">Nasdaq</option>
+        <option value="dow">Dow Jones</option>
+        <option value="all">All three</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Comparison Period</label>
+      <select id="cmpPeriod">
+        <option value="match">Match my plan</option>
+        <option value="1">1 year</option>
+        <option value="3">3 years</option>
+        <option value="5">5 years</option>
+        <option value="10">10 years</option>
+        <option value="20">20 years</option>
+        <option value="30">30 years</option>
+      </select>
+    </div>
   </div>
 
   <div class="chartwrap reveal">
@@ -211,10 +233,7 @@
     </div>
     <div class="chart-head">
       <span class="chart-title">Watch it grow</span>
-      <span class="legend">
-        <span class="lg lg-us"><i></i>Whitaker</span>
-        <span class="lg lg-sp"><i></i>S&amp;P 500 (actual)</span>
-      </span>
+      <span class="legend" id="legend"></span>
       <span class="chart-end" id="chart-end"></span>
     </div>
     <svg id="chart" viewBox="0 0 640 200" preserveAspectRatio="none" aria-hidden="true">
@@ -225,7 +244,7 @@
         </linearGradient>
       </defs>
       <path id="chart-area" fill="url(#fillGrad)" stroke="none"></path>
-      <path id="chart-sp" fill="none" stroke="#b8860b" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round" stroke-linejoin="round"></path>
+      <g id="chart-indexes"></g>
       <path id="chart-line" fill="none" stroke="#1a7a4c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
       <circle id="chart-dot" r="5" fill="#1a7a4c" stroke="#fff" stroke-width="2.5" opacity="0"></circle>
       <g id="chart-car" opacity="0">
@@ -238,6 +257,7 @@
         </g>
       </g>
     </svg>
+    <p class="chart-note" id="chart-note"></p>
   </div>
 
   <div class="cards">
@@ -306,36 +326,38 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// S&P 500 total annual returns, 1995–2024 (approx., dividends reinvested)
-const SP_RETURNS = [
-  {y:1995, r: 0.376}, {y:1996, r: 0.230}, {y:1997, r: 0.334}, {y:1998, r: 0.286},
-  {y:1999, r: 0.210}, {y:2000, r:-0.091}, {y:2001, r:-0.119}, {y:2002, r:-0.221},
-  {y:2003, r: 0.287}, {y:2004, r: 0.109}, {y:2005, r: 0.049}, {y:2006, r: 0.158},
-  {y:2007, r: 0.055}, {y:2008, r:-0.370}, {y:2009, r: 0.265}, {y:2010, r: 0.151},
-  {y:2011, r: 0.021}, {y:2012, r: 0.160}, {y:2013, r: 0.324}, {y:2014, r: 0.137},
-  {y:2015, r: 0.014}, {y:2016, r: 0.120}, {y:2017, r: 0.218}, {y:2018, r:-0.044},
-  {y:2019, r: 0.315}, {y:2020, r: 0.184}, {y:2021, r: 0.287}, {y:2022, r:-0.181},
-  {y:2023, r: 0.263}, {y:2024, r: 0.250}
-];
-// Expand each year's return into 12 equivalent monthly growth factors (360 total)
-const SP_MONTHLY = SP_RETURNS.flatMap(d => {
-  const f = Math.pow(1 + d.r, 1 / 12);
-  return Array(12).fill(f);
+// Real annual index returns, 1995–2024 (approximate, widely-cited figures).
+// S&P 500 = total return; Nasdaq & Dow = price return.
+const DATA_START = 1995, DATA_END = 2024;
+const INDICES = {
+  spx: { name: "S&P 500", color: "#b8860b", returns: [
+    0.376, 0.230, 0.334, 0.286, 0.210, -0.091, -0.119, -0.221, 0.287, 0.109,
+    0.049, 0.158, 0.055, -0.370, 0.265, 0.151, 0.021, 0.160, 0.324, 0.137,
+    0.014, 0.120, 0.218, -0.044, 0.315, 0.184, 0.287, -0.181, 0.263, 0.250 ] },
+  nasdaq: { name: "Nasdaq", color: "#7b4fb5", returns: [
+    0.399, 0.227, 0.216, 0.396, 0.856, -0.393, -0.211, -0.315, 0.500, 0.086,
+    0.014, 0.095, 0.098, -0.405, 0.439, 0.169, -0.018, 0.159, 0.383, 0.134,
+    0.057, 0.075, 0.282, -0.039, 0.352, 0.436, 0.214, -0.331, 0.434, 0.286 ] },
+  dow: { name: "Dow Jones", color: "#0d7d8c", returns: [
+    0.335, 0.260, 0.226, 0.161, 0.252, -0.062, -0.071, -0.168, 0.253, 0.031,
+    -0.006, 0.163, 0.064, -0.338, 0.188, 0.110, 0.055, 0.073, 0.265, 0.075,
+    -0.022, 0.134, 0.251, -0.056, 0.223, 0.072, 0.187, -0.088, 0.137, 0.129 ] }
+};
+// Pre-compute monthly growth factors (360) + a long-run average for each index
+Object.values(INDICES).forEach(ix => {
+  ix.monthly = ix.returns.flatMap(r => Array(12).fill(Math.pow(1 + r, 1 / 12)));
+  ix.avg = Math.pow(ix.returns.reduce((a, r) => a * (1 + r), 1), 1 / (ix.returns.length * 12));
 });
-const SP_AVG_FACTOR = Math.pow(
-  SP_RETURNS.reduce((a, d) => a * (1 + d.r), 1),
-  1 / (SP_RETURNS.length * 12)
-);
 
-// Build an S&P balance path ending on the most recent data, aligned to `totalMonths`
-function spSeries(principal, totalMonths) {
+// Build an index balance path that ENDS on the most recent data (2024),
+// using as many trailing months as the chosen window.
+function indexSeries(ix, principal, totalMonths) {
   const series = [principal];
   let bal = principal;
   for (let i = 0; i < totalMonths; i++) {
     const distFromEnd = totalMonths - 1 - i;
-    const idx = SP_MONTHLY.length - 1 - distFromEnd;   // align final month with 2024
-    const f = idx >= 0 ? SP_MONTHLY[idx] : SP_AVG_FACTOR;
-    bal *= f;
+    const idx = ix.monthly.length - 1 - distFromEnd;   // align final month with 2024
+    bal *= (idx >= 0 ? ix.monthly[idx] : ix.avg);
     series.push(bal);
   }
   return series;
@@ -374,17 +396,33 @@ function calc() {
     months.push({ m, start, ret, end: bal, cum: bal - principal });
   }
 
-  // S&P 500 path from real 30-year history, ending on the latest data
-  const spBalances = spSeries(principal, totalMonths);
-  const spGross = spBalances[spBalances.length - 1];
-
   const gross = bal;
   const profit = gross - principal;
   const firmFee = profit * fee;
   const clientNetProfit = profit - firmFee;
   const clientNetBal = principal + clientNetProfit;
 
-  renderChart(principal, months, gross, spBalances, spGross);
+  // ---- comparison window (its own dropdown) ----
+  const cmpSel = $("cmpPeriod").value;
+  const cmpMonths = cmpSel === "match" ? totalMonths : parseInt(cmpSel, 10) * 12;
+  const cmpStartYear = Math.max(DATA_START, DATA_END - Math.ceil(cmpMonths / 12) + 1);
+
+  // our line over the comparison window (gross performance, before fee)
+  const ours = [principal];
+  let cb = principal;
+  for (let i = 0; i < cmpMonths; i++) { cb *= (1 + mRate); ours.push(cb); }
+  const ourCmpGross = cb;
+
+  // selected index/indexes over the same window
+  const sel = $("index").value;
+  const keys = sel === "all" ? ["spx", "nasdaq", "dow"] : [sel];
+  const series = keys.map(k => {
+    const ix = INDICES[k];
+    const path = indexSeries(ix, principal, cmpMonths);
+    return { name: ix.name, color: ix.color, path, end: path[path.length - 1] };
+  });
+
+  renderChart(principal, ours, ourCmpGross, series);
 
   setMoney("c-start", principal);
   setMoney("c-gross", gross);
@@ -400,50 +438,72 @@ function calc() {
   $("foot").innerHTML =
     `<td>Total (${totalMonths} mo)</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
 
-  const spStart = SP_RETURNS[Math.max(0, SP_RETURNS.length - Math.ceil(totalMonths / 12))].y;
-  const vsSp = clientNetBal - spGross;
-  const spLine = vsSp >= 0
-    ? `Over the same window, the same money tracking the <strong>real S&amp;P 500 from ${spStart}–2024</strong> would be worth <strong>${fmt(spGross)}</strong> — you'd be <strong>${fmt(vsSp)}</strong> ahead.`
-    : `Over the same window, the <strong>real S&amp;P 500 from ${spStart}–2024</strong> would have reached <strong>${fmt(spGross)}</strong> — ${fmt(Math.abs(vsSp))} ahead of this plan.`;
+  // chart caption: our window result vs each selected index
+  const winLabel = cmpMonths % 12 === 0 ? `${cmpMonths / 12} yr` : `${cmpMonths} mo`;
+  const idxBits = series.map(s => `<strong style="color:${s.color}">${s.name}</strong> ${fmt(s.end)}`).join(" · ");
+  $("chart-note").innerHTML =
+    `Over <strong>${winLabel}</strong>, ${fmt(principal)} with us grows to <strong>${fmt(ourCmpGross)}</strong> (before our fee). ` +
+    `Same money in the market: ${idxBits}. ` +
+    `<em>Index lines use real ${cmpStartYear}–${DATA_END} returns.</em>`;
 
+  // fee breakdown stays tied to the plan duration
   $("note").innerHTML =
     `<strong>Here's the honest breakdown:</strong> over ${totalMonths} month${totalMonths === 1 ? "" : "s"}, your ${fmt(principal)} grows to <strong>${fmt(gross)}</strong> — that's <strong>${fmt(profit)}</strong> in profit. ` +
     `We only earn when you do, so our ${($("fee").value||0)}% comes out of the <em>profit</em> (never your original deposit): <strong>${fmt(firmFee)}</strong> to us, <strong>${fmt(clientNetProfit)}</strong> stays with you. ` +
-    `You walk away with <strong>${fmt(clientNetBal)}</strong>. ${spLine}`;
+    `You walk away with <strong>${fmt(clientNetBal)}</strong>.`;
 }
 
-// Draw the money-growing-over-time curve and animate it in
-function renderChart(principal, months, gross, spBalances, spGross) {
+// Draw our growth curve plus any selected index lines, and animate them in
+const SVGNS = "http://www.w3.org/2000/svg";
+function renderChart(principal, ours, gross, series) {
   const W = 640, H = 200, padX = 14, padTop = 34, padBot = 14;
-  const balances = [principal, ...months.map(m => m.end)];
+  const balances = ours;
   const n = balances.length - 1;
-  // scale to fit BOTH series so the comparison is fair
-  const all = balances.concat(spBalances);
+  // scale to fit OUR line and every index line so the comparison is fair
+  const all = balances.concat(...series.map(s => s.path));
   const min = Math.min(...all), max = Math.max(...all);
   const span = (max - min) || 1;
 
   const x = i => padX + (i / n) * (W - padX * 2);
   const y = v => padTop + (1 - (v - min) / span) * (H - padTop - padBot);
-
   const toPath = arr => arr.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+
   const line = toPath(balances);
-  const spLine = toPath(spBalances);
   const area = line + ` L ${x(n).toFixed(1)} ${H} L ${x(0).toFixed(1)} ${H} Z`;
 
   const lineEl = $("chart-line"), areaEl = $("chart-area"), dot = $("chart-dot"),
-        car = $("chart-car"), spEl = $("chart-sp");
+        car = $("chart-car"), group = $("chart-indexes");
   lineEl.setAttribute("d", line);
-  spEl.setAttribute("d", spLine);
   areaEl.setAttribute("d", area);
   dot.setAttribute("cx", x(n));
   dot.setAttribute("cy", y(balances[n]));
   $("chart-end").textContent = fmt(gross);
 
+  // (re)build the index lines
+  group.innerHTML = "";
+  const idxPaths = series.map(s => {
+    const p = document.createElementNS(SVGNS, "path");
+    p.setAttribute("d", toPath(s.path));
+    p.setAttribute("fill", "none");
+    p.setAttribute("stroke", s.color);
+    p.setAttribute("stroke-width", "2");
+    p.setAttribute("stroke-dasharray", "6 5");
+    p.setAttribute("stroke-linecap", "round");
+    p.setAttribute("stroke-linejoin", "round");
+    group.appendChild(p);
+    return p;
+  });
+
+  // legend reflects what's actually on screen
+  $("legend").innerHTML =
+    `<span class="lg" style="color:var(--accent)"><i style="background:var(--accent)"></i>Whitaker</span>` +
+    series.map(s => `<span class="lg dash" style="color:${s.color}"><i></i>${s.name}</span>`).join("");
+
   const len = lineEl.getTotalLength();
 
   if (reduceMotion) {
     lineEl.style.setProperty("--len", "0");
-    spEl.style.opacity = "1";
+    idxPaths.forEach(p => p.style.opacity = "1");
     areaEl.classList.add("show"); dot.classList.add("show");
     const p = lineEl.getPointAtLength(len);
     car.setAttribute("transform", `translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
@@ -451,12 +511,14 @@ function renderChart(principal, months, gross, spBalances, spGross) {
     return;
   }
 
-  // S&P line fades in alongside ours
-  spEl.style.transition = "none";
-  spEl.style.opacity = "0";
-  void spEl.getBoundingClientRect();
-  spEl.style.transition = "opacity 1.2s ease .3s";
-  requestAnimationFrame(() => { spEl.style.opacity = "1"; });
+  // index lines fade in alongside ours
+  idxPaths.forEach(p => {
+    p.style.transition = "none";
+    p.style.opacity = "0";
+    void p.getBoundingClientRect();
+    p.style.transition = "opacity 1.2s ease .3s";
+    requestAnimationFrame(() => { p.style.opacity = "1"; });
+  });
 
   // restart the draw animation each time the numbers change
   lineEl.style.setProperty("--len", len);
@@ -494,7 +556,7 @@ function driveCar(lineEl, car, len) {
   carAnim = requestAnimationFrame(frame);
 }
 
-["principal","rate","fee","duration","unit"].forEach(id => $(id).addEventListener("input", calc));
+["principal","rate","fee","duration","unit","index","cmpPeriod"].forEach(id => $(id).addEventListener("input", calc));
 calc();
 
 // ---- Live S&P 500 quote from StockTwits ----
