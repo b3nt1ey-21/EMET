@@ -32,6 +32,9 @@ window.DASHBOARD_DATA = {
     cryptoFG: { value: 25, label: "Extreme Fear" },
   },
 
+  // ---- US market movement (drives the plane ✈️ + tiger 🐅 scene) ----
+  market: { label: "US Market (last close)", changePct: 0.5 },  // + = plane climbs, tiger sprints
+
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
     { t: "Sun 17:15Z", text: "Weekend — markets closed, nothing actionable. All monitors armed for Mon open." },

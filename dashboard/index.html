@@ -62,6 +62,20 @@
   @keyframes tpbr{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.06);opacity:1}}
   .tp .dot{animation:tpfade 2s ease-in-out infinite}
   @keyframes tpfade{0%,100%{opacity:.2}50%{opacity:1}}
+  /* ---- market movement scene (plane + tiger) ---- */
+  .sky{position:relative;height:200px;border-radius:12px;overflow:hidden;border:1px solid var(--line);
+       background:linear-gradient(180deg,#e8f1ff,#f5f9ff)}
+  .ground{position:absolute;left:0;right:0;bottom:0;height:36px;background:linear-gradient(180deg,#dff5e7,#c8eed7)}
+  .cloud{position:absolute;font-size:24px;opacity:.7;animation:drift 22s linear infinite}
+  @keyframes drift{from{left:-8%}to{left:108%}}
+  .plane{position:absolute;left:44%;font-size:36px;transition:top .9s ease,transform .9s ease,filter .9s;
+         animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 3px 4px rgba(0,0,0,.12))}
+  @keyframes bob{0%,100%{margin-top:0}50%{margin-top:-9px}}
+  .tiger{position:absolute;bottom:3px;font-size:32px;animation:run 6s linear infinite}
+  @keyframes run{0%{left:-7%;transform:scaleX(1)}48%{left:101%;transform:scaleX(1)}
+                 50%{left:101%;transform:scaleX(-1)}98%{left:-7%;transform:scaleX(-1)}100%{left:-7%;transform:scaleX(1)}}
+  .mkt-badge{position:absolute;top:12px;right:14px;background:var(--panel);border:1px solid var(--line);
+             border-radius:20px;padding:4px 12px;font-weight:700;font-size:13px}
 </style>
 </head>
 <body>
@@ -162,6 +176,20 @@
       </div>
     </div>
 
+    <!-- Market movement scene: plane + tiger -->
+    <div class="card col12">
+      <h2>✈️ Market Movement 🐅</h2>
+      <div class="sky" id="sky">
+        <span class="cloud" style="top:18px;animation-delay:0s">☁️</span>
+        <span class="cloud" style="top:54px;animation-delay:-11s;font-size:18px">☁️</span>
+        <div class="mkt-badge" id="mktbadge"></div>
+        <div class="plane" id="plane">✈️</div>
+        <div class="ground"></div>
+        <div class="tiger" id="tiger">🐅</div>
+      </div>
+      <div class="mut" style="font-size:11px;margin-top:6px">Plane climbs when the market's up, dives when it's down · tiger sprints faster when sentiment runs hot</div>
+    </div>
+
     <!-- Live thought process -->
     <div class="card col6">
       <h2>🧠 Live Thought Process</h2>
@@ -257,7 +285,8 @@
       <div class="row"><span><b>${p.symbol}</b> <span class="mut">${p.shares} sh</span></span>
       <span class="${cls}">${money(val)} (${pl>=0?'+':''}${plpct.toFixed(1)}%)</span></div>
       <div class="mut" style="font-size:11px">cost ${money(p.cost)} · last ${money(p.last)} · stop <span class="red">${money(p.stop)}</span></div>
-      <div class="mut" style="font-size:11px">${p.note||""}</div></div>`;
+      <div class="mut" style="font-size:11px">${p.note||""}</div>
+      <div style="font-size:11px;margin-top:2px"><a href="https://stocktwits.com/symbol/${p.symbol}" target="_blank" rel="noopener">💬 ${p.symbol} on StockTwits ↗</a></div></div>`;
   }).join("") || '<div class="mut">No open positions</div>';
 
   // thoughts
@@ -310,6 +339,21 @@
     `Win rate ${ts.winRate||"—"} &nbsp;·&nbsp; Open ${ts.open||0} &nbsp;·&nbsp; `+
     `Est tax owed <b>$${(ts.estTax||0).toFixed(2)}</b>`;
   $("taxnote").textContent = (tx.note||"") + `  —  ST ${Math.round((tx.shortRate||.24)*100)}% · LT ${Math.round((tx.longRate||.15)*100)}% · losses untaxed (and offset gains).`;
+
+  // market movement scene (plane + tiger)
+  const m = D.market || {changePct:0, label:"US Market"};
+  const up = (m.changePct||0) >= 0;
+  const plane=$("plane"), sky=$("sky"), tiger=$("tiger");
+  plane.style.top = up ? "16%" : "58%";
+  plane.style.transform = `rotate(${up ? -18 : 18}deg)`;
+  plane.style.filter = `drop-shadow(0 3px 4px rgba(0,0,0,.12)) ${up?'':'hue-rotate(-15deg)'}`;
+  sky.style.background = up
+    ? "linear-gradient(180deg,#e6f6ee,#f4fbf7)"
+    : "linear-gradient(180deg,#fdeaec,#fff5f6)";
+  $("mktbadge").innerHTML = `${m.label}: <span class="${up?'grn':'red'}">${up?'▲':'▼'} ${m.changePct>=0?'+':''}${m.changePct}%</span>`;
+  // tiger sprints faster when the move is bigger / greed is higher
+  const speed = Math.max(2.5, 6 - Math.abs(m.changePct||0)*0.6);
+  tiger.style.animationDuration = speed + "s";
 
   // auto-refresh every 60s
   setTimeout(()=>location.reload(), 60000);
