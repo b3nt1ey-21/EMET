@@ -1,0 +1,2 @@
+#	Symbol	Status	Buy Date	Buy Price	Shares	Cost Basis	Sell Date	Sell Price	Proceeds	Hold Days	Term	P/L $	P/L %	Result	Taxable $	Tax Rate	Est Tax $	Net $
+1	MARA	OPEN	2026-06-18	14.35	0.975616	=E2*F2			=IF(I2="","",I2*F2)	=IF(H2="","",H2-D2)	=IF(H2="","OPEN",IF(K2>365,"LONG","SHORT"))	=IF(I2="","",J2-G2)	=IF(I2="","",I2/E2-1)	=IF(I2="","OPEN",IF(M2>=0,"WIN","LOSS"))	=IF(O2="WIN",M2,0)	=IF(O2<>"WIN","",IF(L2="LONG",0.15,0.24))	=IF(O2="WIN",P2*Q2,0)	=IF(I2="","",M2-R2)
