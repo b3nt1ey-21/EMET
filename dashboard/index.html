@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Claude Trading Desk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -10,129 +10,81 @@
   :root{
     --bg:#f6f8fc; --panel:#ffffff; --panel2:#f1f5fb; --line:#e7ecf3;
     --txt:#0f172a; --mut:#64748b;
-    --accent:#6366f1; --accent2:#06b6d4;
-    --grn:#10b981; --red:#ef4444; --yel:#d97706; --blu:#3b82f6; --pur:#8b5cf6;
+    --accent:#4f46e5; --accent2:#0891b2;
+    --grn:#0f9d6c; --red:#e0414b; --yel:#c2750a; --blu:#2563eb; --pur:#7c5cd6;
     --shadow:0 1px 2px rgba(15,23,42,.04), 0 10px 30px rgba(15,23,42,.05);
     --mono:'JetBrains Mono',ui-monospace,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:
-      radial-gradient(1200px 500px at 80% -10%, rgba(99,102,241,.07), transparent 60%),
-      radial-gradient(900px 500px at -10% 0%, rgba(6,182,212,.06), transparent 55%),
+      radial-gradient(1200px 500px at 80% -10%, rgba(79,70,229,.06), transparent 60%),
+      radial-gradient(900px 500px at -10% 0%, rgba(8,145,178,.05), transparent 55%),
       var(--bg);
     color:var(--txt);font:14px/1.55 'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
     padding:22px;min-height:100vh;-webkit-font-smoothing:antialiased}
   .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
-  /* header */
   header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:20px}
   .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 18px rgba(99,102,241,.35)}
+  .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 18px rgba(79,70,229,.32);color:#fff}
   .brand h1{font-size:19px;font-weight:800;letter-spacing:-.3px}
   .brand .sub{color:var(--mut);font-size:12px;font-weight:500}
-  .hmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+  .hmeta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
   .chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:12px;
     font-weight:600;box-shadow:var(--shadow);display:flex;align-items:center;gap:7px}
-  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--grn);box-shadow:0 0 0 0 rgba(16,185,129,.5);animation:beat 1.8s infinite}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--grn);animation:beat 1.8s infinite}
   .live-dot.closed{background:var(--red);animation:none}
-  @keyframes beat{0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}}
+  @keyframes beat{0%{box-shadow:0 0 0 0 rgba(15,157,108,.5)}70%{box-shadow:0 0 0 8px rgba(15,157,108,0)}}
   .btn{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 13px;color:var(--txt);
     font:600 12px Inter,sans-serif;cursor:pointer;box-shadow:var(--shadow)}
   .btn:hover{border-color:var(--accent)}
 
-  /* grid + cards */
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-  .col3{grid-column:span 3}.col4{grid-column:span 4}.col5{grid-column:span 5}
-  .col6{grid-column:span 6}.col7{grid-column:span 7}.col8{grid-column:span 8}.col12{grid-column:span 12}
-  /* ---- responsive / mobile ---- */
-  div[style*="overflow"]{-webkit-overflow-scrolling:touch}
-  @media(max-width:980px){
-    .col4,.col5,.col6,.col7,.col8{grid-column:span 12}
-    .col3{grid-column:span 6}            /* KPIs 2-up on tablet */
-  }
-  @media(max-width:560px){
-    body{padding:12px}
-    header{flex-direction:column;align-items:flex-start;gap:10px}
-    .hmeta{justify-content:flex-start;width:100%}
-    .grid{gap:12px}
-    .card{padding:14px;border-radius:14px}
-    .card:hover{transform:none}            /* no hover-lift on touch */
-    .col3{grid-column:span 6}              /* keep KPIs 2x2 */
-    .kpi .val{font-size:23px}
-    .brand h1{font-size:17px}
-    .logo{width:38px;height:38px;font-size:19px}
-    h2{font-size:10.5px}
-    .sky{height:168px}
-    .plane{width:62px}
-    .secgrid{grid-template-columns:1fr}    /* sectors stack */
-    table{font-size:12px}
-    thead th,td{padding:7px 7px}
-    .wave{height:26px}
-    .ti .txt{font-size:13px}
-    .btn{padding:8px 14px}                 /* bigger tap target */
-    a{padding:1px 0}
-  }
-  @media(max-width:380px){
-    .col3{grid-column:span 12}             /* very small: KPIs stack 1-up */
-    .kpi .val{font-size:26px}
-  }
+  .col3{grid-column:span 3}.col4{grid-column:span 4}.col6{grid-column:span 6}.col8{grid-column:span 8}.col12{grid-column:span 12}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);
     transition:transform .18s ease, box-shadow .18s ease}
   .card:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(15,23,42,.05),0 18px 40px rgba(15,23,42,.08)}
   h2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mut);font-weight:700;
      margin-bottom:12px;display:flex;align-items:center;gap:8px}
 
-  /* KPI */
   .kpi .lab{color:var(--mut);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px}
   .kpi .val{font-size:30px;font-weight:800;letter-spacing:-1px;margin-top:2px}
   .tagchip{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700}
-  .t-grn{background:rgba(16,185,129,.12);color:var(--grn)}
-  .t-red{background:rgba(239,68,68,.12);color:var(--red)}
-  .t-yel{background:rgba(217,119,6,.13);color:var(--yel)}
-  .t-pur{background:rgba(139,92,246,.13);color:var(--pur)}
-  .t-blu{background:rgba(59,130,246,.13);color:var(--blu)}
+  .t-grn{background:rgba(15,157,108,.12);color:var(--grn)} .t-red{background:rgba(224,65,75,.12);color:var(--red)}
+  .t-yel{background:rgba(194,117,10,.13);color:var(--yel)} .t-blu{background:rgba(37,99,235,.13);color:var(--blu)}
   .bar{height:8px;background:var(--panel2);border-radius:6px;overflow:hidden;margin-top:12px}
   .bar > i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .8s ease}
 
   .mut{color:var(--mut)} .grn{color:var(--grn)} .red{color:var(--red)} .yel{color:var(--yel)} .blu{color:var(--blu)}
   .row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
   .row:last-child{border-bottom:none}
-  a{color:var(--accent);text-decoration:none;font-weight:600}
-  a:hover{text-decoration:underline}
+  a{color:var(--accent);text-decoration:none;font-weight:600} a:hover{text-decoration:underline}
 
-  /* fear & greed gauge */
   .gauge{margin:8px 0}
-  .glab{display:flex;justify-content:space-between;font-size:11px;color:var(--mut);font-weight:600}
-  .gtrack{height:9px;border-radius:6px;margin-top:5px;position:relative;
-    background:linear-gradient(90deg,#ef4444,#f59e0b,#10b981)}
+  .gtrack{height:9px;border-radius:6px;margin-top:5px;position:relative;background:linear-gradient(90deg,#e0414b,#c2750a,#0f9d6c)}
   .gtrack > i{position:absolute;top:-4px;width:5px;height:17px;background:#0f172a;border:2px solid #fff;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.25);transition:left .8s ease}
 
-  /* ===== animated thought process ===== */
+  /* animated thought process */
   .think-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
   .eq{display:inline-flex;gap:3px;height:16px;align-items:flex-end}
   .eq i{width:3px;height:5px;background:linear-gradient(var(--accent),var(--accent2));border-radius:2px;animation:eq 1.05s ease-in-out infinite}
-  .eq i:nth-child(2){animation-delay:.12s}.eq i:nth-child(3){animation-delay:.24s}
-  .eq i:nth-child(4){animation-delay:.36s}.eq i:nth-child(5){animation-delay:.48s}
+  .eq i:nth-child(2){animation-delay:.12s}.eq i:nth-child(3){animation-delay:.24s}.eq i:nth-child(4){animation-delay:.36s}.eq i:nth-child(5){animation-delay:.48s}
   @keyframes eq{0%,100%{height:5px;opacity:.6}50%{height:16px;opacity:1}}
   .wave{width:100%;height:34px;margin:2px 0 10px}
-  .wave path{fill:none;stroke:url(#wg);stroke-width:2.5;stroke-linecap:round;
-    stroke-dasharray:6 360;animation:wavemove 2.4s linear infinite}
+  .wave path{fill:none;stroke:url(#wg);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:6 360;animation:wavemove 2.4s linear infinite}
   @keyframes wavemove{to{stroke-dashoffset:-366}}
   .tl{position:relative;padding-left:24px}
-  .tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;
-    background:linear-gradient(var(--accent),rgba(99,102,241,.05))}
+  .tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--accent),rgba(79,70,229,.05))}
   .ti{position:relative;padding:9px 0;opacity:0;transform:translateY(8px);animation:rise .5s ease forwards}
   .ti+.ti{border-top:1px solid var(--line)}
-  .ti::before{content:"";position:absolute;left:-21px;top:15px;width:11px;height:11px;border-radius:50%;
-    background:#fff;border:2px solid var(--accent);z-index:1}
+  .ti::before{content:"";position:absolute;left:-21px;top:15px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid var(--accent);z-index:1}
   .ti.live::before{background:var(--accent);animation:ping 1.9s infinite}
-  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(99,102,241,.5)}100%{box-shadow:0 0 0 13px rgba(99,102,241,0)}}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(79,70,229,.5)}100%{box-shadow:0 0 0 13px rgba(79,70,229,0)}}
   .ti .t{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent)}
   .ti.live .t::after{content:" • LIVE";color:var(--grn)}
   .ti .txt{margin-top:2px}
-  .caret{display:inline-block;width:7px;height:15px;background:var(--accent);margin-left:2px;
-    vertical-align:-2px;animation:blink .8s steps(1) infinite}
+  .caret{display:inline-block;width:7px;height:15px;background:var(--accent);margin-left:2px;vertical-align:-2px;animation:blink .8s steps(1) infinite}
   @keyframes blink{50%{opacity:0}}
   @keyframes rise{to{opacity:1;transform:translateY(0)}}
 
@@ -148,14 +100,12 @@
   .tp .breathe{animation:tpbr 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
   @keyframes tpbr{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.05);opacity:1}}
 
-  /* market scene */
-  .sky{position:relative;height:210px;border-radius:14px;overflow:hidden;border:1px solid var(--line);
-       background:linear-gradient(180deg,#eaf2ff,#f6faff)}
+  /* market scene (desktop) */
+  .sky{position:relative;height:210px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,#eaf2ff,#f6faff)}
   .ground{position:absolute;left:0;right:0;bottom:0;height:38px;background:linear-gradient(180deg,#dbf3e6,#c4ead4)}
   .cloud{position:absolute;font-size:24px;opacity:.7;animation:drift 24s linear infinite}
   @keyframes drift{from{left:-8%}to{left:108%}}
-  .plane{position:absolute;left:44%;width:78px;transition:top .9s ease,transform .9s ease,filter .9s;
-         animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,.14));transform-origin:center}
+  .plane{position:absolute;left:44%;width:78px;transition:top .9s ease,transform .9s ease,filter .9s;animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,.14));transform-origin:center}
   .plane svg{display:block;width:100%}
   @keyframes bob{0%,100%{margin-top:0}50%{margin-top:-9px}}
   .plane.crashing{animation:crashdive 1.7s cubic-bezier(.6,0,.9,.5) forwards}
@@ -180,140 +130,158 @@
   @keyframes flee{0%{left:62%;transform:scaleX(1)}100%{left:114%;transform:scaleX(1)}}
   .sky.shake{animation:shake .45s ease-in-out 1.4s 4}
   @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translate(-6px,2px)}60%{transform:translate(6px,-2px)}}
-  .mkt-badge{position:absolute;top:14px;right:16px;background:var(--panel);border:1px solid var(--line);
-    border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;box-shadow:var(--shadow)}
-  .crashbadge{background:rgba(239,68,68,.14)!important;color:var(--red);border-color:var(--red)!important}
+  .mkt-badge{position:absolute;top:14px;right:16px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;box-shadow:var(--shadow)}
+  .crashbadge{background:rgba(224,65,75,.14)!important;color:var(--red);border-color:var(--red)!important}
 
-  /* tables */
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  thead th{position:sticky;top:0;background:var(--panel);text-align:left;color:var(--mut);font-weight:700;
-    font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;padding:8px 9px;border-bottom:2px solid var(--line)}
-  td{padding:8px 9px;border-bottom:1px solid var(--line)}
-  tbody tr{transition:background .15s}
-  tbody tr:hover{background:var(--panel2)}
-  .stt{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px}
-  .st-entry{background:rgba(16,185,129,.14);color:var(--grn)}
-  .st-pullback{background:rgba(59,130,246,.14);color:var(--blu)}
-  .st-extended{background:rgba(217,119,6,.15);color:var(--yel)}
-  .st-downtrend{background:rgba(239,68,68,.14);color:var(--red)}
-  .st-hold{background:rgba(139,92,246,.14);color:var(--pur)}
-  .step{padding:6px 0;color:var(--mut);font-size:13px} .step b{color:var(--txt)}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--grn);display:inline-block;margin-right:7px;
-    box-shadow:0 0 0 0 rgba(16,185,129,.5);animation:beat 2s infinite}
-  /* sectors / themes */
+  /* sectors */
   .secgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:12px}
   .sec{border:1px solid var(--line);border-radius:12px;padding:13px;border-left-width:4px;background:var(--panel2);transition:transform .15s}
   .sec:hover{transform:translateY(-2px)}
   .sec.hot{border-left-color:var(--red)} .sec.warm{border-left-color:var(--yel)} .sec.cold{border-left-color:var(--blu)}
   .sec h4{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
   .heat{font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px;margin-left:auto}
-  .heat.hot{background:rgba(239,68,68,.14);color:var(--red)}
-  .heat.warm{background:rgba(217,119,6,.15);color:var(--yel)}
-  .heat.cold{background:rgba(59,130,246,.14);color:var(--blu)}
-  .tick{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;background:var(--panel);
-    border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin:3px 3px 0 0}
+  .heat.hot{background:rgba(224,65,75,.14);color:var(--red)} .heat.warm{background:rgba(194,117,10,.15);color:var(--yel)} .heat.cold{background:rgba(37,99,235,.14);color:var(--blu)}
+  .tick{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin:3px 3px 0 0}
   .sec .n{color:var(--mut);font-size:11px;margin-top:8px}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{position:sticky;top:0;background:var(--panel);text-align:left;color:var(--mut);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;padding:8px 9px;border-bottom:2px solid var(--line)}
+  td{padding:8px 9px;border-bottom:1px solid var(--line)}
+  tbody tr{transition:background .15s} tbody tr:hover{background:var(--panel2)}
+  .stt{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px}
+  .st-entry{background:rgba(15,157,108,.14);color:var(--grn)} .st-pullback{background:rgba(37,99,235,.14);color:var(--blu)}
+  .st-extended{background:rgba(194,117,10,.15);color:var(--yel)} .st-downtrend{background:rgba(224,65,75,.14);color:var(--red)}
+  .st-hold{background:rgba(124,92,214,.14);color:var(--pur)}
+  .step{padding:6px 0;color:var(--mut);font-size:13px} .step b{color:var(--txt)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--grn);display:inline-block;margin-right:7px;animation:beat 2s infinite}
   .foot{color:var(--mut);font-size:11px;text-align:center;margin-top:22px}
+
+  /* mobile bottom nav (hidden on desktop) */
+  .mobnav{display:none}
+  .sectitle{display:none}
+  div[style*="overflow"]{-webkit-overflow-scrolling:touch}
+
+  @media(max-width:980px){
+    .col4,.col6,.col8{grid-column:span 12}
+    .col3{grid-column:span 6}
+  }
+  @media(max-width:820px){
+    body{padding:14px 13px}
+    header{flex-direction:column;align-items:flex-start;gap:10px}
+    .hmeta{justify-content:flex-start;width:100%}
+    .grid{gap:13px}
+    .card{padding:15px;border-radius:14px}
+    .card:hover{transform:none;box-shadow:var(--shadow)}
+    h2{font-size:10.5px}
+    table{font-size:12px} thead th,td{padding:7px 7px}
+    .secgrid{grid-template-columns:1fr}
+    /* tabbed sections */
+    body{padding-bottom:80px}
+    .mobnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;
+      background:rgba(255,255,255,.86);backdrop-filter:saturate(140%) blur(14px);
+      border-top:1px solid var(--line);box-shadow:0 -6px 22px rgba(15,23,42,.07);
+      padding:7px 6px calc(7px + env(safe-area-inset-bottom));justify-content:space-around}
+    .mobnav button{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;
+      padding:5px 2px;color:var(--mut);font:700 9.5px Inter,sans-serif;letter-spacing:.3px;cursor:pointer;border-radius:11px;transition:.15s}
+    .mobnav button span{font-size:17px;opacity:.55;transition:.15s}
+    .mobnav button.on{color:var(--accent);background:var(--panel2)}
+    .mobnav button.on span{opacity:1}
+    .sectitle{display:block;font-size:18px;font-weight:800;letter-spacing:-.3px;margin:2px 0 4px}
+    .card[data-tab]{display:none}
+    .card[data-tab].show{display:block;animation:secin .34s ease}
+    .mobile-hide{display:none!important}
+    .kpi .val{font-size:24px}
+    .brand h1{font-size:17px}
+  }
+  @media(max-width:420px){
+    .col3{grid-column:span 6}
+  }
+  @keyframes secin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
   <header>
     <div class="brand">
-      <div class="logo">🤖</div>
-      <div>
-        <h1>Claude Trading Desk</h1>
-        <div class="sub" id="acctline"></div>
-      </div>
+      <div class="logo">◆</div>
+      <div><h1>Claude Trading Desk</h1><div class="sub" id="acctline"></div></div>
     </div>
     <div class="hmeta">
+      <span class="chip" id="mktchip"></span>
       <span class="chip"><span class="live-dot" id="livedot"></span><span id="mktpill"></span></span>
       <span class="chip">⏱ <span id="updated" class="num"></span></span>
-      <button class="btn" onclick="location.reload()">↻ Refresh</button>
+      <button class="btn" onclick="location.reload()">↻</button>
     </div>
   </header>
 
+  <div class="sectitle" id="sectitle"></div>
+
   <div class="grid">
-    <!-- KPI strip -->
-    <div class="card col3 kpi">
-      <div class="lab">Account Value</div>
-      <div class="val num" id="acctval"></div>
+    <!-- OVERVIEW -->
+    <div class="card col3 kpi" data-tab="overview">
+      <div class="lab">Account Value</div><div class="val num" id="acctval"></div>
       <div class="bar"><i id="goalbar"></i></div>
       <div class="mut" id="goalline" style="font-size:11px;margin-top:7px"></div>
     </div>
-    <div class="card col3 kpi">
-      <div class="lab">Market Bias</div>
-      <div class="val" id="biascall" style="font-size:24px"></div>
+    <div class="card col3 kpi" data-tab="overview">
+      <div class="lab">Market Bias</div><div class="val" id="biascall" style="font-size:23px"></div>
       <div class="mut" id="biasdetail" style="font-size:11.5px;margin-top:4px"></div>
     </div>
-    <div class="card col3 kpi">
-      <div class="lab">Stock Fear &amp; Greed</div>
-      <div class="val num" id="sfgnum"></div>
-      <div class="tagchip" id="sfglbl"></div>
-      <div class="gauge"><div class="gtrack"><i id="sfgmark"></i></div></div>
+    <div class="card col3 kpi" data-tab="overview">
+      <div class="lab">Stock Fear &amp; Greed</div><div class="val num" id="sfgnum"></div>
+      <div class="tagchip" id="sfglbl"></div><div class="gauge"><div class="gtrack"><i id="sfgmark"></i></div></div>
     </div>
-    <div class="card col3 kpi">
-      <div class="lab">Crypto Fear &amp; Greed</div>
-      <div class="val num" id="cfgnum"></div>
-      <div class="tagchip" id="cfglbl"></div>
-      <div class="gauge"><div class="gtrack"><i id="cfgmark"></i></div></div>
+    <div class="card col3 kpi" data-tab="overview">
+      <div class="lab">Crypto Fear &amp; Greed</div><div class="val num" id="cfgnum"></div>
+      <div class="tagchip" id="cfglbl"></div><div class="gauge"><div class="gtrack"><i id="cfgmark"></i></div></div>
     </div>
 
-    <!-- Decision engine -->
-    <div class="card col8 tp">
+    <div class="card col8 tp" data-tab="overview">
       <h2>⚡ Decision Engine — live</h2>
       <div class="tp-wrap">
       <svg viewBox="0 0 880 230" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+        <defs><linearGradient id="flow" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4f46e5"/><stop offset="1" stop-color="#0891b2"/></linearGradient></defs>
         <g fill="none" stroke="url(#flow)" stroke-width="2">
-          <path id="li1" class="flow" d="M128,25  C 270,25 300,117 396,117"/>
-          <path id="li2" class="flow" d="M128,71  C 270,71 320,117 396,117"/>
-          <path id="li3" class="flow" d="M128,117 L 396,117"/>
-          <path id="li4" class="flow" d="M128,163 C 270,163 320,117 396,117"/>
-          <path id="li5" class="flow" d="M128,209 C 270,209 300,117 396,117"/>
-          <path id="lo1" class="flow" d="M484,117 C 600,117 620,71  748,71"/>
-          <path id="lo2" class="flow" d="M484,117 L 748,117"/>
-          <path id="lo3" class="flow" d="M484,117 C 600,117 620,163 748,163"/>
+          <path id="li1" class="flow" d="M128,25 C 270,25 300,117 396,117"/><path id="li2" class="flow" d="M128,71 C 270,71 320,117 396,117"/>
+          <path id="li3" class="flow" d="M128,117 L 396,117"/><path id="li4" class="flow" d="M128,163 C 270,163 320,117 396,117"/>
+          <path id="li5" class="flow" d="M128,209 C 270,209 300,117 396,117"/><path id="lo1" class="flow" d="M484,117 C 600,117 620,71 748,71"/>
+          <path id="lo2" class="flow" d="M484,117 L 748,117"/><path id="lo3" class="flow" d="M484,117 C 600,117 620,163 748,163"/>
         </g>
-        <g fill="#6366f1">
+        <g fill="#4f46e5">
           <circle r="3.5"><animateMotion dur="2.0s" repeatCount="indefinite"><mpath href="#li1"/></animateMotion></circle>
           <circle r="3.5"><animateMotion dur="2.2s" begin="0.4s" repeatCount="indefinite"><mpath href="#li2"/></animateMotion></circle>
           <circle r="3.5"><animateMotion dur="1.8s" begin="0.8s" repeatCount="indefinite"><mpath href="#li3"/></animateMotion></circle>
           <circle r="3.5"><animateMotion dur="2.1s" begin="0.2s" repeatCount="indefinite"><mpath href="#li4"/></animateMotion></circle>
           <circle r="3.5"><animateMotion dur="2.3s" begin="0.6s" repeatCount="indefinite"><mpath href="#li5"/></animateMotion></circle>
         </g>
-        <g fill="#06b6d4">
+        <g fill="#0891b2">
           <circle r="3.5"><animateMotion dur="1.6s" begin="0.1s" repeatCount="indefinite"><mpath href="#lo1"/></animateMotion></circle>
           <circle r="3.5"><animateMotion dur="1.6s" begin="0.5s" repeatCount="indefinite"><mpath href="#lo2"/></animateMotion></circle>
           <circle r="3.5"><animateMotion dur="1.6s" begin="0.9s" repeatCount="indefinite"><mpath href="#lo3"/></animateMotion></circle>
         </g>
         <g>
-          <rect class="pill" x="8" y="12"  width="120" height="26" rx="13"/><text class="lbl" x="68" y="29" text-anchor="middle">50-DMA</text>
-          <rect class="pill" x="8" y="58"  width="120" height="26" rx="13"/><text class="lbl" x="68" y="75" text-anchor="middle">NEWS</text>
+          <rect class="pill" x="8" y="12" width="120" height="26" rx="13"/><text class="lbl" x="68" y="29" text-anchor="middle">50-DMA</text>
+          <rect class="pill" x="8" y="58" width="120" height="26" rx="13"/><text class="lbl" x="68" y="75" text-anchor="middle">NEWS</text>
           <rect class="pill" x="8" y="104" width="120" height="26" rx="13"/><text class="lbl" x="68" y="121" text-anchor="middle">FEAR/GREED</text>
           <rect class="pill" x="8" y="150" width="120" height="26" rx="13"/><text class="lbl" x="68" y="167" text-anchor="middle">TRUMP</text>
           <rect class="pill" x="8" y="196" width="120" height="26" rx="13"/><text class="lbl" x="68" y="213" text-anchor="middle">SENTIMENT</text>
         </g>
-        <circle class="hub" cx="440" cy="117" r="44" fill="var(--panel2)" stroke="#6366f1" stroke-width="2"/>
-        <text x="440" y="112" text-anchor="middle" font-size="26">🧠</text>
-        <text x="440" y="135" text-anchor="middle" class="lbl" font-size="9" fill="#6366f1">ANALYZE</text>
+        <circle class="hub" cx="440" cy="117" r="44" fill="var(--panel2)" stroke="#4f46e5" stroke-width="2"/>
+        <text x="440" y="112" text-anchor="middle" font-size="26">🧠</text><text x="440" y="135" text-anchor="middle" class="lbl" font-size="9" fill="#4f46e5">ANALYZE</text>
         <g class="breathe">
-          <rect x="748" y="58"  width="124" height="26" rx="13" fill="rgba(16,185,129,.13)" stroke="#10b981"/><text x="810" y="75" text-anchor="middle" class="lbl" fill="#10b981">BUY</text>
-          <rect x="748" y="104" width="124" height="26" rx="13" fill="rgba(139,92,246,.13)" stroke="#8b5cf6"/><text x="810" y="121" text-anchor="middle" class="lbl" fill="#8b5cf6">HOLD</text>
-          <rect x="748" y="150" width="124" height="26" rx="13" fill="rgba(239,68,68,.13)" stroke="#ef4444"/><text x="810" y="167" text-anchor="middle" class="lbl" fill="#ef4444">SELL</text>
+          <rect x="748" y="58" width="124" height="26" rx="13" fill="rgba(15,157,108,.13)" stroke="#0f9d6c"/><text x="810" y="75" text-anchor="middle" class="lbl" fill="#0f9d6c">BUY</text>
+          <rect x="748" y="104" width="124" height="26" rx="13" fill="rgba(124,92,214,.13)" stroke="#7c5cd6"/><text x="810" y="121" text-anchor="middle" class="lbl" fill="#7c5cd6">HOLD</text>
+          <rect x="748" y="150" width="124" height="26" rx="13" fill="rgba(224,65,75,.13)" stroke="#e0414b"/><text x="810" y="167" text-anchor="middle" class="lbl" fill="#e0414b">SELL</text>
         </g>
-      </svg>
-      </div>
+      </svg></div>
     </div>
 
-    <!-- Positions -->
-    <div class="card col4">
-      <h2>📌 Open Positions</h2>
-      <div id="positions"></div>
+    <div class="card col4" data-tab="overview">
+      <h2>📌 Open Positions</h2><div id="positions"></div>
     </div>
 
-    <!-- Market scene -->
-    <div class="card col12">
+    <!-- MARKET SCENE (desktop only) -->
+    <div class="card col12 mobile-hide">
       <h2>✈️ Market Movement 🐅</h2>
       <div class="sky" id="sky">
         <span class="cloud" style="top:20px;animation-delay:0s">☁️</span>
@@ -324,64 +292,48 @@
             <path d="M8 17 L2 2 L17 15 Z" fill="#2b6fb0"/>
             <path d="M12 14 Q43 7.5 75 15 Q78 16.5 75 18 Q43 23.5 14 20 Q8.5 17 12 14 Z" fill="#eef2f8" stroke="#9fb2cc"/>
             <ellipse cx="75" cy="16.4" rx="2.6" ry="2.3" fill="#cdd8ea"/>
-            <path d="M37 16 L28 29 L50 18 Z" fill="#5cc8ff"/>
-            <path d="M18 15 L13 24 L27 17 Z" fill="#79b7e6"/>
+            <path d="M37 16 L28 29 L50 18 Z" fill="#5cc8ff"/><path d="M18 15 L13 24 L27 17 Z" fill="#79b7e6"/>
             <rect x="44" y="18.5" width="9" height="3" rx="1.5" fill="#9fb2cc"/>
             <g fill="#1f7ae0"><circle cx="41" cy="14.6" r="1"/><circle cx="47" cy="14.8" r="1"/><circle cx="53" cy="15.1" r="1"/><circle cx="59" cy="15.4" r="1"/><circle cx="65" cy="15.7" r="1"/></g>
           </svg>
         </div>
-        <div class="smoke" id="smoke">💨</div>
-        <div class="boom" id="boom">💥</div>
+        <div class="smoke" id="smoke">💨</div><div class="boom" id="boom">💥</div>
         <div class="deb d1" id="d1"></div><div class="deb d2" id="d2"></div><div class="deb d3" id="d3"></div><div class="deb d4" id="d4"></div><div class="deb d5" id="d5"></div>
-        <div class="ground"></div>
-        <div class="tiger" id="tiger">🐅</div>
+        <div class="ground"></div><div class="tiger" id="tiger">🐅</div>
       </div>
-      <div class="mut" style="font-size:11px;margin-top:7px">Plane climbs on green days, dives &amp; crashes on a &gt;1.5% drop · tiger sprints with momentum</div>
     </div>
 
-    <!-- Sectors / themes heatmap -->
-    <div class="card col12">
+    <!-- SECTORS -->
+    <div class="card col12" data-tab="sectors">
       <h2>🗂️ Sectors &amp; Themes — what's hot now</h2>
       <div class="secgrid" id="sectors"></div>
     </div>
 
-    <!-- Live thought process (animated) -->
-    <div class="card col6">
-      <div class="think-head">
-        <h2 style="margin:0">🧠 Live Thought Process</h2>
+    <!-- MIND -->
+    <div class="card col6" data-tab="mind">
+      <div class="think-head"><h2 style="margin:0">🧠 Live Thought Process</h2>
         <span class="eq"><i></i><i></i><i></i><i></i><i></i></span>
-        <span class="mut" style="font-size:11px;font-weight:600">analyzing…</span>
-      </div>
+        <span class="mut" style="font-size:11px;font-weight:600">analyzing…</span></div>
       <svg class="wave" viewBox="0 0 360 34" preserveAspectRatio="none">
-        <defs><linearGradient id="wg" x1="0" x2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+        <defs><linearGradient id="wg" x1="0" x2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset="1" stop-color="#0891b2"/></linearGradient></defs>
         <path d="M0 17 Q15 2 30 17 T60 17 T90 17 T120 17 T150 17 T180 17 T210 17 T240 17 T270 17 T300 17 T330 17 T360 17"/>
       </svg>
       <div class="tl" id="thoughts"></div>
     </div>
-
-    <!-- Plan & alerts -->
-    <div class="card col6">
-      <h2 id="plantitle">🗺️ Plan</h2>
-      <div id="plan"></div>
-      <h2 style="margin-top:16px">🔔 Alerts</h2>
-      <div id="alerts"></div>
+    <div class="card col6" data-tab="mind">
+      <h2 id="plantitle">🗺️ Plan</h2><div id="plan"></div>
+      <h2 style="margin-top:16px">🔔 Alerts</h2><div id="alerts"></div>
     </div>
 
-    <!-- Watchlist -->
-    <div class="card col8">
+    <!-- WATCH -->
+    <div class="card col8" data-tab="watch">
       <h2>📈 Watchlist — 50-DMA Scan</h2>
-      <div style="max-height:420px;overflow:auto">
-      <table>
-        <thead><tr><th>Sym</th><th>Price</th><th>50-DMA</th><th>vs</th><th>Status</th><th>Note</th></tr></thead>
-        <tbody id="watch"></tbody>
-      </table>
-      </div>
+      <div style="max-height:440px;overflow:auto">
+      <table><thead><tr><th>Sym</th><th>Price</th><th>50-DMA</th><th>vs</th><th>Status</th><th>Note</th></tr></thead>
+        <tbody id="watch"></tbody></table></div>
     </div>
-
-    <!-- Monitors / rules -->
-    <div class="card col4">
-      <h2>🛰️ Monitors</h2>
-      <div id="monitors"></div>
+    <div class="card col4" data-tab="watch">
+      <h2>🛰️ Monitors</h2><div id="monitors"></div>
       <h2 style="margin-top:16px">📏 Hard Rules</h2>
       <div class="step">⛔ <b>No trades before 9:00 AM CT</b></div>
       <div class="step">👀 8:30–9:30 CT = observe only</div>
@@ -390,25 +342,23 @@
       <div class="step">🏦 Agentic account only</div>
     </div>
 
-    <!-- Trades & tax -->
-    <div class="card col12">
+    <!-- TRADES -->
+    <div class="card col12" data-tab="trades">
       <h2>📒 Trade Log &amp; Tax — built-in spreadsheet</h2>
       <div id="tradesum" style="margin-bottom:11px;font-size:13px"></div>
       <div style="overflow-x:auto">
-      <table>
-        <thead><tr>
-          <th>#</th><th>Sym</th><th>Status</th><th>Buy Date</th><th>Buy $</th><th>Shares</th><th>Cost $</th>
-          <th>Sell Date</th><th>Sell $</th><th>Hold</th><th>Term</th><th>P/L $</th><th>P/L %</th>
-          <th>Result</th><th>Taxable $</th><th>Tax %</th><th>Est Tax $</th><th>Net $</th>
-        </tr></thead>
-        <tbody id="trades"></tbody>
-      </table>
-      </div>
+      <table><thead><tr>
+        <th>#</th><th>Sym</th><th>Status</th><th>Buy Date</th><th>Buy $</th><th>Shares</th><th>Cost $</th>
+        <th>Sell Date</th><th>Sell $</th><th>Hold</th><th>Term</th><th>P/L $</th><th>P/L %</th>
+        <th>Result</th><th>Taxable $</th><th>Tax %</th><th>Est Tax $</th><th>Net $</th></tr></thead>
+        <tbody id="trades"></tbody></table></div>
       <div class="mut" style="font-size:11px;margin-top:9px" id="taxnote"></div>
     </div>
   </div>
 
   <div class="foot">Auto-refreshes every 60s · Claude updates <code>data.js</code> with live state &amp; thoughts</div>
+
+  <nav class="mobnav" id="mobnav"></nav>
 
 <script src="data.js"></script>
 <script>
@@ -416,120 +366,104 @@
   const $ = id => document.getElementById(id);
   const money = n => "$"+Number(n).toFixed(2);
 
-  // header
   $("updated").textContent = D.meta?.updated || "—";
   $("acctline").textContent = (D.meta?.account || "") + " · " + (D.meta?.marketStatus || "");
   const closed = (D.meta?.marketStatus||"").toUpperCase().includes("CLOSED");
-  $("mktpill").textContent = closed ? "MARKET CLOSED" : "LIVE";
+  $("mktpill").textContent = closed ? "CLOSED" : "LIVE";
   if(closed) $("livedot").classList.add("closed");
 
-  // KPIs
   const a=D.account||{};
   $("acctval").textContent = money(a.value||0);
   $("goalline").textContent = `Goal ${money(a.goal||20)} by ${a.goalDate||""} · start ${money(a.start||14)}`;
   $("goalbar").style.width = Math.max(3,Math.min(100,((a.value-a.start)/((a.goal-a.start)||1))*100))+"%";
 
   const b=D.bias||{};
-  $("biascall").textContent = b.call||"—";
-  $("biasdetail").textContent = b.detail||"";
-  function fg(numId,lblId,markId,o){ if(!o)return;
-    $(numId).textContent=o.value; const L=$(lblId); L.textContent=o.label;
-    const lc = o.value<=25?"t-red":o.value<45?"t-yel":o.value<55?"t-blu":o.value<75?"t-grn":"t-grn";
-    L.className="tagchip "+lc;
-    $(markId).style.left = `calc(${o.value}% - 2px)`;
-  }
-  fg("sfgnum","sfglbl","sfgmark",b.stockFG);
-  fg("cfgnum","cfglbl","cfgmark",b.cryptoFG);
+  $("biascall").textContent = b.call||"—"; $("biasdetail").textContent = b.detail||"";
+  function fg(n,l,mk,o){ if(!o)return; $(n).textContent=o.value; const L=$(l); L.textContent=o.label;
+    L.className="tagchip "+(o.value<=25?"t-red":o.value<45?"t-yel":o.value<55?"t-blu":"t-grn");
+    $(mk).style.left=`calc(${o.value}% - 2px)`; }
+  fg("sfgnum","sfglbl","sfgmark",b.stockFG); fg("cfgnum","cfglbl","cfgmark",b.cryptoFG);
 
-  // positions (+ StockTwits links)
   $("positions").innerHTML = (D.positions||[]).map(p=>{
     const val=p.shares*p.last, pl=val-(p.shares*p.cost), plpct=(p.last/p.cost-1)*100, cls=pl>=0?"grn":"red";
-    return `<div style="margin-bottom:10px">
-      <div class="row"><span><b>${p.symbol}</b> <span class="mut num">${p.shares} sh</span></span>
+    return `<div style="margin-bottom:10px"><div class="row"><span><b>${p.symbol}</b> <span class="mut num">${p.shares} sh</span></span>
       <span class="${cls} num">${money(val)} (${pl>=0?'+':''}${plpct.toFixed(1)}%)</span></div>
       <div class="mut num" style="font-size:11px">cost ${money(p.cost)} · last ${money(p.last)} · stop <span class="red">${money(p.stop)}</span></div>
       <div class="mut" style="font-size:11px">${p.note||""}</div>
       <div style="font-size:11px;margin-top:3px"><a href="https://stocktwits.com/symbol/${p.symbol}" target="_blank" rel="noopener">💬 ${p.symbol} on StockTwits ↗</a></div></div>`;
   }).join("") || '<div class="mut">No open positions</div>';
 
-  // ===== animated thought process =====
-  const TH = D.thoughts||[];
+  const TH=D.thoughts||[];
   $("thoughts").innerHTML = TH.map((t,i)=>{
-    const live = i===0 ? " live" : "";
-    const txt = i===0 ? `<span id="tw0"></span><span class="caret"></span>` : t.text;
-    return `<div class="ti${live}" style="animation-delay:${i*0.12}s">
-      <div class="t">${t.t}</div><div class="txt">${txt}</div></div>`;
+    const live=i===0?" live":""; const txt=i===0?`<span id="tw0"></span><span class="caret"></span>`:t.text;
+    return `<div class="ti${live}" style="animation-delay:${i*0.12}s"><div class="t">${t.t}</div><div class="txt">${txt}</div></div>`;
   }).join("");
-  // typewriter for newest thought
-  if(TH[0]){ const el=$("tw0"); const s=TH[0].text; let i=0;
-    (function tick(){ if(el && i<=s.length){ el.textContent=s.slice(0,i++); setTimeout(tick,16);} })(); }
+  if(TH[0]){ const el=$("tw0"), s=TH[0].text; let i=0; (function tick(){ if(el&&i<=s.length){el.textContent=s.slice(0,i++);setTimeout(tick,16);} })(); }
 
-  // sectors / themes
   $("sectors").innerHTML = (D.sectors||[]).map(s=>
-    `<div class="sec ${s.heat}">
-      <h4>${s.icon} ${s.name}<span class="heat ${s.heat}">${s.heat}</span></h4>
-      <div>${(s.tickers||[]).map(t=>`<span class="tick">${t}</span>`).join("")}</div>
-      <div class="n">${s.note||""}</div>
-    </div>`).join("");
+    `<div class="sec ${s.heat}"><h4>${s.icon} ${s.name}<span class="heat ${s.heat}">${s.heat}</span></h4>
+     <div>${(s.tickers||[]).map(t=>`<span class="tick">${t}</span>`).join("")}</div><div class="n">${s.note||""}</div></div>`).join("");
 
-  // plan + alerts
   $("plantitle").textContent = (D.plan?.title? "🗺️ "+D.plan.title : "🗺️ Plan");
   $("plan").innerHTML = (D.plan?.steps||[]).map(s=>`<div class="step">• ${s}</div>`).join("");
   $("alerts").innerHTML = (D.alerts||[]).map(x=>`<div class="step"><span class="tagchip t-blu">${x.tag}</span> ${x.text}</div>`).join("");
 
-  // watchlist
   $("watch").innerHTML = (D.watchlist||[]).map(w=>{
     const diff=((w.p/w.ma-1)*100), dcls=diff>=0?"grn":"red";
     return `<tr><td><b>${w.s}</b></td><td class="num">$${w.p.toFixed(2)}</td><td class="mut num">$${w.ma.toFixed(2)}</td>
-      <td class="${dcls} num">${diff>=0?'+':''}${diff.toFixed(1)}%</td>
-      <td><span class="stt st-${w.st}">${w.st}</span></td><td class="mut">${w.note||""}</td></tr>`;
+      <td class="${dcls} num">${diff>=0?'+':''}${diff.toFixed(1)}%</td><td><span class="stt st-${w.st}">${w.st}</span></td><td class="mut">${w.note||""}</td></tr>`;
   }).join("");
 
-  // monitors
-  $("monitors").innerHTML = (D.monitors||[]).map(m=>
-    `<div class="row"><span><span class="dot"></span>${m.name}</span><span class="mut num">${m.id}</span></div>`).join("");
+  $("monitors").innerHTML = (D.monitors||[]).map(m=>`<div class="row"><span><span class="dot"></span>${m.name}</span><span class="mut num">${m.id}</span></div>`).join("");
 
-  // trades + tax
   const fmt=(v,d=2)=> (v==null||v==="")?"—":(typeof v==="number"?v.toFixed(d):v);
   $("trades").innerHTML = (D.trades||[]).map(t=>{
     const rcls=t.result==="WIN"?"grn":t.result==="LOSS"?"red":"mut", plcls=(t.pl||0)>=0?"grn":"red";
-    return `<tr>
-      <td>${t.n}</td><td><b>${t.symbol}</b></td><td>${t.status}</td>
-      <td class="mut num">${t.buyDate||"—"}</td><td class="num">$${fmt(t.buyPrice)}</td><td class="num">${fmt(t.shares,4)}</td><td class="num">$${fmt(t.cost)}</td>
+    return `<tr><td>${t.n}</td><td><b>${t.symbol}</b></td><td>${t.status}</td><td class="mut num">${t.buyDate||"—"}</td>
+      <td class="num">$${fmt(t.buyPrice)}</td><td class="num">${fmt(t.shares,4)}</td><td class="num">$${fmt(t.cost)}</td>
       <td class="mut num">${t.sellDate||"—"}</td><td class="num">${t.sellPrice==null?"—":"$"+fmt(t.sellPrice)}</td>
       <td class="num">${t.holdDays==null?"—":t.holdDays+"d"}</td><td>${t.term}</td>
       <td class="${plcls} num">${t.pl==null?"—":(t.pl>=0?"+":"-")+"$"+Math.abs(t.pl).toFixed(2)}</td>
       <td class="${plcls} num">${t.plPct==null?"—":(t.plPct>=0?"+":"")+t.plPct+"%"}</td>
-      <td class="${rcls}"><b>${t.result}</b></td>
-      <td class="num">$${fmt(t.taxable)}</td><td class="num">${t.taxRate==null?"—":(t.taxRate*100)+"%"}</td>
-      <td class="num">$${fmt(t.estTax)}</td><td class="num">${t.net==null?"—":"$"+fmt(t.net)}</td></tr>`;
+      <td class="${rcls}"><b>${t.result}</b></td><td class="num">$${fmt(t.taxable)}</td>
+      <td class="num">${t.taxRate==null?"—":(t.taxRate*100)+"%"}</td><td class="num">$${fmt(t.estTax)}</td><td class="num">${t.net==null?"—":"$"+fmt(t.net)}</td></tr>`;
   }).join("");
   const ts=D.tradeSummary||{}, tx=D.tax||{};
-  $("tradesum").innerHTML =
-    `Realized P/L: <b class="${(ts.netRealized||0)>=0?'grn':'red'} num">$${(ts.netRealized||0).toFixed(2)}</b> &nbsp;·&nbsp; `+
-    `Wins <b class="grn">${ts.wins||0}</b> / Losses <b class="red">${ts.losses||0}</b> &nbsp;·&nbsp; `+
-    `Win rate ${ts.winRate||"—"} &nbsp;·&nbsp; Open ${ts.open||0} &nbsp;·&nbsp; Est tax <b class="num">$${(ts.estTax||0).toFixed(2)}</b>`;
+  $("tradesum").innerHTML = `Realized P/L: <b class="${(ts.netRealized||0)>=0?'grn':'red'} num">$${(ts.netRealized||0).toFixed(2)}</b> &nbsp;·&nbsp; Wins <b class="grn">${ts.wins||0}</b> / Losses <b class="red">${ts.losses||0}</b> &nbsp;·&nbsp; Win rate ${ts.winRate||"—"} &nbsp;·&nbsp; Open ${ts.open||0} &nbsp;·&nbsp; Est tax <b class="num">$${(ts.estTax||0).toFixed(2)}</b>`;
   $("taxnote").textContent = (tx.note||"")+`  —  ST ${Math.round((tx.shortRate||.24)*100)}% · LT ${Math.round((tx.longRate||.15)*100)}% · losses untaxed.`;
 
-  // ===== market scene (plane + tiger + crash) =====
+  // market scene (desktop only)
   const m=D.market||{changePct:0,label:"US Market"}, chg=m.changePct||0, up=chg>=0;
   const CRASH=chg<=-1.5, RALLY=chg>=1.5;
+  $("mktchip").innerHTML = `<span class="${up?'grn':'red'} num">${up?'▲':'▼'} ${chg>=0?'+':''}${chg}%</span>`;
   const plane=$("plane"), sky=$("sky"), tiger=$("tiger"), badge=$("mktbadge");
-  if(CRASH){
-    plane.classList.add("crashing"); sky.classList.add("shake");
-    $("boom").classList.add("go"); $("smoke").classList.add("go");
-    ["d1","d2","d3","d4","d5"].forEach(id=>$(id).classList.add("go"));
-    tiger.classList.add("flee");
-    sky.style.background="linear-gradient(180deg,#fbdde0,#fff1f2)";
-    badge.className="mkt-badge crashbadge"; badge.innerHTML=`🚨 MARKET CRASH &nbsp;<b class="num">▼ ${chg}%</b>`;
-  } else {
-    plane.style.top = RALLY?"7%":(up?"18%":"56%");
-    plane.style.transform = `rotate(${RALLY?-28:(up?-14:16)}deg)`;
-    sky.style.background = up?"linear-gradient(180deg,#e7f6ee,#f5fbf7)":"linear-gradient(180deg,#fdeaec,#fff5f6)";
-    badge.className="mkt-badge";
-    badge.innerHTML=`${m.label}: <span class="${up?'grn':'red'} num">${up?'▲':'▼'} ${chg>=0?'+':''}${chg}%</span>`+(RALLY?' 🚀':'');
+  if(sky){
+    if(CRASH){
+      plane.classList.add("crashing"); sky.classList.add("shake");
+      $("boom").classList.add("go"); $("smoke").classList.add("go");
+      ["d1","d2","d3","d4","d5"].forEach(id=>$(id).classList.add("go")); tiger.classList.add("flee");
+      sky.style.background="linear-gradient(180deg,#fbdde0,#fff1f2)";
+      badge.className="mkt-badge crashbadge"; badge.innerHTML=`🚨 MARKET CRASH &nbsp;<b class="num">▼ ${chg}%</b>`;
+    } else {
+      plane.style.top=RALLY?"7%":(up?"18%":"56%"); plane.style.transform=`rotate(${RALLY?-28:(up?-14:16)}deg)`;
+      sky.style.background=up?"linear-gradient(180deg,#e7f6ee,#f5fbf7)":"linear-gradient(180deg,#fdeaec,#fff5f6)";
+      badge.className="mkt-badge"; badge.innerHTML=`${m.label}: <span class="${up?'grn':'red'} num">${up?'▲':'▼'} ${chg>=0?'+':''}${chg}%</span>`+(RALLY?' 🚀':'');
+    }
+    tiger.style.animationDuration=Math.max(2.2,6-Math.abs(chg)*0.7)+"s";
   }
-  tiger.style.animationDuration = Math.max(2.2,6-Math.abs(chg)*0.7)+"s";
+
+  // ===== mobile tab navigation =====
+  const TABS=[["overview","◧","Overview"],["mind","◴","Mind"],["sectors","▦","Sectors"],["watch","◫","Watch"],["trades","▤","Trades"]];
+  const nav=$("mobnav");
+  nav.innerHTML = TABS.map((t,i)=>`<button data-go="${t[0]}" class="${i===0?'on':''}"><span>${t[1]}</span>${t[2]}</button>`).join("");
+  function showTab(name){
+    document.querySelectorAll('.card[data-tab]').forEach(c=>c.classList.toggle('show', c.getAttribute('data-tab')===name));
+    nav.querySelectorAll('button').forEach(btn=>btn.classList.toggle('on', btn.getAttribute('data-go')===name));
+    const lbl=(TABS.find(t=>t[0]===name)||[])[2]||""; $("sectitle").textContent=lbl;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  nav.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>showTab(btn.getAttribute('data-go'))));
+  showTab("overview");
 
   setTimeout(()=>location.reload(), 60000);
 </script>
