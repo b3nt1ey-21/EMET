@@ -7,6 +7,8 @@ window.DASHBOARD_DATA = {
     updated: "2026-06-21T17:15Z (Sun)",
     marketStatus: "CLOSED — reopens Mon Jun 22, 8:30 AM CT",
     account: "Agentic (#950342600)",
+    owner: "Bentley",            // <- you, the admin. Edit to your name.
+    role: "Administrator",
   },
 
   // ---- Account / goal ----
