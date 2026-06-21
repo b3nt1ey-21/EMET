@@ -164,6 +164,37 @@
   footer { margin-top: 40px; text-align: center; color: var(--muted); font-size: 12px; }
   .controls { transition: box-shadow .25s ease; }
   .controls:hover { box-shadow: 0 6px 18px rgba(16,24,40,.08); }
+
+  .ixwrap {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; margin-top: 40px; box-shadow: 0 1px 3px rgba(16,24,40,.06);
+  }
+  .ix-controls { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+  .ix-title { font-size: 18px; font-weight: 800; color: var(--navy); }
+  .ix-selects { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .ix-selects select {
+    background: #fff; border: 1px solid var(--border); color: var(--text);
+    padding: 8px 11px; border-radius: 8px; font-size: 14px; font-weight: 600;
+  }
+  .ix-tabs { display: inline-flex; background: var(--panel2); border: 1px solid var(--border); border-radius: 9px; padding: 3px; gap: 2px; }
+  .ix-tabs button {
+    border: none; background: transparent; color: var(--muted); font-weight: 700;
+    font-size: 13px; padding: 6px 12px; border-radius: 7px; cursor: pointer; transition: all .18s ease;
+  }
+  .ix-tabs button:hover { color: var(--navy); }
+  .ix-tabs button.active { background: var(--navy); color: #fff; box-shadow: 0 2px 6px rgba(27,58,91,.25); }
+  .ix-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .ix-name { font-size: 16px; font-weight: 800; color: var(--navy); }
+  .ix-period { font-size: 14px; font-weight: 700; }
+  .ix-period.up { color: var(--accent); }
+  .ix-period.down { color: #c0392b; }
+  #ixchart { width: 100%; height: 220px; display: block; overflow: visible; }
+  #ix-line { stroke-dasharray: var(--ixlen); stroke-dashoffset: var(--ixlen); }
+  #ix-line.draw { transition: stroke-dashoffset 1.3s cubic-bezier(.22,.7,.25,1); stroke-dashoffset: 0; }
+  #ix-area { opacity: 0; transition: opacity .8s ease .5s; }
+  #ix-area.show { opacity: 1; }
+  #ix-dot { transition: opacity .4s ease 1.1s; }
+  #ix-dot.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -200,40 +231,11 @@
         <option value="12">Years</option>
       </select>
     </div>
-    <div class="field">
-      <label>Compare Against</label>
-      <select id="index">
-        <option value="spx">S&amp;P 500</option>
-        <option value="nasdaq">Nasdaq</option>
-        <option value="dow">Dow Jones</option>
-        <option value="all">All three</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Comparison Period</label>
-      <select id="cmpPeriod">
-        <option value="match">Match my plan</option>
-        <option value="1">1 year</option>
-        <option value="3">3 years</option>
-        <option value="5">5 years</option>
-        <option value="10">10 years</option>
-        <option value="20">20 years</option>
-        <option value="30">30 years</option>
-      </select>
-    </div>
   </div>
 
   <div class="chartwrap reveal">
-    <div class="sp-banner">
-      <span class="sp-dot"></span>
-      <span>S&amp;P 500 (SPX) live via <strong>StockTwits</strong>:</span>
-      <strong id="sp-live">—</strong>
-      <span id="sp-chg" class="sp-chg">—</span>
-      <span class="sp-asof" id="sp-asof"></span>
-    </div>
     <div class="chart-head">
       <span class="chart-title">Watch it grow</span>
-      <span class="legend" id="legend"></span>
       <span class="chart-end" id="chart-end"></span>
     </div>
     <svg id="chart" viewBox="0 0 640 200" preserveAspectRatio="none" aria-hidden="true">
@@ -244,7 +246,6 @@
         </linearGradient>
       </defs>
       <path id="chart-area" fill="url(#fillGrad)" stroke="none"></path>
-      <g id="chart-indexes"></g>
       <path id="chart-line" fill="none" stroke="#1a7a4c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
       <circle id="chart-dot" r="5" fill="#1a7a4c" stroke="#fff" stroke-width="2.5" opacity="0"></circle>
       <g id="chart-car" opacity="0">
@@ -257,7 +258,6 @@
         </g>
       </g>
     </svg>
-    <p class="chart-note" id="chart-note"></p>
   </div>
 
   <div class="cards">
@@ -286,6 +286,50 @@
   </table>
 
   <p class="note" id="note"></p>
+
+  <div class="ixwrap reveal">
+    <div class="ix-controls">
+      <div class="ix-title">Market Index Explorer</div>
+      <div class="ix-selects">
+        <select id="ix-index">
+          <option value="spx">S&amp;P 500</option>
+          <option value="nasdaq">Nasdaq</option>
+          <option value="dow">Dow Jones</option>
+        </select>
+        <div class="ix-tabs" id="ix-tabs">
+          <button data-tf="1M">1M</button>
+          <button data-tf="3M">3M</button>
+          <button data-tf="6M">6M</button>
+          <button data-tf="1Y" class="active">1Y</button>
+          <button data-tf="5Y">5Y</button>
+          <button data-tf="MAX">Max</button>
+        </div>
+      </div>
+    </div>
+    <div class="sp-banner">
+      <span class="sp-dot"></span>
+      <span>Live via <strong>StockTwits</strong>:</span>
+      <strong id="sp-live">—</strong>
+      <span id="sp-chg" class="sp-chg">—</span>
+      <span class="sp-asof" id="sp-asof"></span>
+    </div>
+    <div class="ix-head">
+      <span id="ix-name" class="ix-name">S&amp;P 500</span>
+      <span id="ix-period" class="ix-period"></span>
+    </div>
+    <svg id="ixchart" viewBox="0 0 640 220" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="ixFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" id="ixFillTop" stop-color="#1b3a5b" stop-opacity="0.22"/>
+          <stop offset="100%" id="ixFillBot" stop-color="#1b3a5b" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path id="ix-area" stroke="none"></path>
+      <path id="ix-line" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+      <circle id="ix-dot" r="4.5" stroke="#fff" stroke-width="2" opacity="0"></circle>
+    </svg>
+    <p class="chart-note" id="ix-note"></p>
+  </div>
 
   <div class="sections">
     <div class="section reveal">
@@ -326,53 +370,40 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// REAL month-by-month index history (dividend-adjusted), Jan 2014 – May 2026,
-// via SPY / QQQ / DIA close prices. Used for windows up to ~12 years so the
-// chart shows the true monthly path (e.g. the actual past 12 months).
-const DATA_START = 1995, DATA_END = 2024;       // annual fallback range
-const MONTHLY_THROUGH = "May 2026";             // last real monthly bar
-const MONTHLY_END = { y: 2026, m: 5 };
-const INDICES = {
-  spx: { name: "S&P 500", color: "#b8860b",
-    returns: [0.376,0.230,0.334,0.286,0.210,-0.091,-0.119,-0.221,0.287,0.109,0.049,0.158,0.055,-0.370,0.265,0.151,0.021,0.160,0.324,0.137,0.014,0.120,0.218,-0.044,0.315,0.184,0.287,-0.181,0.263,0.250],
-    closes: [107.67,115.78,117.32,118.62,122.99,126.97,124.34,131.96,129.21,133.85,139.39,138.86,132.77,143.98,140.68,142.71,145.39,141.13,145.78,132.95,127.95,144.25,145.01,141.4,131.25,131.09,144.1,144.91,148.42,149.13,156.78,157.04,157.04,153.29,161.12,165.6,169.6,178.54,178.84,181.18,184.54,186.08,191.05,191.77,196.75,202.67,210.53,213.73,228.77,218.52,211.12,212.48,218.91,220.49,230.54,239.52,241.26,221.17,226.19,201.89,221.9,230.65,235.68,247.22,228.47,247.64,252.07,247.09,252.79,259.35,270.33,279.45,279.32,253.85,216.75,249.48,263.32,268.72,286.88,309.67,296.59,288.24,323.76,337.16,333.35,343.64,360.89,381.86,384.6,393.99,404.44,417.49,396.5,426.61,422.92,443.96,418.91,405.63,422,382.36,383.29,349.19,383.93,367.12,330.72,359.75,381.22,357.75,381.8,371.58,386.22,392.76,394.68,421.74,436.25,428.81,407.53,398.25,436.45,457.26,464.83,490.03,506.76,485.53,510.69,529.57,536.12,548.99,560.81,555.69,589.6,575.1,590.84,583.2,550.1,545.25,580.1,610.33,624.56,637.53,660.49,676.37,677.7,678.22,688.27,682.29,648.44,716.76,754.58] },
-  nasdaq: { name: "Nasdaq", color: "#7b4fb5",
-    returns: [0.399,0.227,0.216,0.396,0.856,-0.393,-0.211,-0.315,0.500,0.086,0.014,0.095,0.098,-0.405,0.439,0.169,-0.018,0.159,0.383,0.134,0.057,0.075,0.282,-0.039,0.352,0.436,0.214,-0.331,0.434,0.286],
-    closes: [64.07,68.14,65.67,65.39,69.31,72.16,73.27,78.03,77.28,79.89,84.5,82.13,79.98,87.28,84.72,86.75,89.17,86.45,91.33,83.69,81.4,92.97,93.66,91.84,84.11,82.48,89.5,86.02,90.64,88.12,95.81,97.02,99.6,97.87,98.38,99.71,105.8,111.25,113.89,117.5,122.8,119.53,125.12,128.09,127.66,134.36,137.36,138.29,151.93,149.74,142.94,143.75,152.88,154.84,159.64,169.84,169.31,153.34,152.89,138.2,152.1,157.13,163.95,173.8,158.21,171.42,175.78,172.15,173.87,182.14,190.16,198.13,204.59,191.32,176.28,204.79,219.24,233.91,252.1,281.19,264.54,256.08,286.32,301,301.82,301.4,306.78,325.64,321.58,342.48,352.62,368,346.42,374.57,382.28,386.8,352,335.75,351.93,302.64,297.67,270.2,305.38,289.19,257.69,268.38,283.79,257.37,285.71,284.65,312.49,314.12,339.55,361.49,375.75,370.06,350.87,343.47,381.43,403.15,410.6,432.63,438.21,418.79,445.73,474.07,466.03,471.23,483.71,479.49,505.38,507.7,518.76,504.64,466.11,472.66,516.3,549.42,562.79,568.18,598.84,627.54,617.72,613.58,621.14,606.56,577.18,667.74,738.31] },
-  dow: { name: "Dow Jones", color: "#0d7d8c",
-    returns: [0.335,0.260,0.226,0.161,0.252,-0.062,-0.071,-0.168,0.253,0.031,-0.006,0.163,0.064,-0.338,0.188,0.110,0.055,0.073,0.265,0.075,-0.022,0.134,0.251,-0.056,0.223,0.072,0.187,-0.088,0.137,0.129],
-    closes: [127.91,134.18,135.4,136.61,138.09,139.05,136.45,142.04,141.23,144.61,149.26,149.04,142.61,152.35,148.74,149.34,151.27,146.98,147.84,136.34,133.78,147.65,148.39,145.15,135.53,136.12,147.8,148.75,148.81,150.16,155.29,155.1,153.94,152.33,162.56,168.67,169.52,179.14,177.5,180.24,181.16,184.4,189.86,190.68,194.98,204.79,214,218.54,232.6,221.36,212.56,212.7,215.34,213.89,225.33,231.01,235.56,222.35,226.67,204.36,221.28,230.44,230.29,236.95,219.38,237.01,239.68,235.29,240.34,241.64,252.11,256.26,253.58,225.72,190.39,214.38,225.45,229.03,235.51,255.44,248.66,236.22,267.78,276.95,270.97,280.61,301.34,310.1,316.8,316.11,320.64,325.08,309.45,329.39,316.06,334.48,322.24,310.5,317.99,300.85,302.1,280.41,301.38,289.03,261.5,301.8,321.21,307.14,316.92,303.22,310.12,318.72,307.93,323.04,335.03,327.78,315.84,311.56,341.79,359.49,364.2,373.39,382.14,362.7,372.5,377.27,394.73,402.77,410.93,405.63,438.32,414.95,435,428.64,410.95,397.61,414.44,433.44,434.3,449.32,458.29,470.38,472.46,476.9,485.54,486.78,461.3,494.97,509.37] }
+// REAL index price history (dividend-adjusted) via the SPY / QQQ / DIA ETFs.
+// daily bars: 2025-05-15 .. 2026-06-18  |  monthly bars: 2014-01 .. 2026-05
+// Live quotes come from StockTwits (ql.stocktwits.com) for the same ETFs.
+const MONTHLY_THROUGH = "May 2026";
+const DAILY_THROUGH = "Jun 18, 2026";
+const IX = {
+  spx: { name: "S&P 500", etf: "SPY", color: "#1b3a5b",
+    snap: { last: 746.74, pct: 1.04, asof: "Jun 18, 2026 4:00pm ET" },
+    daily: [581.17,584.91,585.56,583.56,573.57,573.8,569.82,581.86,578.44,580.76,580.1,583.42,586.8,586.64,583.76,589.85,590.39,593.79,592.07,594.46,587.71,593.39,588.24,588.15,586.76,592.63,599.26,599.6,604.35,607.39,610.33,610.13,612.93,617.82,613.16,612.82,616.54,618.3,616.1,617.29,614.62,616.7,620.52,620.06,621.25,621.34,626.69,626.9,629.58,629.42,627.74,626.94,624.56,614.2,623.65,620.45,625.26,624.73,629.66,628.4,635.17,637.37,637.43,635.92,635.78,632.29,630.59,628.03,637.79,634.95,637.64,639.11,641.4,637.53,632.75,636.22,641.6,639.72,641.31,642.81,644.69,650.11,649.89,653.39,652.48,651.66,654.74,658.01,661.15,657.52,655.41,652.36,656.13,657.99,660.49,662.76,663.53,663.52,665.92,663.43,667.42,665.47,647.33,657.35,656.54,659.48,654.95,658.7,665.61,665.6,662.11,666.07,671.56,679.55,681.37,681.7,674.14,676.37,677.65,669.55,671.89,664.62,665.28,675.75,677.31,677.69,666.35,666.24,659.98,654.39,656.94,646.84,653.34,663.04,669.33,673.99,677.7,674.58,675.84,678.2,678.7,680,677.94,677.35,681.88,683.48,676.07,675.04,673.18,665.71,670.78,676.89,681.13,684.26,686.68,686.61,684.15,683.31,678.22,679.47,684.02,688.11,685.88,685.81,690.37,691.46,690.07,686.66,688.54,687.96,673.88,681.7,685.28,685.53,689.03,691.79,691.72,690.34,688.27,691.71,685.83,682.49,673.92,686.92,690.25,688.42,688.26,677.57,678.05,679.15,682.59,680.78,685.73,678.69,683.65,689.45,685.6,682.29,682.68,676.63,681.43,677.61,668.68,674.57,673.48,672.63,662.36,658.59,665.33,667.09,657.73,656.1,646.67,653.48,651.28,654.92,643.19,632.19,630.07,648.44,653.34,653.93,657.03,657.32,674.11,678.01,677.56,684.2,692.56,698.04,699.76,708.24,706.82,702.18,709.31,706.55,712.04,713.27,709.79,709.68,716.76,718.75,716.11,721.87,731.93,729.68,735.72,737.4,736.28,740.41,746.27,737.27,736.75,731.83,739.35,740.82,743.74,748.69,748.56,752.7,754.58,756.64,757.67,752.34,755.19,735.65,737.32,735.15,723.53,735.86,739.85,752.93,748.43,739.06,746.74],
+    monthly: [107.67,115.78,117.32,118.62,122.99,126.97,124.34,131.96,129.21,133.85,139.39,138.86,132.77,143.98,140.68,142.71,145.39,141.13,145.78,132.95,127.95,144.25,145.01,141.4,131.25,131.09,144.1,144.91,148.42,149.13,156.78,157.04,157.04,153.29,161.12,165.6,169.6,178.54,178.84,181.18,184.54,186.08,191.05,191.77,196.75,202.67,210.53,213.73,228.77,218.52,211.12,212.48,218.91,220.49,230.54,239.52,241.26,221.17,226.19,201.89,221.9,230.65,235.68,247.22,228.47,247.64,252.07,247.09,252.79,259.35,270.33,279.45,279.32,253.85,216.75,249.48,263.32,268.72,286.88,309.67,296.59,288.24,323.76,337.16,333.35,343.64,360.89,381.86,384.6,393.99,404.44,417.49,396.5,426.61,422.92,443.96,418.91,405.63,422,382.36,383.29,349.19,383.93,367.12,330.72,359.75,381.22,357.75,381.8,371.58,386.22,392.76,394.68,421.74,436.25,428.81,407.53,398.25,436.45,457.26,464.83,490.03,506.76,485.53,510.69,529.57,536.12,548.99,560.81,555.69,589.6,575.1,590.84,583.2,550.1,545.25,580.1,610.33,624.56,637.53,660.49,676.37,677.7,678.22,688.27,682.29,648.44,716.76,754.58] },
+  nasdaq: { name: "Nasdaq", etf: "QQQ", color: "#7b4fb5",
+    snap: { last: 740.62, pct: 2.507, asof: "Jun 18, 2026 4:00pm ET" },
+    daily: [516.44,518.7,519.2,517.46,510.23,511.19,506.43,518.41,516.1,517.12,516.3,520.4,524.49,525.96,521.98,527.11,527.89,531.4,529.6,530.85,524.15,531.48,526.27,526.18,524.02,529.43,537.56,538.94,544,545.87,549.42,544.77,548.58,554,549.81,550.12,554.03,553.23,551.98,553.99,554.5,555.07,559.58,559.04,561.95,559.03,561.59,562.79,564.15,565.92,565.04,565.8,562.79,551.66,561.88,558.05,565.1,567.02,572.33,570.63,577.83,578.12,577.67,575.12,574.89,567.06,563.68,561.06,569.75,568.1,570.39,571.27,574.86,568.18,563.4,567.85,573.01,573.84,576.65,578.29,578.48,581.86,584.44,589.46,588.96,587.78,593.1,597.13,600.67,596.67,594.57,592,594.44,597.2,598.84,601.72,604.2,601.65,606.18,602.98,609.91,609.17,587.97,600.48,596.47,600.69,598.46,602.4,610.01,609.85,603.96,609.05,615.57,626.56,631.39,634.24,624.52,627.54,630.55,617.72,621.75,610.14,608.21,621.7,620.04,619.55,606.87,607.33,602.13,594.78,598.34,584.14,588.54,603.63,607.36,612.74,617.72,615.64,620.47,621.99,621.41,623.95,622.75,623.52,626.08,624.05,612.09,609.01,610.22,598.88,607.58,615.52,618.48,621.38,623.2,623.16,620.14,618.7,613.58,612.39,617.26,622.69,623.29,619.74,625.92,626.44,625.51,618.82,621.05,620.53,607.33,615.55,620.03,621.99,624.73,630.4,632.49,628.7,621.14,625.41,615.79,605.02,596.3,608.92,613.59,610.74,612.38,599.91,601.19,600.57,605.06,602.74,608.08,600.68,607.14,615.95,608.51,606.56,607.36,600.85,610.02,608.18,599.02,607.03,607.04,606.96,596.53,592.99,599.65,602.58,594.17,592.29,581.33,588,583.98,587.82,573.79,562.58,558.28,577.18,584.31,584.98,588.5,588.59,606.09,610.19,611.07,617.39,628.6,637.4,640.47,648.85,646.79,644.33,655.11,651.42,663.88,664.23,657.55,661.57,667.74,674.15,672.88,681.61,695.77,694.94,711.23,713.29,707.24,714.71,719.79,708.93,705.88,701.53,713.15,714.51,717.54,730.28,729.45,735.6,738.31,742.74,746.16,744.21,740.61,705.06,716.07,707.83,693.69,717.12,721.34,744,729.86,722.51,740.62],
+    monthly: [64.07,68.14,65.67,65.39,69.31,72.16,73.27,78.03,77.28,79.89,84.5,82.13,79.98,87.28,84.72,86.75,89.17,86.45,91.33,83.69,81.4,92.97,93.66,91.84,84.11,82.48,89.5,86.02,90.64,88.12,95.81,97.02,99.6,97.87,98.38,99.71,105.8,111.25,113.89,117.5,122.8,119.53,125.12,128.09,127.66,134.36,137.36,138.29,151.93,149.74,142.94,143.75,152.88,154.84,159.64,169.84,169.31,153.34,152.89,138.2,152.1,157.13,163.95,173.8,158.21,171.42,175.78,172.15,173.87,182.14,190.16,198.13,204.59,191.32,176.28,204.79,219.24,233.91,252.1,281.19,264.54,256.08,286.32,301,301.82,301.4,306.78,325.64,321.58,342.48,352.62,368,346.42,374.57,382.28,386.8,352,335.75,351.93,302.64,297.67,270.2,305.38,289.19,257.69,268.38,283.79,257.37,285.71,284.65,312.49,314.12,339.55,361.49,375.75,370.06,350.87,343.47,381.43,403.15,410.6,432.63,438.21,418.79,445.73,474.07,466.03,471.23,483.71,479.49,505.38,507.7,518.76,504.64,466.11,472.66,516.3,549.42,562.79,568.18,598.84,627.54,617.72,613.58,621.14,606.56,577.18,667.74,738.31] },
+  dow: { name: "Dow Jones", etf: "DIA", color: "#0d7d8c",
+    snap: { last: 515.52, pct: 0.121, asof: "Jun 18, 2026 4:00pm ET" },
+    daily: [414.75,418.14,419.63,418.56,410.34,410.41,407.92,415.44,413.01,414.05,414.44,415.3,417.6,416.53,415.56,419.97,419.95,421.2,421.19,422.08,414.4,417.87,414.7,414.43,414.55,418.51,423.58,422.65,426.72,430.79,433.44,437.68,437.5,440.88,436.79,435.17,437.31,439.29,436.36,437.37,432.94,435.15,438.01,436.23,436.41,437.93,443.18,440.08,441.99,441.31,439.45,437.73,434.3,428.69,434.78,434.11,434.94,432.69,434.89,432.98,437.65,442.39,442.13,442.76,442.28,442.52,442.59,441.18,449.87,446.3,447.72,449.26,450.02,449.32,446.84,446.49,450.28,448.22,449.43,451.24,449.16,455.15,452.55,453.3,452.01,454.49,455.86,457.49,458.22,457.42,455.57,453.98,456.83,457.59,458.29,458.81,459.66,462.06,461.39,460.52,460.62,458.05,449.42,455.23,457.26,457.26,454.11,456.49,461.73,463.93,460.49,462,466.92,470.06,471.86,471.08,469.72,470.38,468.18,465.61,467.82,463.99,464.57,468.53,474.12,477.47,469.45,466.51,461.03,456.01,456.47,452.81,457.85,459.72,466.46,469.63,472.46,468.6,470.54,474.69,474.35,475.31,473.43,471.7,476.63,483.15,480.68,480.45,477.26,475.08,475.79,477.48,479.79,480.56,483.34,483.36,480.92,479.92,476.9,479.96,486.1,490.94,486.29,488.86,491.35,492.23,488.27,487.91,490.81,489.93,481.39,487.31,490.2,487.44,490.57,486.57,486.64,486.72,485.54,490.54,488.82,491.26,485.42,497.54,497.73,498.41,497.84,491.18,491.79,492.36,493.51,490.89,493.2,485.13,488.91,491.94,491.98,486.78,486.3,482.64,484.86,476.96,472.35,475,474.82,471.93,464.6,463.53,467.42,468.02,460.12,458.18,454,460.08,459.28,462.25,457.42,449.5,450.17,461.3,463.59,463.17,464.88,463.99,477.27,480.01,477.36,480.24,483.6,482.83,483.74,492.54,492.65,489.68,493.08,491.32,490.53,490.15,489.74,486.99,494.97,493.34,487.88,491.28,497.37,494.23,494.45,495.43,496.21,495.46,499.12,493.96,495.6,492.57,498.83,501.7,504.71,503.84,505.47,505.64,509.37,510.03,512.64,506.85,515.29,508.29,507.5,508,498.84,507.95,511.65,517.03,520.03,514.89,515.52],
+    monthly: [127.91,134.18,135.4,136.61,138.09,139.05,136.45,142.04,141.23,144.61,149.26,149.04,142.61,152.35,148.74,149.34,151.27,146.98,147.84,136.34,133.78,147.65,148.39,145.15,135.53,136.12,147.8,148.75,148.81,150.16,155.29,155.1,153.94,152.33,162.56,168.67,169.52,179.14,177.5,180.24,181.16,184.4,189.86,190.68,194.98,204.79,214,218.54,232.6,221.36,212.56,212.7,215.34,213.89,225.33,231.01,235.56,222.35,226.67,204.36,221.28,230.44,230.29,236.95,219.38,237.01,239.68,235.29,240.34,241.64,252.11,256.26,253.58,225.72,190.39,214.38,225.45,229.03,235.51,255.44,248.66,236.22,267.78,276.95,270.97,280.61,301.34,310.1,316.8,316.11,320.64,325.08,309.45,329.39,316.06,334.48,322.24,310.5,317.99,300.85,302.1,280.41,301.38,289.03,261.5,301.8,321.21,307.14,316.92,303.22,310.12,318.72,307.93,323.04,335.03,327.78,315.84,311.56,341.79,359.49,364.2,373.39,382.14,362.7,372.5,377.27,394.73,402.77,410.93,405.63,438.32,414.95,435,428.64,410.95,397.61,414.44,433.44,434.3,449.32,458.29,470.38,472.46,476.9,485.54,486.78,461.3,494.97,509.37] }
 };
-// Pre-compute monthly growth factors + long-run average (annual fallback only)
-Object.values(INDICES).forEach(ix => {
-  ix.monthly = ix.returns.flatMap(r => Array(12).fill(Math.pow(1 + r, 1 / 12)));
-  ix.avg = Math.pow(ix.returns.reduce((a, r) => a * (1 + r), 1), 1 / (ix.returns.length * 12));
-});
 
-// True if we have real monthly bars covering the whole window
-function hasMonthly(totalMonths) {
-  return totalMonths <= INDICES.spx.closes.length - 1;
-}
+// Timeframe presets: which dataset and how many trailing bars
+const TF = {
+  "1M":  { src: "daily",   bars: 22,    label: "1 month" },
+  "3M":  { src: "daily",   bars: 64,    label: "3 months" },
+  "6M":  { src: "daily",   bars: 127,   label: "6 months" },
+  "1Y":  { src: "daily",   bars: 252,   label: "1 year" },
+  "5Y":  { src: "monthly", bars: 60,    label: "5 years" },
+  "MAX": { src: "monthly", bars: 9999,  label: "since 2014" }
+};
 
-// Build an index path ending on the latest data. Uses REAL monthly closes
-// when the window fits the monthly dataset; otherwise annual returns.
-function indexSeries(ix, principal, totalMonths) {
-  if (hasMonthly(totalMonths)) {
-    const c = ix.closes;
-    const start = c.length - 1 - totalMonths;     // align end with latest month
-    const base = c[start];
-    const out = [];
-    for (let i = 0; i <= totalMonths; i++) out.push(principal * c[start + i] / base);
-    return out;
-  }
-  const series = [principal];
-  let bal = principal;
-  for (let i = 0; i < totalMonths; i++) {
-    const idx = ix.monthly.length - 1 - (totalMonths - 1 - i);
-    bal *= (idx >= 0 ? ix.monthly[idx] : ix.avg);
-    series.push(bal);
-  }
-  return series;
+function ixData(key, tf) {
+  const arr = TF[tf].src === "daily" ? IX[key].daily : IX[key].monthly;
+  const n = Math.min(TF[tf].bars, arr.length);
+  return arr.slice(arr.length - n);
 }
 
 // Smoothly count a card's number from its old value up/down to the new one
@@ -396,14 +427,7 @@ function calc() {
   const mRate = (parseFloat($("rate").value) || 0) / 100;
   const fee = (parseFloat($("fee").value) || 0) / 100;
   const unit = parseInt($("unit").value, 10);          // 1 = months, 12 = years
-
-  // The comparison-period dropdown is the single source of truth for time.
-  // "Match my plan" uses the Compound For + Period Unit fields; otherwise
-  // the dropdown's years drive the WHOLE view so chart, cards and table agree.
-  const cmpSel = $("cmpPeriod").value;
-  const totalMonths = cmpSel === "match"
-    ? Math.max(1, Math.round((parseFloat($("duration").value) || 1) * unit))
-    : parseInt(cmpSel, 10) * 12;
+  const totalMonths = Math.max(1, Math.round((parseFloat($("duration").value) || 1) * unit));
 
   const months = [];
   let bal = principal;
@@ -424,19 +448,7 @@ function calc() {
 
   // Our chart line is exactly the plan above, so it always matches the table
   const ours = [principal, ...months.map(m => m.end)];
-  const ourCmpGross = gross;
-  const cmpStartYear = Math.max(DATA_START, DATA_END - Math.ceil(totalMonths / 12) + 1);
-
-  // selected index/indexes over the SAME window
-  const sel = $("index").value;
-  const keys = sel === "all" ? ["spx", "nasdaq", "dow"] : [sel];
-  const series = keys.map(k => {
-    const ix = INDICES[k];
-    const path = indexSeries(ix, principal, totalMonths);
-    return { name: ix.name, color: ix.color, path, end: path[path.length - 1] };
-  });
-
-  renderChart(principal, ours, ourCmpGross, series);
+  renderChart(principal, ours, gross);
 
   setMoney("c-start", principal);
   setMoney("c-gross", gross);
@@ -452,32 +464,20 @@ function calc() {
   $("foot").innerHTML =
     `<td>Total (${totalMonths} mo)</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
 
-  // chart caption: our window result vs each selected index
-  const winLabel = totalMonths % 12 === 0 ? `${totalMonths / 12} yr` : `${totalMonths} mo`;
-  const idxBits = series.map(s => `<strong style="color:${s.color}">${s.name}</strong> ${fmt(s.end)}`).join(" · ");
-  const dataSrc = hasMonthly(totalMonths)
-    ? `<em>Index lines use real month-by-month data through ${MONTHLY_THROUGH} (dividend-adjusted).</em>`
-    : `<em>Index lines use real annual returns (${cmpStartYear}–${DATA_END}).</em>`;
-  $("chart-note").innerHTML =
-    `Over <strong>${winLabel}</strong>, ${fmt(principal)} with us grows to <strong>${fmt(ourCmpGross)}</strong> (before our fee). ` +
-    `Same money in the market: ${idxBits}. ${dataSrc}`;
-
-  // fee breakdown stays tied to the plan duration
+  // fee breakdown
   $("note").innerHTML =
     `<strong>Here's the honest breakdown:</strong> over ${totalMonths} month${totalMonths === 1 ? "" : "s"}, your ${fmt(principal)} grows to <strong>${fmt(gross)}</strong> — that's <strong>${fmt(profit)}</strong> in profit. ` +
     `We only earn when you do, so our ${($("fee").value||0)}% comes out of the <em>profit</em> (never your original deposit): <strong>${fmt(firmFee)}</strong> to us, <strong>${fmt(clientNetProfit)}</strong> stays with you. ` +
     `You walk away with <strong>${fmt(clientNetBal)}</strong>.`;
 }
 
-// Draw our growth curve plus any selected index lines, and animate them in
+// Draw our growth curve and animate it in
 const SVGNS = "http://www.w3.org/2000/svg";
-function renderChart(principal, ours, gross, series) {
+function renderChart(principal, ours, gross) {
   const W = 640, H = 200, padX = 14, padTop = 34, padBot = 14;
   const balances = ours;
   const n = balances.length - 1;
-  // scale to fit OUR line and every index line so the comparison is fair
-  const all = balances.concat(...series.map(s => s.path));
-  const min = Math.min(...all), max = Math.max(...all);
+  const min = Math.min(...balances), max = Math.max(...balances);
   const span = (max - min) || 1;
 
   const x = i => padX + (i / n) * (W - padX * 2);
@@ -487,54 +487,23 @@ function renderChart(principal, ours, gross, series) {
   const line = toPath(balances);
   const area = line + ` L ${x(n).toFixed(1)} ${H} L ${x(0).toFixed(1)} ${H} Z`;
 
-  const lineEl = $("chart-line"), areaEl = $("chart-area"), dot = $("chart-dot"),
-        car = $("chart-car"), group = $("chart-indexes");
+  const lineEl = $("chart-line"), areaEl = $("chart-area"), dot = $("chart-dot"), car = $("chart-car");
   lineEl.setAttribute("d", line);
   areaEl.setAttribute("d", area);
   dot.setAttribute("cx", x(n));
   dot.setAttribute("cy", y(balances[n]));
   $("chart-end").textContent = fmt(gross);
 
-  // (re)build the index lines
-  group.innerHTML = "";
-  const idxPaths = series.map(s => {
-    const p = document.createElementNS(SVGNS, "path");
-    p.setAttribute("d", toPath(s.path));
-    p.setAttribute("fill", "none");
-    p.setAttribute("stroke", s.color);
-    p.setAttribute("stroke-width", "2");
-    p.setAttribute("stroke-dasharray", "6 5");
-    p.setAttribute("stroke-linecap", "round");
-    p.setAttribute("stroke-linejoin", "round");
-    group.appendChild(p);
-    return p;
-  });
-
-  // legend reflects what's actually on screen
-  $("legend").innerHTML =
-    `<span class="lg" style="color:var(--accent)"><i style="background:var(--accent)"></i>Whitaker</span>` +
-    series.map(s => `<span class="lg dash" style="color:${s.color}"><i></i>${s.name}</span>`).join("");
-
   const len = lineEl.getTotalLength();
 
   if (reduceMotion) {
     lineEl.style.setProperty("--len", "0");
-    idxPaths.forEach(p => p.style.opacity = "1");
     areaEl.classList.add("show"); dot.classList.add("show");
     const p = lineEl.getPointAtLength(len);
     car.setAttribute("transform", `translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
     car.setAttribute("opacity", "1");
     return;
   }
-
-  // index lines fade in alongside ours
-  idxPaths.forEach(p => {
-    p.style.transition = "none";
-    p.style.opacity = "0";
-    void p.getBoundingClientRect();
-    p.style.transition = "opacity 1.2s ease .3s";
-    requestAnimationFrame(() => { p.style.opacity = "1"; });
-  });
 
   // restart the draw animation each time the numbers change
   lineEl.style.setProperty("--len", len);
@@ -572,38 +541,96 @@ function driveCar(lineEl, car, len) {
   carAnim = requestAnimationFrame(frame);
 }
 
-["principal","rate","fee","duration","unit","index","cmpPeriod"].forEach(id => $(id).addEventListener("input", calc));
+["principal","rate","fee","duration","unit"].forEach(id => $(id).addEventListener("input", calc));
 calc();
 
-// ---- Live S&P 500 quote from StockTwits ----
-// Baked-in snapshot pulled from ql.stocktwits.com so the figure shows even
-// offline; we then try a live refresh (works when CORS/network allow).
-const SP_SNAPSHOT = { last: 7500.58, prevClose: 7420.1, pct: 1.0846, asof: "Jun 18, 2026 4:42pm ET" };
+// ================= Market Index Explorer =================
+const ixState = { key: "spx", tf: "1Y" };
 
-function renderSpQuote(q) {
+// ---- the index chart ----
+function renderIxChart() {
+  const ix = IX[ixState.key];
+  const data = ixData(ixState.key, ixState.tf);
+  const W = 640, H = 220, padX = 6, padTop = 16, padBot = 12;
+  const n = data.length - 1;
+  const min = Math.min(...data), max = Math.max(...data);
+  const span = (max - min) || 1;
+  const x = i => padX + (i / n) * (W - padX * 2);
+  const y = v => padTop + (1 - (v - min) / span) * (H - padTop - padBot);
+
+  const line = data.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+  const area = line + ` L ${x(n).toFixed(1)} ${H} L ${x(0).toFixed(1)} ${H} Z`;
+
+  const up = data[n] >= data[0];
+  const color = up ? "#1a7a4c" : "#c0392b";
+  const pct = (data[n] / data[0] - 1) * 100;
+
+  const lineEl = $("ix-line"), areaEl = $("ix-area"), dot = $("ix-dot");
+  lineEl.setAttribute("d", line);
+  lineEl.setAttribute("stroke", color);
+  areaEl.setAttribute("d", area);
+  areaEl.setAttribute("fill", up ? "rgba(26,122,76,.18)" : "rgba(192,57,43,.16)");
+  dot.setAttribute("cx", x(n)); dot.setAttribute("cy", y(data[n])); dot.setAttribute("fill", color);
+
+  $("ix-name").textContent = `${ix.name} (${ix.etf})`;
+  const per = $("ix-period");
+  per.textContent = `${up ? "▲ +" : "▼ "}${pct.toFixed(2)}% · ${TF[ixState.tf].label}`;
+  per.className = "ix-period " + (up ? "up" : "down");
+
+  const src = TF[ixState.tf].src === "daily"
+    ? `daily closes through ${DAILY_THROUGH}` : `monthly closes through ${MONTHLY_THROUGH}`;
+  $("ix-note").innerHTML =
+    `Real ${ix.name} price history — ${src} (dividend-adjusted ${ix.etf}). ` +
+    `Live quote sourced from <strong>StockTwits</strong>.`;
+
+  const len = lineEl.getTotalLength();
+  if (reduceMotion) {
+    lineEl.style.setProperty("--ixlen", "0");
+    areaEl.classList.add("show"); dot.classList.add("show");
+    return;
+  }
+  lineEl.style.setProperty("--ixlen", len);
+  lineEl.classList.remove("draw"); areaEl.classList.remove("show"); dot.classList.remove("show");
+  void lineEl.getBoundingClientRect();
+  requestAnimationFrame(() => {
+    lineEl.classList.add("draw"); areaEl.classList.add("show"); dot.classList.add("show");
+  });
+}
+
+// ---- live quote (StockTwits) for the selected index's ETF ----
+function renderQuote(q, etf) {
   const up = q.pct >= 0;
-  $("sp-live").textContent = q.last.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  $("sp-live").textContent = etf + " $" + (+q.last).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
   const chg = $("sp-chg");
-  chg.textContent = (up ? "▲ +" : "▼ ") + q.pct.toFixed(2) + "%";
+  chg.textContent = (up ? "▲ +" : "▼ ") + (+q.pct).toFixed(2) + "%";
   chg.className = "sp-chg " + (up ? "up" : "down");
   $("sp-asof").textContent = "as of " + q.asof + " · via StockTwits (15-min delay)";
 }
-renderSpQuote(SP_SNAPSHOT);
+function loadQuote() {
+  const ix = IX[ixState.key];
+  renderQuote(ix.snap, ix.etf);   // baked-in snapshot first
+  fetch("https://ql.stocktwits.com/batch?symbols=" + ix.etf)
+    .then(r => r.json())
+    .then(d => {
+      const q = d && d[ix.etf];
+      if (q && q.Last) renderQuote({ last: q.Last, pct: q.PercentChange, asof: q.EasternDateTime || "just now" }, ix.etf);
+    })
+    .catch(() => { /* StockTwits blocks cross-origin reads from file:// — keep snapshot */ });
+}
 
-fetch("https://ql.stocktwits.com/batch?symbols=SPX")
-  .then(r => r.json())
-  .then(d => {
-    const q = d && d.SPX;
-    if (q && q.Last) {
-      renderSpQuote({
-        last: parseFloat(q.Last),
-        prevClose: parseFloat(q.PreviousClose),
-        pct: parseFloat(q.PercentChange),
-        asof: q.EasternDateTime || "just now"
-      });
-    }
-  })
-  .catch(() => { /* StockTwits blocks cross-origin reads from file:// — keep snapshot */ });
+// ---- wiring ----
+$("ix-index").addEventListener("change", () => {
+  ixState.key = $("ix-index").value;
+  renderIxChart(); loadQuote();
+});
+$("ix-tabs").addEventListener("click", e => {
+  const btn = e.target.closest("button"); if (!btn) return;
+  ixState.tf = btn.dataset.tf;
+  [...$("ix-tabs").children].forEach(b => b.classList.toggle("active", b === btn));
+  renderIxChart();
+});
+renderIxChart();
+loadQuote();
 
 // Reveal sections/cards as they scroll into view, with a gentle stagger
 const revealEls = document.querySelectorAll(".reveal");
