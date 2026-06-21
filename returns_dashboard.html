@@ -166,9 +166,17 @@
   .controls:hover { box-shadow: 0 6px 18px rgba(16,24,40,.08); }
 
   /* two charts side by side; calculator wider, explorer narrower, equal height */
-  .charts-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-bottom: 24px; align-items: stretch; }
+  .charts-row { display: grid; grid-template-columns: 1.6fr auto 1fr; gap: 16px; margin-bottom: 24px; align-items: stretch; }
   .charts-row .chartwrap { margin-bottom: 0; }
-  @media (max-width: 760px) { .charts-row { grid-template-columns: 1fr; } }
+  .vs-label {
+    align-self: center; text-align: center; color: var(--muted);
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+  }
+  @media (max-width: 760px) {
+    .charts-row { grid-template-columns: 1fr; }
+    .vs-label { writing-mode: horizontal-tb; transform: none; padding: 4px 0; }
+  }
 
   .ixwrap {
     background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
@@ -253,6 +261,8 @@
       <circle id="chart-dot" r="5" fill="#1a7a4c" stroke="#fff" stroke-width="2.5" opacity="0"></circle>
     </svg>
     </div>
+
+    <div class="vs-label">compared to</div>
 
     <div class="ixwrap reveal">
       <div class="chart-head">
