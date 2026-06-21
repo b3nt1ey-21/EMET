@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Trading Desk — Live</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#141925; --panel2:#1b2233; --line:#26304a;
+    --txt:#e6e9f0; --mut:#8a93a6; --grn:#3ddc97; --red:#ff5d6c;
+    --yel:#ffcf5c; --blu:#5cc8ff; --pur:#b98cff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:18px}
+  h1{font-size:20px;letter-spacing:.3px}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--mut);margin-bottom:10px}
+  .top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+  .top .meta{text-align:right;color:var(--mut);font-size:12px}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .col4{grid-column:span 4}.col6{grid-column:span 6}.col8{grid-column:span 8}.col12{grid-column:span 12}
+  @media(max-width:900px){.col4,.col6,.col8{grid-column:span 12}}
+  .big{font-size:30px;font-weight:700}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .mut{color:var(--mut)} .grn{color:var(--grn)} .red{color:var(--red)} .yel{color:var(--yel)} .blu{color:var(--blu)}
+  .bar{height:9px;background:var(--panel2);border-radius:6px;overflow:hidden;margin-top:8px}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--blu),var(--grn))}
+  .thought{padding:9px 0;border-bottom:1px solid var(--line)}
+  .thought:last-child{border-bottom:none}
+  .thought .t{color:var(--blu);font-size:11px;font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line)}
+  td{padding:6px 8px;border-bottom:1px solid #1c2235}
+  .tag{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px}
+  .st-entry{background:rgba(61,220,151,.15);color:var(--grn)}
+  .st-pullback{background:rgba(92,200,255,.15);color:var(--blu)}
+  .st-extended{background:rgba(255,207,92,.15);color:var(--yel)}
+  .st-downtrend{background:rgba(255,93,108,.15);color:var(--red)}
+  .st-hold{background:rgba(185,140,255,.15);color:var(--pur)}
+  .gauge{display:flex;align-items:center;gap:10px;margin:6px 0}
+  .gauge .num{font-size:22px;font-weight:700;min-width:42px}
+  .gtrack{flex:1;height:8px;border-radius:6px;background:linear-gradient(90deg,#ff5d6c,#ffcf5c,#3ddc97)}
+  .gtrack > i{display:block;width:2px;height:14px;background:#fff;border-radius:2px;position:relative;top:-3px}
+  .step{padding:5px 0;color:var(--mut)} .step b{color:var(--txt)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--grn);margin-right:6px}
+  a{color:var(--blu)}
+  .foot{color:var(--mut);font-size:11px;text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div>
+      <h1>🤖 Claude Trading Desk <span class="pill" id="mktpill"></span></h1>
+      <div class="mut" id="acctline"></div>
+    </div>
+    <div class="meta">
+      <div>Updated: <span id="updated"></span></div>
+      <div id="mktstatus"></div>
+      <div style="margin-top:4px"><button onclick="location.reload()" style="background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer">↻ refresh</button></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Account / goal -->
+    <div class="card col4">
+      <h2>Account &amp; Goal</h2>
+      <div class="big" id="acctval"></div>
+      <div class="mut" id="goalline"></div>
+      <div class="bar"><i id="goalbar"></i></div>
+      <div class="row" style="margin-top:10px"><span class="mut">Cash</span><span id="cash"></span></div>
+    </div>
+
+    <!-- Bias / Fear & Greed -->
+    <div class="card col4">
+      <h2>Market Bias</h2>
+      <div class="big" id="biascall"></div>
+      <div class="mut" id="biasdetail" style="font-size:12px"></div>
+      <div style="margin-top:12px">
+        <div class="mut" style="font-size:11px">STOCK FEAR &amp; GREED</div>
+        <div class="gauge"><span class="num" id="sfgnum"></span><div class="gtrack"><i id="sfgmark"></i></div><span class="mut" id="sfglbl"></span></div>
+        <div class="mut" style="font-size:11px;margin-top:6px">CRYPTO FEAR &amp; GREED</div>
+        <div class="gauge"><span class="num" id="cfgnum"></span><div class="gtrack"><i id="cfgmark"></i></div><span class="mut" id="cfglbl"></span></div>
+      </div>
+    </div>
+
+    <!-- Positions -->
+    <div class="card col4">
+      <h2>Open Positions</h2>
+      <div id="positions"></div>
+    </div>
+
+    <!-- Live thought process -->
+    <div class="card col6">
+      <h2>🧠 Live Thought Process</h2>
+      <div id="thoughts"></div>
+    </div>
+
+    <!-- Plan / clock -->
+    <div class="card col6">
+      <h2 id="plantitle"></h2>
+      <div id="plan"></div>
+      <h2 style="margin-top:14px">Alerts</h2>
+      <div id="alerts"></div>
+    </div>
+
+    <!-- Watchlist -->
+    <div class="card col8">
+      <h2>Watchlist — 50-DMA Scan</h2>
+      <table>
+        <thead><tr><th>Sym</th><th>Price</th><th>50-DMA</th><th>vs</th><th>Status</th><th>Note</th></tr></thead>
+        <tbody id="watch"></tbody>
+      </table>
+    </div>
+
+    <!-- Monitors / rules -->
+    <div class="card col4">
+      <h2>Monitors</h2>
+      <div id="monitors"></div>
+      <h2 style="margin-top:14px">Hard Rules</h2>
+      <div class="step">⛔ <b>No trades before 9:00 AM CT</b></div>
+      <div class="step">👀 8:30–9:30 CT = observe only</div>
+      <div class="step">🎯 4 filters: trend · news · F&amp;G · sentiment</div>
+      <div class="step">📉 Tight stops · no churn · 1 name</div>
+      <div class="step">🏦 Agentic account only</div>
+    </div>
+  </div>
+
+  <div class="foot">Auto-refreshes every 60s · Edit <code>data.js</code> to customize · Claude updates live state &amp; thoughts</div>
+
+<script src="data.js"></script>
+<script>
+  const D = window.DASHBOARD_DATA || {};
+  const $ = id => document.getElementById(id);
+  const money = n => "$"+Number(n).toFixed(2);
+
+  // header
+  $("updated").textContent = D.meta?.updated || "—";
+  $("mktstatus").textContent = D.meta?.marketStatus || "";
+  $("acctline").textContent = "Account: " + (D.meta?.account || "");
+  const closed = (D.meta?.marketStatus||"").toUpperCase().includes("CLOSED");
+  const mp=$("mktpill"); mp.textContent = closed?"MARKET CLOSED":"LIVE";
+  mp.style.background = closed?"rgba(255,93,108,.15)":"rgba(61,220,151,.15)";
+  mp.style.color = closed?"var(--red)":"var(--grn)";
+
+  // account
+  const a=D.account||{};
+  $("acctval").textContent = money(a.value||0);
+  $("goalline").textContent = `Goal ${money(a.goal||20)} by ${a.goalDate||""}  ·  start ${money(a.start||14)}`;
+  const prog = Math.max(0,Math.min(100, ((a.value-a.start)/((a.goal-a.start)||1))*100));
+  $("goalbar").style.width = prog+"%";
+  $("cash").textContent = money(a.cash||0);
+
+  // bias + F&G
+  const b=D.bias||{};
+  $("biascall").textContent = b.call||"—";
+  $("biasdetail").textContent = b.detail||"";
+  const setFG=(num,lbl,mark,o)=>{ if(!o)return; $(num).textContent=o.value; $(lbl).textContent=o.label;
+    $(mark).style.marginLeft = `calc(${o.value}% - 2px)`; };
+  setFG("sfgnum","sfglbl","sfgmark",b.stockFG);
+  setFG("cfgnum","cfglbl","cfgmark",b.cryptoFG);
+
+  // positions
+  $("positions").innerHTML = (D.positions||[]).map(p=>{
+    const val=p.shares*p.last, pl=val-(p.shares*p.cost), plpct=(p.last/p.cost-1)*100;
+    const cls=pl>=0?"grn":"red";
+    return `<div style="margin-bottom:8px">
+      <div class="row"><span><b>${p.symbol}</b> <span class="mut">${p.shares} sh</span></span>
+      <span class="${cls}">${money(val)} (${pl>=0?'+':''}${plpct.toFixed(1)}%)</span></div>
+      <div class="mut" style="font-size:11px">cost ${money(p.cost)} · last ${money(p.last)} · stop <span class="red">${money(p.stop)}</span></div>
+      <div class="mut" style="font-size:11px">${p.note||""}</div></div>`;
+  }).join("") || '<div class="mut">No open positions</div>';
+
+  // thoughts
+  $("thoughts").innerHTML = (D.thoughts||[]).map(t=>
+    `<div class="thought"><span class="t">${t.t}</span> &nbsp;${t.text}</div>`).join("");
+
+  // plan
+  $("plantitle").textContent = D.plan?.title || "Plan";
+  $("plan").innerHTML = (D.plan?.steps||[]).map(s=>`<div class="step">• ${s}</div>`).join("");
+
+  // alerts
+  $("alerts").innerHTML = (D.alerts||[]).map(x=>
+    `<div class="step"><span class="tag st-pullback">${x.tag}</span> ${x.text}</div>`).join("");
+
+  // watchlist
+  $("watch").innerHTML = (D.watchlist||[]).map(w=>{
+    const diff=((w.p/w.ma-1)*100);
+    const dcls=diff>=0?"grn":"red";
+    return `<tr><td><b>${w.s}</b></td><td>$${w.p.toFixed(2)}</td><td class="mut">$${w.ma.toFixed(2)}</td>
+      <td class="${dcls}">${diff>=0?'+':''}${diff.toFixed(1)}%</td>
+      <td><span class="tag st-${w.st}">${w.st}</span></td>
+      <td class="mut">${w.note||""}</td></tr>`;
+  }).join("");
+
+  // monitors
+  $("monitors").innerHTML = (D.monitors||[]).map(m=>
+    `<div class="row"><span><span class="dot"></span>${m.name}</span><span class="mut">${m.id}</span></div>`).join("");
+
+  // auto-refresh every 60s
+  setTimeout(()=>location.reload(), 60000);
+</script>
+</body>
+</html>
