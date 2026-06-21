@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Returns &amp; Firm Fee Dashboard</title>
+<title>Whitaker Financial — Returns &amp; Firm Fee Dashboard</title>
 <style>
   :root {
     --bg: #0f1419;
@@ -23,6 +23,15 @@
     color: var(--text);
     padding: 24px;
   }
+  .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .brand .logo {
+    width: 46px; height: 46px; border-radius: 10px; flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--accent), #1e8e50);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 20px; color: #0f1419; letter-spacing: -1px;
+  }
+  .brand .name { font-size: 22px; font-weight: 800; letter-spacing: .3px; }
+  .brand .tag { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
   h1 { margin: 0 0 4px; font-size: 24px; }
   .sub { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
   .controls {
@@ -54,8 +63,14 @@
 </style>
 </head>
 <body>
-  <h1>Returns &amp; Firm Fee Dashboard</h1>
-  <p class="sub">Investment growth with your firm's profit share. Edit any value to recalculate.</p>
+  <div class="brand">
+    <div class="logo">WF</div>
+    <div>
+      <div class="name">Whitaker Financial</div>
+      <div class="tag">Returns &amp; Profit-Share Dashboard</div>
+    </div>
+  </div>
+  <p class="sub">Investment growth with Whitaker Financial's profit share. Edit any value to recalculate.</p>
 
   <div class="controls">
     <div class="field">
@@ -69,6 +84,17 @@
     <div class="field">
       <label>Firm Fee (% of profit)</label>
       <input type="number" id="fee" value="10" step="0.5">
+    </div>
+    <div class="field">
+      <label>Compound For</label>
+      <input type="number" id="duration" value="12" min="1" step="1">
+    </div>
+    <div class="field">
+      <label>Period Unit</label>
+      <select id="unit">
+        <option value="1">Months</option>
+        <option value="12">Years</option>
+      </select>
     </div>
   </div>
 
@@ -107,12 +133,14 @@ function calc() {
   const principal = parseFloat($("principal").value) || 0;
   const mRate = (parseFloat($("rate").value) || 0) / 100;
   const fee = (parseFloat($("fee").value) || 0) / 100;
+  const unit = parseInt($("unit").value, 10);          // 1 = months, 12 = years
+  const totalMonths = Math.max(1, Math.round((parseFloat($("duration").value) || 1) * unit));
 
   const months = [];
   let bal = principal;
 
-  // 10% (or whatever rate) per month, compounding for 12 months
-  for (let m = 1; m <= 12; m++) {
+  // Compound at the monthly rate for the chosen number of months
+  for (let m = 1; m <= totalMonths; m++) {
     const start = bal;
     const ret = start * mRate;
     bal = start + ret;
@@ -138,15 +166,16 @@ function calc() {
   ).join("");
 
   $("foot").innerHTML =
-    `<td>Year</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
+    `<td>Total (${totalMonths} mo)</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
 
   $("note").innerHTML =
-    `<strong>How the firm's cut works:</strong> The firm takes ${($("fee").value||0)}% of the <em>profit only</em> (not the principal). ` +
+    `<strong>How Whitaker Financial's cut works:</strong> The firm takes ${($("fee").value||0)}% of the <em>profit only</em> (not the principal), ` +
+    `over a ${totalMonths}-month compounding period. ` +
     `Gross profit of <strong>${fmt(profit)}</strong> → firm keeps <strong>${fmt(firmFee)}</strong>, client keeps <strong>${fmt(clientNetProfit)}</strong>. ` +
     `Client walks away with <strong>${fmt(clientNetBal)}</strong>.`;
 }
 
-["principal","rate","fee","mode"].forEach(id => $(id).addEventListener("input", calc));
+["principal","rate","fee","duration","unit"].forEach(id => $(id).addEventListener("input", calc));
 calc();
 </script>
 </body>
