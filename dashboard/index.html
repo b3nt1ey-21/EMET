@@ -68,9 +68,20 @@
   .ground{position:absolute;left:0;right:0;bottom:0;height:36px;background:linear-gradient(180deg,#dff5e7,#c8eed7)}
   .cloud{position:absolute;font-size:24px;opacity:.7;animation:drift 22s linear infinite}
   @keyframes drift{from{left:-8%}to{left:108%}}
-  .plane{position:absolute;left:44%;font-size:36px;transition:top .9s ease,transform .9s ease,filter .9s;
-         animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 3px 4px rgba(0,0,0,.12))}
+  .plane{position:absolute;left:44%;width:74px;transition:top .9s ease,transform .9s ease,filter .9s;
+         animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 3px 4px rgba(0,0,0,.12));transform-origin:center}
+  .plane svg{display:block;width:100%}
   @keyframes bob{0%,100%{margin-top:0}50%{margin-top:-9px}}
+  .plane.crashing{animation:crashdive 1.7s cubic-bezier(.6,0,.9,.5) forwards}
+  @keyframes crashdive{0%{top:14%;left:48%;transform:rotate(-8deg)}
+    55%{transform:rotate(40deg)}100%{top:60%;left:24%;transform:rotate(85deg)}}
+  .boom{position:absolute;left:22%;top:58%;font-size:0;opacity:0;pointer-events:none}
+  .boom.go{animation:boom 1.1s ease-out 1.45s forwards}
+  @keyframes boom{0%{font-size:0;opacity:0}35%{font-size:50px;opacity:1}100%{font-size:42px;opacity:.92}}
+  .smoke{position:absolute;left:24%;top:52%;font-size:0;opacity:0;pointer-events:none}
+  .smoke.go{animation:smoke 2.1s ease-out 1.7s infinite}
+  @keyframes smoke{0%{font-size:20px;opacity:.75;transform:translateY(0)}100%{font-size:34px;opacity:0;transform:translateY(-46px)}}
+  .crashbadge{background:rgba(226,55,68,.16)!important;color:var(--red);border-color:var(--red)!important}
   .tiger{position:absolute;bottom:3px;font-size:32px;animation:run 6s linear infinite}
   @keyframes run{0%{left:-7%;transform:scaleX(1)}48%{left:101%;transform:scaleX(1)}
                  50%{left:101%;transform:scaleX(-1)}98%{left:-7%;transform:scaleX(-1)}100%{left:-7%;transform:scaleX(1)}}
@@ -183,7 +194,19 @@
         <span class="cloud" style="top:18px;animation-delay:0s">☁️</span>
         <span class="cloud" style="top:54px;animation-delay:-11s;font-size:18px">☁️</span>
         <div class="mkt-badge" id="mktbadge"></div>
-        <div class="plane" id="plane">✈️</div>
+        <div class="plane" id="plane">
+          <svg viewBox="0 0 82 34" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 17 L2 2 L17 15 Z" fill="#2b6fb0"/>
+            <path d="M12 14 Q43 7.5 75 15 Q78 16.5 75 18 Q43 23.5 14 20 Q8.5 17 12 14 Z" fill="#eef2f8" stroke="#9fb2cc" stroke-width="1"/>
+            <ellipse cx="75" cy="16.4" rx="2.6" ry="2.3" fill="#cdd8ea"/>
+            <path d="M37 16 L28 29 L50 18 Z" fill="#5cc8ff"/>
+            <path d="M18 15 L13 24 L27 17 Z" fill="#79b7e6"/>
+            <rect x="44" y="18.5" width="9" height="3" rx="1.5" fill="#9fb2cc"/>
+            <g fill="#1f7ae0"><circle cx="41" cy="14.6" r="1"/><circle cx="47" cy="14.8" r="1"/><circle cx="53" cy="15.1" r="1"/><circle cx="59" cy="15.4" r="1"/><circle cx="65" cy="15.7" r="1"/></g>
+          </svg>
+        </div>
+        <div class="smoke" id="smoke">💨</div>
+        <div class="boom" id="boom">💥</div>
         <div class="ground"></div>
         <div class="tiger" id="tiger">🐅</div>
       </div>
@@ -342,18 +365,29 @@
 
   // market movement scene (plane + tiger)
   const m = D.market || {changePct:0, label:"US Market"};
-  const up = (m.changePct||0) >= 0;
-  const plane=$("plane"), sky=$("sky"), tiger=$("tiger");
-  plane.style.top = up ? "16%" : "58%";
-  plane.style.transform = `rotate(${up ? -18 : 18}deg)`;
-  plane.style.filter = `drop-shadow(0 3px 4px rgba(0,0,0,.12)) ${up?'':'hue-rotate(-15deg)'}`;
-  sky.style.background = up
-    ? "linear-gradient(180deg,#e6f6ee,#f4fbf7)"
-    : "linear-gradient(180deg,#fdeaec,#fff5f6)";
-  $("mktbadge").innerHTML = `${m.label}: <span class="${up?'grn':'red'}">${up?'▲':'▼'} ${m.changePct>=0?'+':''}${m.changePct}%</span>`;
-  // tiger sprints faster when the move is bigger / greed is higher
-  const speed = Math.max(2.5, 6 - Math.abs(m.changePct||0)*0.6);
-  tiger.style.animationDuration = speed + "s";
+  const chg = m.changePct||0, up = chg>=0;
+  const CRASH = chg <= -1.5;   // big down day -> plane goes down in flames
+  const RALLY = chg >=  1.5;   // big up day -> plane soars
+  const plane=$("plane"), sky=$("sky"), tiger=$("tiger"), badge=$("mktbadge");
+
+  if (CRASH){
+    plane.classList.add("crashing");
+    $("boom").classList.add("go");
+    $("smoke").classList.add("go");
+    sky.style.background = "linear-gradient(180deg,#fbdde0,#fff1f2)";
+    badge.className = "mkt-badge crashbadge";
+    badge.innerHTML = `🚨 MARKET CRASH &nbsp;<b>▼ ${chg}%</b>`;
+  } else {
+    plane.style.top = RALLY ? "7%" : (up ? "18%" : "56%");
+    plane.style.transform = `rotate(${RALLY ? -28 : (up ? -14 : 16)}deg)`;
+    sky.style.background = up ? "linear-gradient(180deg,#e6f6ee,#f4fbf7)"
+                              : "linear-gradient(180deg,#fdeaec,#fff5f6)";
+    badge.className = "mkt-badge";
+    badge.innerHTML = `${m.label}: <span class="${up?'grn':'red'}">${up?'▲':'▼'} ${chg>=0?'+':''}${chg}%</span>`
+                    + (RALLY ? ' 🚀' : '');
+  }
+  // tiger sprints faster when the move is bigger
+  tiger.style.animationDuration = Math.max(2.2, 6 - Math.abs(chg)*0.7) + "s";
 
   // auto-refresh every 60s
   setTimeout(()=>location.reload(), 60000);
