@@ -99,4 +99,19 @@ window.DASHBOARD_DATA = {
     { name:"Watchlist heartbeat", id:"bo6d2q29w", status:"armed" },
     { name:"Trump real-time (mkt hrs)", id:"be000m06c", status:"armed" },
   ],
+
+  // ---- Tax assumptions (edit to your bracket) ----
+  tax: { shortRate: 0.24, longRate: 0.15, note: "Short-term taxed as ordinary income; long-term >1yr at 15%; losses untaxed." },
+
+  // ---- Trade log / spreadsheet (every trade, win or lose) ----
+  // result: OPEN | WIN | LOSS ; term: SHORT | LONG | OPEN
+  trades: [
+    { n:1, symbol:"MARA", status:"OPEN", buyDate:"2026-06-18", buyPrice:14.35, shares:0.975616,
+      cost:14.00, sellDate:"", sellPrice:null, proceeds:null, holdDays:null, term:"OPEN",
+      pl:-0.13, plPct:-0.9, result:"OPEN", taxable:0, taxRate:null, estTax:0, net:null },
+  ],
+  tradeSummary: {
+    realizedGains:0, realizedLosses:0, netRealized:0, netTaxable:0, estTax:0,
+    wins:0, losses:0, open:1, winRate:"—",
+  },
 };

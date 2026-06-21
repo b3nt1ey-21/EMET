@@ -127,6 +127,23 @@
       <div class="step">📉 Tight stops · no churn · 1 name</div>
       <div class="step">🏦 Agentic account only</div>
     </div>
+
+    <!-- Trades & Tax — built-in spreadsheet -->
+    <div class="card col12">
+      <h2>📒 Trade Log &amp; Tax — built-in spreadsheet (no Excel needed)</h2>
+      <div id="tradesum" style="margin-bottom:10px;font-size:13px"></div>
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Sym</th><th>Status</th><th>Buy Date</th><th>Buy $</th><th>Shares</th><th>Cost $</th>
+          <th>Sell Date</th><th>Sell $</th><th>Hold</th><th>Term</th><th>P/L $</th><th>P/L %</th>
+          <th>Result</th><th>Taxable $</th><th>Tax %</th><th>Est Tax $</th><th>Net $</th>
+        </tr></thead>
+        <tbody id="trades"></tbody>
+      </table>
+      </div>
+      <div class="mut" style="font-size:11px;margin-top:8px" id="taxnote"></div>
+    </div>
   </div>
 
   <div class="foot">Auto-refreshes every 60s · Edit <code>data.js</code> to customize · Claude updates live state &amp; thoughts</div>
@@ -199,6 +216,31 @@
   // monitors
   $("monitors").innerHTML = (D.monitors||[]).map(m=>
     `<div class="row"><span><span class="dot"></span>${m.name}</span><span class="mut">${m.id}</span></div>`).join("");
+
+  // trades + tax (built-in spreadsheet)
+  const fmt=(v,d=2)=> (v==null||v==="")?"—":(typeof v==="number"?v.toFixed(d):v);
+  $("trades").innerHTML = (D.trades||[]).map(t=>{
+    const rcls = t.result==="WIN"?"grn":t.result==="LOSS"?"red":"mut";
+    const plcls = (t.pl||0)>=0?"grn":"red";
+    return `<tr>
+      <td>${t.n}</td><td><b>${t.symbol}</b></td><td>${t.status}</td>
+      <td class="mut">${t.buyDate||"—"}</td><td>$${fmt(t.buyPrice)}</td><td>${fmt(t.shares,4)}</td><td>$${fmt(t.cost)}</td>
+      <td class="mut">${t.sellDate||"—"}</td><td>${t.sellPrice==null?"—":"$"+fmt(t.sellPrice)}</td>
+      <td>${t.holdDays==null?"—":t.holdDays+"d"}</td><td>${t.term}</td>
+      <td class="${plcls}">${t.pl==null?"—":(t.pl>=0?"+":"-")+"$"+Math.abs(t.pl).toFixed(2)}</td>
+      <td class="${plcls}">${t.plPct==null?"—":(t.plPct>=0?"+":"")+t.plPct+"%"}</td>
+      <td class="${rcls}"><b>${t.result}</b></td>
+      <td>$${fmt(t.taxable)}</td><td>${t.taxRate==null?"—":(t.taxRate*100)+"%"}</td>
+      <td>$${fmt(t.estTax)}</td><td>${t.net==null?"—":"$"+fmt(t.net)}</td>
+    </tr>`;
+  }).join("");
+  const ts=D.tradeSummary||{}, tx=D.tax||{};
+  $("tradesum").innerHTML =
+    `Realized P/L: <b class="${(ts.netRealized||0)>=0?'grn':'red'}">$${(ts.netRealized||0).toFixed(2)}</b> &nbsp;·&nbsp; `+
+    `Wins <b class="grn">${ts.wins||0}</b> / Losses <b class="red">${ts.losses||0}</b> &nbsp;·&nbsp; `+
+    `Win rate ${ts.winRate||"—"} &nbsp;·&nbsp; Open ${ts.open||0} &nbsp;·&nbsp; `+
+    `Est tax owed <b>$${(ts.estTax||0).toFixed(2)}</b>`;
+  $("taxnote").textContent = (tx.note||"") + `  —  ST ${Math.round((tx.shortRate||.24)*100)}% · LT ${Math.round((tx.longRate||.15)*100)}% · losses untaxed (and offset gains).`;
 
   // auto-refresh every 60s
   setTimeout(()=>location.reload(), 60000);
