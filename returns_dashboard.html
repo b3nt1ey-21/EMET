@@ -63,25 +63,18 @@
       <input type="number" id="principal" value="1000" min="0" step="100">
     </div>
     <div class="field">
-      <label>Annual Return (%)</label>
+      <label>Monthly Return (%)</label>
       <input type="number" id="rate" value="10" step="0.5">
     </div>
     <div class="field">
       <label>Firm Fee (% of profit)</label>
       <input type="number" id="fee" value="10" step="0.5">
     </div>
-    <div class="field">
-      <label>Compounding</label>
-      <select id="mode">
-        <option value="monthly">Monthly (10%/yr ÷ 12)</option>
-        <option value="annual">Simple annual</option>
-      </select>
-    </div>
   </div>
 
   <div class="cards">
     <div class="card"><div class="k">Starting Balance</div><div class="v" id="c-start">$1,000.00</div></div>
-    <div class="card"><div class="k">Gross End Balance</div><div class="v green" id="c-gross">$1,100.00</div></div>
+    <div class="card"><div class="k">Gross End Balance</div><div class="v green" id="c-gross">$3,138.43</div></div>
     <div class="card"><div class="k">Total Profit</div><div class="v green" id="c-profit">$100.00</div></div>
     <div class="card"><div class="k">Firm Fee (10%)</div><div class="v gold" id="c-fee">$10.00</div></div>
     <div class="card"><div class="k">Client Net Profit</div><div class="v green" id="c-net">$90.00</div></div>
@@ -112,31 +105,18 @@ const fmt = n => "$" + n.toLocaleString("en-US", {minimumFractionDigits: 2, maxi
 
 function calc() {
   const principal = parseFloat($("principal").value) || 0;
-  const rate = (parseFloat($("rate").value) || 0) / 100;
+  const mRate = (parseFloat($("rate").value) || 0) / 100;
   const fee = (parseFloat($("fee").value) || 0) / 100;
-  const mode = $("mode").value;
 
   const months = [];
   let bal = principal;
 
-  if (mode === "monthly") {
-    const mRate = rate / 12;
-    for (let m = 1; m <= 12; m++) {
-      const start = bal;
-      const ret = start * mRate;
-      bal = start + ret;
-      months.push({ m, start, ret, end: bal, cum: bal - principal });
-    }
-  } else {
-    // simple annual: one lump at end of year, shown evenly for the table
-    const totalRet = principal * rate;
-    for (let m = 1; m <= 12; m++) {
-      const start = principal + totalRet * (m - 1) / 12;
-      const ret = totalRet / 12;
-      const end = start + ret;
-      months.push({ m, start, ret, end, cum: end - principal });
-    }
-    bal = principal + totalRet;
+  // 10% (or whatever rate) per month, compounding for 12 months
+  for (let m = 1; m <= 12; m++) {
+    const start = bal;
+    const ret = start * mRate;
+    bal = start + ret;
+    months.push({ m, start, ret, end: bal, cum: bal - principal });
   }
 
   const gross = bal;
