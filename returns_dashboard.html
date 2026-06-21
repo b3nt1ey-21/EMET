@@ -247,7 +247,7 @@
   <div class="charts-row">
     <div class="chartwrap reveal">
       <div class="chart-head">
-        <span class="chart-title">Watch it grow</span>
+        <span class="chart-title">Potential growth</span>
         <span class="chart-end" id="chart-end"></span>
       </div>
       <svg id="chart" viewBox="0 0 640 200" preserveAspectRatio="none" aria-hidden="true">
@@ -302,11 +302,11 @@
 
   <div class="cards">
     <div class="card reveal"><div class="k">Starting Balance</div><div class="v" id="c-start">$1,000.00</div></div>
-    <div class="card reveal"><div class="k">Gross End Balance</div><div class="v green" id="c-gross">$3,138.43</div></div>
-    <div class="card reveal"><div class="k">Total Profit</div><div class="v green" id="c-profit">$100.00</div></div>
+    <div class="card reveal"><div class="k">Potential Gross Balance</div><div class="v green" id="c-gross">$3,138.43</div></div>
+    <div class="card reveal"><div class="k">Potential Profit</div><div class="v green" id="c-profit">$100.00</div></div>
     <div class="card reveal"><div class="k">Firm Fee (call for estimate fee %)</div><div class="v gold" id="c-fee">$10.00</div></div>
-    <div class="card reveal"><div class="k">Client Net Profit</div><div class="v green" id="c-net">$90.00</div></div>
-    <div class="card reveal"><div class="k">What You Take Home</div><div class="v" id="c-netbal">$1,090.00</div></div>
+    <div class="card reveal"><div class="k">Potential Net Profit</div><div class="v green" id="c-net">$90.00</div></div>
+    <div class="card reveal"><div class="k">What You Could Take Home</div><div class="v" id="c-netbal">$1,090.00</div></div>
   </div>
 
   <table class="reveal">
@@ -462,9 +462,9 @@ function calc() {
 
   // fee breakdown
   $("note").innerHTML =
-    `<strong>Here's the honest breakdown:</strong> over ${totalMonths} month${totalMonths === 1 ? "" : "s"}, your ${fmt(principal)} grows to <strong>${fmt(gross)}</strong> — that's <strong>${fmt(profit)}</strong> in profit. ` +
-    `We only earn when you do, so our ${($("fee").value||0)}% comes out of the <em>profit</em> (never your original deposit): <strong>${fmt(firmFee)}</strong> to us, <strong>${fmt(clientNetProfit)}</strong> stays with you. ` +
-    `You walk away with <strong>${fmt(clientNetBal)}</strong>.`;
+    `<strong>Here's the breakdown:</strong> over ${totalMonths} month${totalMonths === 1 ? "" : "s"}, your ${fmt(principal)} could potentially grow to <strong>${fmt(gross)}</strong> — a potential <strong>${fmt(profit)}</strong> in profit. ` +
+    `We only earn when you do, so our ${($("fee").value||0)}% would come out of the <em>profit</em> (never your original deposit): <strong>${fmt(firmFee)}</strong> to us, <strong>${fmt(clientNetProfit)}</strong> to you. ` +
+    `You could walk away with <strong>${fmt(clientNetBal)}</strong>. <em>These are illustrations, not guaranteed returns.</em>`;
 }
 
 // Draw our growth curve and animate it in
@@ -558,11 +558,11 @@ function renderIxChart() {
   const ourEnd = principal * Math.pow(1 + mRate, mo);
   const diff = ourEnd - idxEnd;
   const verdict = diff >= 0
-    ? `Your Whitaker plan would be <strong>${fmt(ourEnd)}</strong> — <strong>${fmt(diff)}</strong> more.`
-    : `Your Whitaker plan would be <strong>${fmt(ourEnd)}</strong> (${fmt(Math.abs(diff))} less).`;
+    ? `At that rate your Whitaker plan could potentially be <strong>${fmt(ourEnd)}</strong> — about <strong>${fmt(diff)}</strong> more.`
+    : `At that rate your Whitaker plan could potentially be <strong>${fmt(ourEnd)}</strong> (about ${fmt(Math.abs(diff))} less).`;
   $("ix-note").innerHTML =
-    `${fmt(principal)} in ${ix.name} over ${TF[ixState.tf].label} → <strong>${fmt(idxEnd)}</strong>. ${verdict} ` +
-    `<em>Real ${ix.etf} prices (dividend-adjusted); live quote via StockTwits.</em>`;
+    `${fmt(principal)} in ${ix.name} over the past ${TF[ixState.tf].label} would have been <strong>${fmt(idxEnd)}</strong>. ${verdict} ` +
+    `<em>Real ${ix.etf} prices (dividend-adjusted); live quote via StockTwits. Past performance doesn't guarantee future results.</em>`;
 
   const len = lineEl.getTotalLength();
   if (reduceMotion) {
