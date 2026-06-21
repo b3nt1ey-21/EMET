@@ -79,6 +79,7 @@
     background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
     padding: 18px 20px 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(16,24,40,.06);
     transition: box-shadow .25s ease;
+    display: flex; flex-direction: column;
   }
   .chartwrap:hover { box-shadow: 0 6px 18px rgba(16,24,40,.08); }
   .sp-banner {
@@ -96,7 +97,6 @@
   .sp-chg { font-weight: 700; }
   .sp-chg.up { color: var(--accent); }
   .sp-chg.down { color: #c0392b; }
-  .sp-asof { color: var(--muted); font-size: 11px; margin-left: auto; }
   .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
   .chart-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
   .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); font-weight: 600; flex-wrap: wrap; }
@@ -106,7 +106,7 @@
   .chart-end { font-size: 18px; font-weight: 700; color: var(--accent); }
   .chart-note { margin: 10px 2px 4px; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
   .chart-note strong { color: var(--text); }
-  #chart { width: 100%; height: 200px; display: block; overflow: visible; }
+  #chart { width: 100%; flex: 1; min-height: 200px; display: block; overflow: visible; }
   #chart-line { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); }
   #chart-line.draw { transition: stroke-dashoffset 1.4s cubic-bezier(.22,.7,.25,1); stroke-dashoffset: 0; }
   #chart-area { opacity: 0; transition: opacity .9s ease .5s; }
@@ -165,34 +165,32 @@
   .controls { transition: box-shadow .25s ease; }
   .controls:hover { box-shadow: 0 6px 18px rgba(16,24,40,.08); }
 
-  /* two charts side by side; calculator wider, explorer narrower */
-  .charts-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-bottom: 24px; align-items: start; }
+  /* two charts side by side; calculator wider, explorer narrower, equal height */
+  .charts-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-bottom: 24px; align-items: stretch; }
   .charts-row .chartwrap { margin-bottom: 0; }
   @media (max-width: 760px) { .charts-row { grid-template-columns: 1fr; } }
 
   .ixwrap {
     background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
-    padding: 14px 16px; box-shadow: 0 1px 3px rgba(16,24,40,.06);
+    padding: 18px 20px 8px; box-shadow: 0 1px 3px rgba(16,24,40,.06);
+    display: flex; flex-direction: column;
   }
-  .ix-controls { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-  .ix-title { font-size: 14px; font-weight: 800; color: var(--navy); }
+  .ix-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .ix-controls select {
     background: #fff; border: 1px solid var(--border); color: var(--text);
-    padding: 6px 9px; border-radius: 7px; font-size: 13px; font-weight: 600;
+    padding: 6px 9px; border-radius: 7px; font-size: 13px; font-weight: 600; flex: 0 0 auto;
   }
-  .ix-tabs { display: flex; background: var(--panel2); border: 1px solid var(--border); border-radius: 8px; padding: 2px; gap: 1px; margin-bottom: 10px; }
+  .ix-tabs { display: flex; flex: 1; background: var(--panel2); border: 1px solid var(--border); border-radius: 8px; padding: 2px; gap: 1px; }
   .ix-tabs button {
     flex: 1; border: none; background: transparent; color: var(--muted); font-weight: 700;
     font-size: 12px; padding: 5px 4px; border-radius: 6px; cursor: pointer; transition: all .18s ease;
   }
   .ix-tabs button:hover { color: var(--navy); }
   .ix-tabs button.active { background: var(--navy); color: #fff; box-shadow: 0 2px 6px rgba(27,58,91,.25); }
-  .ix-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 2px; }
-  .ix-name { font-size: 14px; font-weight: 800; color: var(--navy); }
-  .ix-period { font-size: 13px; font-weight: 700; }
+  .ix-period { font-size: 16px; font-weight: 700; }
   .ix-period.up { color: var(--accent); }
   .ix-period.down { color: #c0392b; }
-  #ixchart { width: 100%; height: 150px; display: block; overflow: visible; }
+  #ixchart { width: 100%; flex: 1; min-height: 150px; display: block; overflow: visible; }
   #ix-line { stroke-dasharray: var(--ixlen); stroke-dashoffset: var(--ixlen); }
   #ix-line.draw { transition: stroke-dashoffset 1.3s cubic-bezier(.22,.7,.25,1); stroke-dashoffset: 0; }
   #ix-area { opacity: 0; transition: opacity .8s ease .5s; }
@@ -253,51 +251,40 @@
         <path id="chart-area" fill="url(#fillGrad)" stroke="none"></path>
         <path id="chart-line" fill="none" stroke="#1a7a4c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
       <circle id="chart-dot" r="5" fill="#1a7a4c" stroke="#fff" stroke-width="2.5" opacity="0"></circle>
-      <g id="chart-car" opacity="0">
-        <g transform="translate(-15,-19)">
-          <ellipse cx="15" cy="17" rx="13" ry="2.4" fill="rgba(16,24,40,.18)"/>
-          <path d="M3 13 L6.5 6.5 Q7.3 5 9.4 5 L18 5 Q20.2 5 21.6 6.6 L25 10.5 Q28 11 28 13.4 L28 14.6 Q28 15.6 27 15.6 L4 15.6 Q3 15.6 3 14.6 Z" fill="#1b3a5b"/>
-          <path d="M8.6 6.4 L17.4 6.4 Q19 6.4 20 7.6 L22.4 10.3 L9 10.3 Z" fill="#cfe0ee"/>
-          <circle cx="9" cy="15.8" r="3" fill="#222"/><circle cx="9" cy="15.8" r="1.3" fill="#b9c2cc"/>
-          <circle cx="21" cy="15.8" r="3" fill="#222"/><circle cx="21" cy="15.8" r="1.3" fill="#b9c2cc"/>
-        </g>
-      </g>
     </svg>
     </div>
 
     <div class="ixwrap reveal">
+      <div class="chart-head">
+        <span class="chart-title" id="ix-name">S&amp;P 500</span>
+        <span class="ix-period" id="ix-period"></span>
+      </div>
       <div class="ix-controls">
-        <div class="ix-title">Index Explorer</div>
         <select id="ix-index">
           <option value="spx">S&amp;P 500</option>
           <option value="nasdaq">Nasdaq</option>
           <option value="dow">Dow Jones</option>
         </select>
+        <div class="ix-tabs" id="ix-tabs">
+          <button data-tf="1M">1M</button>
+          <button data-tf="3M">3M</button>
+          <button data-tf="6M">6M</button>
+          <button data-tf="1Y" class="active">1Y</button>
+          <button data-tf="5Y">5Y</button>
+          <button data-tf="MAX">Max</button>
+        </div>
       </div>
-      <div class="ix-tabs" id="ix-tabs">
-        <button data-tf="1M">1M</button>
-        <button data-tf="3M">3M</button>
-        <button data-tf="6M">6M</button>
-        <button data-tf="1Y" class="active">1Y</button>
-        <button data-tf="5Y">5Y</button>
-        <button data-tf="MAX">Max</button>
-      </div>
+      <svg id="ixchart" viewBox="0 0 640 200" preserveAspectRatio="none" aria-hidden="true">
+        <path id="ix-area" stroke="none"></path>
+        <path id="ix-line" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+        <circle id="ix-dot" r="4.5" stroke="#fff" stroke-width="2" opacity="0"></circle>
+      </svg>
       <div class="sp-banner">
         <span class="sp-dot"></span>
         <span>Live via <strong>StockTwits</strong>:</span>
         <strong id="sp-live">—</strong>
         <span id="sp-chg" class="sp-chg">—</span>
-        <span class="sp-asof" id="sp-asof"></span>
       </div>
-      <div class="ix-head">
-        <span id="ix-name" class="ix-name">S&amp;P 500</span>
-        <span id="ix-period" class="ix-period"></span>
-      </div>
-      <svg id="ixchart" viewBox="0 0 640 220" preserveAspectRatio="none" aria-hidden="true">
-        <path id="ix-area" stroke="none"></path>
-        <path id="ix-line" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
-        <circle id="ix-dot" r="4.5" stroke="#fff" stroke-width="2" opacity="0"></circle>
-      </svg>
       <p class="chart-note" id="ix-note"></p>
     </div>
   </div>
@@ -485,7 +472,7 @@ function renderChart(principal, ours, gross) {
   const line = toPath(balances);
   const area = line + ` L ${x(n).toFixed(1)} ${H} L ${x(0).toFixed(1)} ${H} Z`;
 
-  const lineEl = $("chart-line"), areaEl = $("chart-area"), dot = $("chart-dot"), car = $("chart-car");
+  const lineEl = $("chart-line"), areaEl = $("chart-area"), dot = $("chart-dot");
   lineEl.setAttribute("d", line);
   areaEl.setAttribute("d", area);
   dot.setAttribute("cx", x(n));
@@ -497,9 +484,6 @@ function renderChart(principal, ours, gross) {
   if (reduceMotion) {
     lineEl.style.setProperty("--len", "0");
     areaEl.classList.add("show"); dot.classList.add("show");
-    const p = lineEl.getPointAtLength(len);
-    car.setAttribute("transform", `translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
-    car.setAttribute("opacity", "1");
     return;
   }
 
@@ -514,29 +498,6 @@ function renderChart(principal, ours, gross) {
     areaEl.classList.add("show");
     dot.classList.add("show");
   });
-
-  driveCar(lineEl, car, len);
-}
-
-let carAnim = null;
-function driveCar(lineEl, car, len) {
-  if (carAnim) cancelAnimationFrame(carAnim);
-  const dur = 1400, start = performance.now();
-  car.setAttribute("opacity", "1");
-  function frame(now) {
-    const t = Math.min(1, (now - start) / dur);
-    const eased = 1 - Math.pow(1 - t, 3); // match the line's easeOut
-    const dist = len * eased;
-    const p = lineEl.getPointAtLength(dist);
-    // look slightly ahead so the car tilts uphill with the curve
-    const ahead = lineEl.getPointAtLength(Math.min(len, dist + 1));
-    let angle = Math.atan2(ahead.y - p.y, ahead.x - p.x) * 180 / Math.PI;
-    if (angle < -45) angle = -45; // keep it from looking like it's flipping
-    const bob = Math.sin(now / 90) * 0.6; // tiny engine wobble
-    car.setAttribute("transform", `translate(${p.x.toFixed(1)},${(p.y + bob).toFixed(1)}) rotate(${angle.toFixed(1)})`);
-    if (t < 1) carAnim = requestAnimationFrame(frame);
-  }
-  carAnim = requestAnimationFrame(frame);
 }
 
 ["principal","rate","fee","duration","unit"].forEach(id => $(id).addEventListener("input", calc));
@@ -549,7 +510,7 @@ const ixState = { key: "spx", tf: "1Y" };
 function renderIxChart() {
   const ix = IX[ixState.key];
   const data = ixData(ixState.key, ixState.tf);
-  const W = 640, H = 220, padX = 6, padTop = 16, padBot = 12;
+  const W = 640, H = 200, padX = 6, padTop = 16, padBot = 12;
   const n = data.length - 1;
   const min = Math.min(...data), max = Math.max(...data);
   const span = (max - min) || 1;
@@ -602,7 +563,6 @@ function renderQuote(q, etf) {
   const chg = $("sp-chg");
   chg.textContent = (up ? "▲ +" : "▼ ") + (+q.pct).toFixed(2) + "%";
   chg.className = "sp-chg " + (up ? "up" : "down");
-  $("sp-asof").textContent = "as of " + q.asof + " · via StockTwits (15-min delay)";
 }
 function loadQuote() {
   const ix = IX[ixState.key];
