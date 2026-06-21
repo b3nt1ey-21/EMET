@@ -384,7 +384,15 @@ function calc() {
   const mRate = (parseFloat($("rate").value) || 0) / 100;
   const fee = (parseFloat($("fee").value) || 0) / 100;
   const unit = parseInt($("unit").value, 10);          // 1 = months, 12 = years
-  const totalMonths = Math.max(1, Math.round((parseFloat($("duration").value) || 1) * unit));
+
+  // The comparison-period dropdown is the single source of truth for time.
+  // "Match my plan" uses the Compound For + Period Unit fields; otherwise
+  // the dropdown's years drive the WHOLE view so chart, cards and table agree.
+  const cmpSel = $("cmpPeriod").value;
+  const totalMonths = cmpSel === "match"
+    ? Math.max(1, Math.round((parseFloat($("duration").value) || 1) * unit))
+    : parseInt(cmpSel, 10) * 12;
+
   const months = [];
   let bal = principal;
 
@@ -402,23 +410,17 @@ function calc() {
   const clientNetProfit = profit - firmFee;
   const clientNetBal = principal + clientNetProfit;
 
-  // ---- comparison window (its own dropdown) ----
-  const cmpSel = $("cmpPeriod").value;
-  const cmpMonths = cmpSel === "match" ? totalMonths : parseInt(cmpSel, 10) * 12;
-  const cmpStartYear = Math.max(DATA_START, DATA_END - Math.ceil(cmpMonths / 12) + 1);
+  // Our chart line is exactly the plan above, so it always matches the table
+  const ours = [principal, ...months.map(m => m.end)];
+  const ourCmpGross = gross;
+  const cmpStartYear = Math.max(DATA_START, DATA_END - Math.ceil(totalMonths / 12) + 1);
 
-  // our line over the comparison window (gross performance, before fee)
-  const ours = [principal];
-  let cb = principal;
-  for (let i = 0; i < cmpMonths; i++) { cb *= (1 + mRate); ours.push(cb); }
-  const ourCmpGross = cb;
-
-  // selected index/indexes over the same window
+  // selected index/indexes over the SAME window
   const sel = $("index").value;
   const keys = sel === "all" ? ["spx", "nasdaq", "dow"] : [sel];
   const series = keys.map(k => {
     const ix = INDICES[k];
-    const path = indexSeries(ix, principal, cmpMonths);
+    const path = indexSeries(ix, principal, totalMonths);
     return { name: ix.name, color: ix.color, path, end: path[path.length - 1] };
   });
 
@@ -439,7 +441,7 @@ function calc() {
     `<td>Total (${totalMonths} mo)</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
 
   // chart caption: our window result vs each selected index
-  const winLabel = cmpMonths % 12 === 0 ? `${cmpMonths / 12} yr` : `${cmpMonths} mo`;
+  const winLabel = totalMonths % 12 === 0 ? `${totalMonths / 12} yr` : `${totalMonths} mo`;
   const idxBits = series.map(s => `<strong style="color:${s.color}">${s.name}</strong> ${fmt(s.end)}`).join(" · ");
   $("chart-note").innerHTML =
     `Over <strong>${winLabel}</strong>, ${fmt(principal)} with us grows to <strong>${fmt(ourCmpGross)}</strong> (before our fee). ` +
