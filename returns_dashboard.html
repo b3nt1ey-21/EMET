@@ -183,10 +183,6 @@
         <option value="12">Years</option>
       </select>
     </div>
-    <div class="field">
-      <label>S&amp;P 500 (avg annual %)</label>
-      <input type="number" id="sp" value="10" step="0.5">
-    </div>
   </div>
 
   <div class="chartwrap reveal">
@@ -194,7 +190,7 @@
       <span class="chart-title">Watch it grow</span>
       <span class="legend">
         <span class="lg lg-us"><i></i>Whitaker</span>
-        <span class="lg lg-sp"><i></i>S&amp;P 500</span>
+        <span class="lg lg-sp"><i></i>S&amp;P 500 (30-yr actual)</span>
       </span>
       <span class="chart-end" id="chart-end"></span>
     </div>
@@ -287,6 +283,41 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// S&P 500 total annual returns, 1995–2024 (approx., dividends reinvested)
+const SP_RETURNS = [
+  {y:1995, r: 0.376}, {y:1996, r: 0.230}, {y:1997, r: 0.334}, {y:1998, r: 0.286},
+  {y:1999, r: 0.210}, {y:2000, r:-0.091}, {y:2001, r:-0.119}, {y:2002, r:-0.221},
+  {y:2003, r: 0.287}, {y:2004, r: 0.109}, {y:2005, r: 0.049}, {y:2006, r: 0.158},
+  {y:2007, r: 0.055}, {y:2008, r:-0.370}, {y:2009, r: 0.265}, {y:2010, r: 0.151},
+  {y:2011, r: 0.021}, {y:2012, r: 0.160}, {y:2013, r: 0.324}, {y:2014, r: 0.137},
+  {y:2015, r: 0.014}, {y:2016, r: 0.120}, {y:2017, r: 0.218}, {y:2018, r:-0.044},
+  {y:2019, r: 0.315}, {y:2020, r: 0.184}, {y:2021, r: 0.287}, {y:2022, r:-0.181},
+  {y:2023, r: 0.263}, {y:2024, r: 0.250}
+];
+// Expand each year's return into 12 equivalent monthly growth factors (360 total)
+const SP_MONTHLY = SP_RETURNS.flatMap(d => {
+  const f = Math.pow(1 + d.r, 1 / 12);
+  return Array(12).fill(f);
+});
+const SP_AVG_FACTOR = Math.pow(
+  SP_RETURNS.reduce((a, d) => a * (1 + d.r), 1),
+  1 / (SP_RETURNS.length * 12)
+);
+
+// Build an S&P balance path ending on the most recent data, aligned to `totalMonths`
+function spSeries(principal, totalMonths) {
+  const series = [principal];
+  let bal = principal;
+  for (let i = 0; i < totalMonths; i++) {
+    const distFromEnd = totalMonths - 1 - i;
+    const idx = SP_MONTHLY.length - 1 - distFromEnd;   // align final month with 2024
+    const f = idx >= 0 ? SP_MONTHLY[idx] : SP_AVG_FACTOR;
+    bal *= f;
+    series.push(bal);
+  }
+  return series;
+}
+
 // Smoothly count a card's number from its old value up/down to the new one
 function setMoney(id, target) {
   const el = $(id);
@@ -309,12 +340,8 @@ function calc() {
   const fee = (parseFloat($("fee").value) || 0) / 100;
   const unit = parseInt($("unit").value, 10);          // 1 = months, 12 = years
   const totalMonths = Math.max(1, Math.round((parseFloat($("duration").value) || 1) * unit));
-  const spAnnual = (parseFloat($("sp").value) || 0) / 100;
-  const spMonthly = Math.pow(1 + spAnnual, 1 / 12) - 1;  // equivalent monthly rate
-
   const months = [];
-  let bal = principal, spBal = principal;
-  const spBalances = [principal];
+  let bal = principal;
 
   // Compound at the monthly rate for the chosen number of months
   for (let m = 1; m <= totalMonths; m++) {
@@ -322,10 +349,11 @@ function calc() {
     const ret = start * mRate;
     bal = start + ret;
     months.push({ m, start, ret, end: bal, cum: bal - principal });
-    spBal = spBal * (1 + spMonthly);
-    spBalances.push(spBal);
   }
-  const spGross = spBal;
+
+  // S&P 500 path from real 30-year history, ending on the latest data
+  const spBalances = spSeries(principal, totalMonths);
+  const spGross = spBalances[spBalances.length - 1];
 
   const gross = bal;
   const profit = gross - principal;
@@ -349,10 +377,11 @@ function calc() {
   $("foot").innerHTML =
     `<td>Total (${totalMonths} mo)</td><td>${fmt(principal)}</td><td class="green">${fmt(profit)}</td><td>${fmt(gross)}</td><td class="green">${fmt(profit)}</td>`;
 
+  const spStart = SP_RETURNS[Math.max(0, SP_RETURNS.length - Math.ceil(totalMonths / 12))].y;
   const vsSp = clientNetBal - spGross;
   const spLine = vsSp >= 0
-    ? `That's <strong>${fmt(vsSp)}</strong> more than the same money in the S&amp;P 500 (${fmt(spGross)}) over the same stretch.`
-    : `The S&amp;P 500 would have reached <strong>${fmt(spGross)}</strong> over the same stretch — ${fmt(Math.abs(vsSp))} ahead.`;
+    ? `Over the same window, the same money tracking the <strong>real S&amp;P 500 from ${spStart}–2024</strong> would be worth <strong>${fmt(spGross)}</strong> — you'd be <strong>${fmt(vsSp)}</strong> ahead.`
+    : `Over the same window, the <strong>real S&amp;P 500 from ${spStart}–2024</strong> would have reached <strong>${fmt(spGross)}</strong> — ${fmt(Math.abs(vsSp))} ahead of this plan.`;
 
   $("note").innerHTML =
     `<strong>Here's the honest breakdown:</strong> over ${totalMonths} month${totalMonths === 1 ? "" : "s"}, your ${fmt(principal)} grows to <strong>${fmt(gross)}</strong> — that's <strong>${fmt(profit)}</strong> in profit. ` +
@@ -442,7 +471,7 @@ function driveCar(lineEl, car, len) {
   carAnim = requestAnimationFrame(frame);
 }
 
-["principal","rate","fee","duration","unit","sp"].forEach(id => $(id).addEventListener("input", calc));
+["principal","rate","fee","duration","unit"].forEach(id => $(id).addEventListener("input", calc));
 calc();
 
 // Reveal sections/cards as they scroll into view, with a gentle stagger
