@@ -326,37 +326,49 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Real annual index returns, 1995–2024 (approximate, widely-cited figures).
-// S&P 500 = total return; Nasdaq & Dow = price return.
-const DATA_START = 1995, DATA_END = 2024;
+// REAL month-by-month index history (dividend-adjusted), Jan 2014 – May 2026,
+// via SPY / QQQ / DIA close prices. Used for windows up to ~12 years so the
+// chart shows the true monthly path (e.g. the actual past 12 months).
+const DATA_START = 1995, DATA_END = 2024;       // annual fallback range
+const MONTHLY_THROUGH = "May 2026";             // last real monthly bar
+const MONTHLY_END = { y: 2026, m: 5 };
 const INDICES = {
-  spx: { name: "S&P 500", color: "#b8860b", returns: [
-    0.376, 0.230, 0.334, 0.286, 0.210, -0.091, -0.119, -0.221, 0.287, 0.109,
-    0.049, 0.158, 0.055, -0.370, 0.265, 0.151, 0.021, 0.160, 0.324, 0.137,
-    0.014, 0.120, 0.218, -0.044, 0.315, 0.184, 0.287, -0.181, 0.263, 0.250 ] },
-  nasdaq: { name: "Nasdaq", color: "#7b4fb5", returns: [
-    0.399, 0.227, 0.216, 0.396, 0.856, -0.393, -0.211, -0.315, 0.500, 0.086,
-    0.014, 0.095, 0.098, -0.405, 0.439, 0.169, -0.018, 0.159, 0.383, 0.134,
-    0.057, 0.075, 0.282, -0.039, 0.352, 0.436, 0.214, -0.331, 0.434, 0.286 ] },
-  dow: { name: "Dow Jones", color: "#0d7d8c", returns: [
-    0.335, 0.260, 0.226, 0.161, 0.252, -0.062, -0.071, -0.168, 0.253, 0.031,
-    -0.006, 0.163, 0.064, -0.338, 0.188, 0.110, 0.055, 0.073, 0.265, 0.075,
-    -0.022, 0.134, 0.251, -0.056, 0.223, 0.072, 0.187, -0.088, 0.137, 0.129 ] }
+  spx: { name: "S&P 500", color: "#b8860b",
+    returns: [0.376,0.230,0.334,0.286,0.210,-0.091,-0.119,-0.221,0.287,0.109,0.049,0.158,0.055,-0.370,0.265,0.151,0.021,0.160,0.324,0.137,0.014,0.120,0.218,-0.044,0.315,0.184,0.287,-0.181,0.263,0.250],
+    closes: [107.67,115.78,117.32,118.62,122.99,126.97,124.34,131.96,129.21,133.85,139.39,138.86,132.77,143.98,140.68,142.71,145.39,141.13,145.78,132.95,127.95,144.25,145.01,141.4,131.25,131.09,144.1,144.91,148.42,149.13,156.78,157.04,157.04,153.29,161.12,165.6,169.6,178.54,178.84,181.18,184.54,186.08,191.05,191.77,196.75,202.67,210.53,213.73,228.77,218.52,211.12,212.48,218.91,220.49,230.54,239.52,241.26,221.17,226.19,201.89,221.9,230.65,235.68,247.22,228.47,247.64,252.07,247.09,252.79,259.35,270.33,279.45,279.32,253.85,216.75,249.48,263.32,268.72,286.88,309.67,296.59,288.24,323.76,337.16,333.35,343.64,360.89,381.86,384.6,393.99,404.44,417.49,396.5,426.61,422.92,443.96,418.91,405.63,422,382.36,383.29,349.19,383.93,367.12,330.72,359.75,381.22,357.75,381.8,371.58,386.22,392.76,394.68,421.74,436.25,428.81,407.53,398.25,436.45,457.26,464.83,490.03,506.76,485.53,510.69,529.57,536.12,548.99,560.81,555.69,589.6,575.1,590.84,583.2,550.1,545.25,580.1,610.33,624.56,637.53,660.49,676.37,677.7,678.22,688.27,682.29,648.44,716.76,754.58] },
+  nasdaq: { name: "Nasdaq", color: "#7b4fb5",
+    returns: [0.399,0.227,0.216,0.396,0.856,-0.393,-0.211,-0.315,0.500,0.086,0.014,0.095,0.098,-0.405,0.439,0.169,-0.018,0.159,0.383,0.134,0.057,0.075,0.282,-0.039,0.352,0.436,0.214,-0.331,0.434,0.286],
+    closes: [64.07,68.14,65.67,65.39,69.31,72.16,73.27,78.03,77.28,79.89,84.5,82.13,79.98,87.28,84.72,86.75,89.17,86.45,91.33,83.69,81.4,92.97,93.66,91.84,84.11,82.48,89.5,86.02,90.64,88.12,95.81,97.02,99.6,97.87,98.38,99.71,105.8,111.25,113.89,117.5,122.8,119.53,125.12,128.09,127.66,134.36,137.36,138.29,151.93,149.74,142.94,143.75,152.88,154.84,159.64,169.84,169.31,153.34,152.89,138.2,152.1,157.13,163.95,173.8,158.21,171.42,175.78,172.15,173.87,182.14,190.16,198.13,204.59,191.32,176.28,204.79,219.24,233.91,252.1,281.19,264.54,256.08,286.32,301,301.82,301.4,306.78,325.64,321.58,342.48,352.62,368,346.42,374.57,382.28,386.8,352,335.75,351.93,302.64,297.67,270.2,305.38,289.19,257.69,268.38,283.79,257.37,285.71,284.65,312.49,314.12,339.55,361.49,375.75,370.06,350.87,343.47,381.43,403.15,410.6,432.63,438.21,418.79,445.73,474.07,466.03,471.23,483.71,479.49,505.38,507.7,518.76,504.64,466.11,472.66,516.3,549.42,562.79,568.18,598.84,627.54,617.72,613.58,621.14,606.56,577.18,667.74,738.31] },
+  dow: { name: "Dow Jones", color: "#0d7d8c",
+    returns: [0.335,0.260,0.226,0.161,0.252,-0.062,-0.071,-0.168,0.253,0.031,-0.006,0.163,0.064,-0.338,0.188,0.110,0.055,0.073,0.265,0.075,-0.022,0.134,0.251,-0.056,0.223,0.072,0.187,-0.088,0.137,0.129],
+    closes: [127.91,134.18,135.4,136.61,138.09,139.05,136.45,142.04,141.23,144.61,149.26,149.04,142.61,152.35,148.74,149.34,151.27,146.98,147.84,136.34,133.78,147.65,148.39,145.15,135.53,136.12,147.8,148.75,148.81,150.16,155.29,155.1,153.94,152.33,162.56,168.67,169.52,179.14,177.5,180.24,181.16,184.4,189.86,190.68,194.98,204.79,214,218.54,232.6,221.36,212.56,212.7,215.34,213.89,225.33,231.01,235.56,222.35,226.67,204.36,221.28,230.44,230.29,236.95,219.38,237.01,239.68,235.29,240.34,241.64,252.11,256.26,253.58,225.72,190.39,214.38,225.45,229.03,235.51,255.44,248.66,236.22,267.78,276.95,270.97,280.61,301.34,310.1,316.8,316.11,320.64,325.08,309.45,329.39,316.06,334.48,322.24,310.5,317.99,300.85,302.1,280.41,301.38,289.03,261.5,301.8,321.21,307.14,316.92,303.22,310.12,318.72,307.93,323.04,335.03,327.78,315.84,311.56,341.79,359.49,364.2,373.39,382.14,362.7,372.5,377.27,394.73,402.77,410.93,405.63,438.32,414.95,435,428.64,410.95,397.61,414.44,433.44,434.3,449.32,458.29,470.38,472.46,476.9,485.54,486.78,461.3,494.97,509.37] }
 };
-// Pre-compute monthly growth factors (360) + a long-run average for each index
+// Pre-compute monthly growth factors + long-run average (annual fallback only)
 Object.values(INDICES).forEach(ix => {
   ix.monthly = ix.returns.flatMap(r => Array(12).fill(Math.pow(1 + r, 1 / 12)));
   ix.avg = Math.pow(ix.returns.reduce((a, r) => a * (1 + r), 1), 1 / (ix.returns.length * 12));
 });
 
-// Build an index balance path that ENDS on the most recent data (2024),
-// using as many trailing months as the chosen window.
+// True if we have real monthly bars covering the whole window
+function hasMonthly(totalMonths) {
+  return totalMonths <= INDICES.spx.closes.length - 1;
+}
+
+// Build an index path ending on the latest data. Uses REAL monthly closes
+// when the window fits the monthly dataset; otherwise annual returns.
 function indexSeries(ix, principal, totalMonths) {
+  if (hasMonthly(totalMonths)) {
+    const c = ix.closes;
+    const start = c.length - 1 - totalMonths;     // align end with latest month
+    const base = c[start];
+    const out = [];
+    for (let i = 0; i <= totalMonths; i++) out.push(principal * c[start + i] / base);
+    return out;
+  }
   const series = [principal];
   let bal = principal;
   for (let i = 0; i < totalMonths; i++) {
-    const distFromEnd = totalMonths - 1 - i;
-    const idx = ix.monthly.length - 1 - distFromEnd;   // align final month with 2024
+    const idx = ix.monthly.length - 1 - (totalMonths - 1 - i);
     bal *= (idx >= 0 ? ix.monthly[idx] : ix.avg);
     series.push(bal);
   }
@@ -443,10 +455,12 @@ function calc() {
   // chart caption: our window result vs each selected index
   const winLabel = totalMonths % 12 === 0 ? `${totalMonths / 12} yr` : `${totalMonths} mo`;
   const idxBits = series.map(s => `<strong style="color:${s.color}">${s.name}</strong> ${fmt(s.end)}`).join(" · ");
+  const dataSrc = hasMonthly(totalMonths)
+    ? `<em>Index lines use real month-by-month data through ${MONTHLY_THROUGH} (dividend-adjusted).</em>`
+    : `<em>Index lines use real annual returns (${cmpStartYear}–${DATA_END}).</em>`;
   $("chart-note").innerHTML =
     `Over <strong>${winLabel}</strong>, ${fmt(principal)} with us grows to <strong>${fmt(ourCmpGross)}</strong> (before our fee). ` +
-    `Same money in the market: ${idxBits}. ` +
-    `<em>Index lines use real ${cmpStartYear}–${DATA_END} returns.</em>`;
+    `Same money in the market: ${idxBits}. ${dataSrc}`;
 
   // fee breakdown stays tied to the plan duration
   $("note").innerHTML =
