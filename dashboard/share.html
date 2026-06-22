@@ -400,8 +400,8 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-22T02:35Z",
-    marketStatus: "CLOSED — funded +$22; reopens Mon 8:30 AM CT",
+    updated: "2026-06-22T12:16Z (Mon pre-open)",
+    marketStatus: "PRE-MARKET — opens 8:30 AM CT",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
     role: "Administrator",
@@ -418,12 +418,12 @@ window.DASHBOARD_DATA = {
 
   // ---- Macro strip (refreshes at pre-open; Sun PM = futures snapshot) ----
   macro: {
-    asOf: "Sun-eve snapshot — refresh at 7:30 CT",
+    asOf: "Mon 7:15 CT — live pre-market",
     items: [
-      { k:"S&P fut",   v:"-0.4%", dir:-1, sub:"stale" },
-      { k:"Nasdaq fut",v:"-0.6%", dir:-1, sub:"stale" },
-      { k:"Dow fut",   v:"-0.3%", dir:-1, sub:"stale" },
-      { k:"WTI Oil",   v:"$78", dir:-1, sub:"Hormuz open?" },
+      { k:"S&P fut",   v:"-0.1%", dir:-1 },
+      { k:"Nasdaq fut",v:"~flat", dir:0 },
+      { k:"Dow fut",   v:"+9pts", dir:1 },
+      { k:"WTI Oil",   v:"$75.30", dir:-1, sub:"-0.7%" },
       { k:"10Y Yield", v:"4.46%", dir:0 },
       { k:"VIX",       v:"16.4",  dir:0, sub:"calm" },
     ],
@@ -437,10 +437,10 @@ window.DASHBOARD_DATA = {
 
   // ---- Watching for entry (live triggers) ----
   watching: [
-    { sym:"ZETA", action:"BUY",  level:18.76, note:"AI software · at rising 50-DMA (cleanest)" },
-    { sym:"SMCI", action:"BUY",  level:32.81, note:"AI semis · reclaim 50-DMA (SOXX tailwind)" },
-    { sym:"APLD", action:"BUY",  level:39.56, note:"AI data center · buy pullback to 50-DMA" },
-    { sym:"QBTS", action:"BUY",  level:22.49, note:"quantum/AI compute · buy pullback to 50-DMA" },
+    { sym:"SMCI", action:"BUY",  level:32.81, note:"+4.8% pre-mkt, nearing 50-DMA reclaim (MU tailwind) — TOP setup" },
+    { sym:"ZETA", action:"BUY",  level:18.76, note:"holding 50-DMA pre-mkt — clean entry if it confirms" },
+    { sym:"APLD", action:"WAIT", level:39.56, note:"extended +18% — pullback only, no chase" },
+    { sym:"KEEL", action:"WAIT", level:4.26,  note:"+12% gap & extended — do NOT chase (gap-fade)" },
     { sym:"MARA", action:"SELL", level:12.63, note:"break of 50-DMA = exit (stop)" },
   ],
 
@@ -452,14 +452,14 @@ window.DASHBOARD_DATA = {
 
   // ---- Market bias / sentiment ----
   bias: {
-    call: "CAUTIOUS",
-    detail: "Cross-currents: Sun-eve futures were red on oil, but Trump's overnight posts (Iran 'done', Hormuz OPEN, oil gushing) lean risk-ON & oil-bearish. VIX calm ~16. Firm read at 7:30 CT scan.",
+    call: "NEUTRAL +",
+    detail: "Futures ~flat (S&P -0.1%), oil easing on US-Iran progress (60-day deal roadmap), VIX calm ~16. Semis are the tailwind (MU +4% pre-mkt). Fed + this week's inflation print cap upside. Mildly constructive, not risk-off.",
     stockFG: { value: 37, label: "Fear" },
     cryptoFG: { value: 25, label: "Extreme Fear" },
   },
 
   // ---- US market movement (drives the plane ✈️ + tiger 🐅 scene) ----
-  market: { label: "S&P futures (Mon open)", changePct: -0.4 },  // + = plane climbs, tiger sprints
+  market: { label: "S&P futures (pre-open)", changePct: -0.1 },  // + = plane climbs, tiger sprints
 
   // ---- Main sectors / themes in play (heat: hot | warm | cold) ----
   sectors: [
@@ -476,7 +476,8 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
-    { t: "Mon 5:45 CT", text: "Pre-dawn read: Trump's overnight posts lean Iran de-escalation / risk-ON (Hormuz OPEN, 'oil gushing' = oil-bearish), softening Sun-eve's risk-off. VIX calm ~16. Couldn't get clean live futures this early — firm macro read at 7:30 CT. Plan holds: observe 8:30-9:30, deploy $22 into AI-theme setups after 9 CT on confirmation." },
+    { t: "Mon 7:15 CT", text: "Pre-open firmed: futures ~flat (S&P -0.1%), oil easing on US-Iran progress, VIX calm — NOT the risk-off I feared. Semis are the tailwind (MU +4%, SMCI +4.8% pre-mkt nearing its 50-DMA reclaim). Plan: observe 8:30-9:30; after 9 CT, SMCI on a 50-DMA reclaim is the top AI setup, ZETA if it holds its line. Don't chase KEEL (+12% gap). MARA green, holding." },
+    { t: "Mon 5:45 CT", text: "Pre-dawn: Trump's overnight posts lean Iran de-escalation / risk-ON; couldn't get clean live futures that early. Plan holds: observe, deploy after 9 CT on confirmation." },
     { t: "Sun PM", text: "Focus narrowed to AI / power / data-center / semis: ZETA, SMCI, APLD, KEEL, QBTS. Dropping medical/biotech (CRSP) from candidates for now. Cash deploys into AI-theme setups Monday after 9 CT." },
     { t: "Sun PM", text: "+$22 deposit in — cash now $22.16, goal rescaled to $52. Big unlock: Monday I can BUY a clean AI-theme setup WITHOUT selling MARA. Deploy per the framework on a confirmed entry after 9 CT — measured, given the risk-off open." },
     { t: "Sun 21:05Z", text: "Futures RED (ES -0.4%, NQ -0.6%, oil +3% on Iran/Lebanon). Monday looks risk-off — flips the earlier risk-on lean. Plan: stay defensive, observe 8:30-9:30, don't chase, MARA likely opens soft." },
