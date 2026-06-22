@@ -4,8 +4,8 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-22T12:16Z (Mon pre-open)",
-    marketStatus: "PRE-MARKET — opens 8:30 AM CT",
+    updated: "2026-06-22T13:36Z (Mon, open)",
+    marketStatus: "OPEN — regular hours",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
     role: "Administrator",
@@ -13,8 +13,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 36.13,        // MARA position + cash, after +$22 deposit
-    cash: 22.16,
+    value: 36.62,        // all cash after selling MARA @ $14.82
+    cash: 36.62,
     start: 36.16,        // total deposited capital (baseline for P/L)
     goal: 52.00,         // ~1.43x deposited
     goalDate: "2026-07-31",
@@ -36,23 +36,19 @@ window.DASHBOARD_DATA = {
   // ---- Equity curve (account value over time) ----
   equityHistory: [
     { d:"Funded", v:36.16 },
-    { d:"Now",    v:36.13 },
+    { d:"MARA win", v:36.62 },
   ],
 
   // ---- Watching for entry (live triggers) ----
   watching: [
-    { sym:"SMCI", action:"BUY",  level:32.81, note:"+4.8% pre-mkt, nearing 50-DMA reclaim (MU tailwind) — TOP setup" },
-    { sym:"ZETA", action:"BUY",  level:18.76, note:"holding 50-DMA pre-mkt — clean entry if it confirms" },
-    { sym:"APLD", action:"WAIT", level:39.56, note:"extended +18% — pullback only, no chase" },
-    { sym:"KEEL", action:"WAIT", level:4.26,  note:"+12% gap & extended — do NOT chase (gap-fade)" },
-    { sym:"MARA", action:"SELL", level:12.63, note:"break of 50-DMA = exit (stop)" },
+    { sym:"SMCI", action:"BUY",  level:32.90, note:"ripped +10% — WAIT for pullback to ~$32.9 & hold, don't chase" },
+    { sym:"ZETA", action:"BUY",  level:18.76, note:"faded below 50-DMA — buy only on reclaim of $18.76" },
+    { sym:"APLD", action:"WAIT", level:39.56, note:"extended — pullback only" },
+    { sym:"QBTS", action:"WAIT", level:22.49, note:"soft — pullback to 50-DMA only" },
   ],
 
   // ---- Open positions ----
-  positions: [
-    { symbol: "MARA", shares: 0.975616, cost: 14.35, last: 14.32,
-      stop: 12.63, note: "~Breakeven. With fresh cash I can add a new setup without selling this." },
-  ],
+  positions: [],   // MARA sold into the open pump @ $14.82 (+3.3% win). All cash.
 
   // ---- Market bias / sentiment ----
   bias: {
@@ -80,6 +76,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Mon 8:35 CT", text: "✅ SOLD MARA into the open pump @ $14.82 = +$0.46 (+3.3%) — first closed trade, a WIN. SMCI ripped +10% (no fade) so I'm NOT chasing it; waiting for a pullback to ~$32.9 to enter. ZETA faded below its line. Cash $36.62 dry, holding for a non-chasing AI entry. 9 CT gate lifted — can order anytime now." },
     { t: "Mon 7:15 CT", text: "Pre-open firmed: futures ~flat (S&P -0.1%), oil easing on US-Iran progress, VIX calm — NOT the risk-off I feared. Semis are the tailwind (MU +4%, SMCI +4.8% pre-mkt nearing its 50-DMA reclaim). Plan: observe 8:30-9:30; after 9 CT, SMCI on a 50-DMA reclaim is the top AI setup, ZETA if it holds its line. Don't chase KEEL (+12% gap). MARA green, holding." },
     { t: "Mon 5:45 CT", text: "Pre-dawn: Trump's overnight posts lean Iran de-escalation / risk-ON; couldn't get clean live futures that early. Plan holds: observe, deploy after 9 CT on confirmation." },
     { t: "Sun PM", text: "Focus narrowed to AI / power / data-center / semis: ZETA, SMCI, APLD, KEEL, QBTS. Dropping medical/biotech (CRSP) from candidates for now. Cash deploys into AI-theme setups Monday after 9 CT." },
@@ -159,12 +156,12 @@ window.DASHBOARD_DATA = {
   // ---- Trade log / spreadsheet (every trade, win or lose) ----
   // result: OPEN | WIN | LOSS ; term: SHORT | LONG | OPEN
   trades: [
-    { n:1, symbol:"MARA", status:"OPEN", buyDate:"2026-06-18", buyPrice:14.35, shares:0.975616,
-      cost:14.00, sellDate:"", sellPrice:null, proceeds:null, holdDays:null, term:"OPEN",
-      pl:-0.13, plPct:-0.9, result:"OPEN", taxable:0, taxRate:null, estTax:0, net:null },
+    { n:1, symbol:"MARA", status:"CLOSED", buyDate:"2026-06-18", buyPrice:14.35, shares:0.975616,
+      cost:14.00, sellDate:"2026-06-22", sellPrice:14.82, proceeds:14.46, holdDays:4, term:"SHORT",
+      pl:0.46, plPct:3.3, result:"WIN", taxable:0.46, taxRate:0.24, estTax:0.11, net:0.35 },
   ],
   tradeSummary: {
-    realizedGains:0, realizedLosses:0, netRealized:0, netTaxable:0, estTax:0,
-    wins:0, losses:0, open:1, winRate:"—",
+    realizedGains:0.46, realizedLosses:0, netRealized:0.46, netTaxable:0.46, estTax:0.11,
+    wins:1, losses:0, open:0, winRate:"100%",
   },
 };
