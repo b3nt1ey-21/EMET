@@ -369,8 +369,8 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-21T17:15Z (Sun)",
-    marketStatus: "CLOSED — reopens Mon Jun 22, 8:30 AM CT",
+    updated: "2026-06-21T21:05Z (Sun)",
+    marketStatus: "CLOSED — futures open; reopens Mon 8:30 AM CT",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
     role: "Administrator",
@@ -393,14 +393,14 @@ window.DASHBOARD_DATA = {
 
   // ---- Market bias / sentiment ----
   bias: {
-    call: "TUG-OF-WAR",
-    detail: "Iran peace deal (risk-ON) vs hawkish Fed + hot inflation (risk-OFF). Constructive but cautious.",
+    call: "RISK-OFF",
+    detail: "Futures red (ES -0.4%, NQ -0.6%); Trump's Iran/Lebanon warning revived geopolitics, oil +3%. Hawkish Fed + inflation report this week. Soft open expected.",
     stockFG: { value: 37, label: "Fear" },
     cryptoFG: { value: 25, label: "Extreme Fear" },
   },
 
   // ---- US market movement (drives the plane ✈️ + tiger 🐅 scene) ----
-  market: { label: "US Market (last close)", changePct: 0.5 },  // + = plane climbs, tiger sprints
+  market: { label: "S&P futures (Mon open)", changePct: -0.4 },  // + = plane climbs, tiger sprints
 
   // ---- Main sectors / themes in play (heat: hot | warm | cold) ----
   sectors: [
@@ -417,6 +417,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Sun 21:05Z", text: "Futures RED (ES -0.4%, NQ -0.6%, oil +3% on Iran/Lebanon). Monday now looks risk-off — flips the earlier risk-on lean. Plan: stay defensive, observe 8:30-9:30, don't chase, MARA likely opens soft." },
     { t: "Sun 17:15Z", text: "Weekend — markets closed, nothing actionable. All monitors armed for Mon open." },
     { t: "Sun 16:10Z", text: "MARA is the weak link into Monday. Willing to rotate it into a confirmed 50-DMA setup on a risk-on open, or cut it if it breaks $12.63." },
     { t: "Sun 15:40Z", text: "Cleanest setups: ZETA / NOK / CRSP sitting right on rising 50-DMAs = tightest stops, best risk/reward." },
@@ -472,7 +473,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Alerts feed (news / Trump / triggers) ----
   alerts: [
-    { t:"Sun", tag:"NEWS", text:"Iran–US peace deal signed; Hormuz blockade lifted → risk-ON for Mon open." },
+    { t:"Sun PM", tag:"FUTURES", text:"S&P -0.4%, Nasdaq -0.6%, oil +3% — Monday set to open soft / risk-off." },
+    { t:"Sun", tag:"NEWS", text:"Iran/Lebanon: Trump warning revived geopolitical risk (offsets the peace deal)." },
     { t:"Sun", tag:"FED",  text:"Hawkish dot plot (possible hikes) + hot inflation → headwind for speculative small-caps." },
     { t:"Sun", tag:"SECTOR", text:"Semis ripped Fri (SOXX +8%); Micron earnings this week → SMCI / APLD tailwind." },
   ],
