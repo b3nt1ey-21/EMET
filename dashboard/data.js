@@ -35,9 +35,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Equity curve (account value over time) ----
   equityHistory: [
-    { d:"06-18", v:14.00 },
-    { d:"06-19", v:13.95 },
-    { d:"06-21", v:13.87 },
+    { d:"Jun 18", v:14.00 },
+    { d:"Jun 21", v:13.87 },
   ],
 
   // ---- Watching for entry (live triggers) ----

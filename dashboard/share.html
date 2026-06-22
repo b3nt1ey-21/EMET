@@ -431,9 +431,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Equity curve (account value over time) ----
   equityHistory: [
-    { d:"06-18", v:14.00 },
-    { d:"06-19", v:13.95 },
-    { d:"06-21", v:13.87 },
+    { d:"Jun 18", v:14.00 },
+    { d:"Jun 21", v:13.87 },
   ],
 
   // ---- Watching for entry (live triggers) ----
@@ -603,24 +602,26 @@ window.DASHBOARD_DATA = {
       <div class="v">${it.v}<span class="c ${c}">${it.sub?it.sub:arrow}</span></div></div>`;
   }).join("");
 
-  // equity curve
+  // equity curve (scaled to the data, not the goal)
   (function(){
     const E=D.equityHistory||[]; if(!E.length) return;
-    const W=420,H=118,pad=10, goal=(D.account?.goal)||20, start=(D.account?.start)||14;
-    const vals=E.map(p=>p.v).concat([goal,start]);
-    const min=Math.min(...vals)*0.997, max=Math.max(...vals)*1.003;
-    const x=i=>pad+(W-2*pad)*(E.length<2?0.5:i/(E.length-1));
-    const y=v=>H-pad-(H-2*pad)*((v-min)/((max-min)||1));
+    const W=420,H=118,padX=14,padY=18, goal=(D.account?.goal)||20;
+    const dv=E.map(p=>p.v); let lo=Math.min(...dv), hi=Math.max(...dv);
+    const rng=hi-lo, pad=Math.max(0.08, rng*0.45); lo-=pad; hi+=pad;
+    const x=i=>padX+(W-2*padX)*(E.length<2?0.5:i/(E.length-1));
+    const y=v=>H-padY-(H-2*padY)*((v-lo)/((hi-lo)||1));
     const pts=E.map((p,i)=>`${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
-    const gy=y(goal).toFixed(1), last=E[E.length-1].v, svg=$("eqchart");
-    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
-    svg.innerHTML=`<defs><linearGradient id="eg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="rgba(79,70,229,.25)"/><stop offset="1" stop-color="rgba(79,70,229,0)"/></linearGradient></defs>
-      <line x1="${pad}" y1="${gy}" x2="${W-pad}" y2="${gy}" stroke="#0f9d6c" stroke-width="1" stroke-dasharray="4 4"/>
-      <text x="${W-pad}" y="${gy-4}" text-anchor="end" font-size="10" fill="#0f9d6c">goal $${goal}</text>
-      <polyline points="${pad},${H-pad} ${pts} ${W-pad},${H-pad}" fill="url(#eg)" stroke="none"/>
-      <polyline points="${pts}" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linejoin="round"/>
-      ${E.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="3" fill="#4f46e5"/>`).join("")}`;
-    $("eqnote").innerHTML=`Now <b class="num">$${last.toFixed(2)}</b> · need <b class="num">+$${(goal-last).toFixed(2)}</b> (+${(((goal-last)/last)*100).toFixed(0)}%) by ${D.account?.goalDate||""}`;
+    const first=E[0].v, last=E[E.length-1].v, up=last>=first, col=up?"#0f9d6c":"#e0414b";
+    const svg=$("eqchart"); svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    svg.innerHTML=`<defs><linearGradient id="eg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${up?'rgba(15,157,108,.22)':'rgba(224,65,75,.20)'}"/><stop offset="1" stop-color="rgba(0,0,0,0)"/></linearGradient></defs>
+      <polyline points="${padX},${H-padY} ${pts} ${W-padX},${H-padY}" fill="url(#eg)" stroke="none"/>
+      <polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>
+      ${E.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="3.4" fill="${col}"/>`).join("")}
+      <text x="${x(0).toFixed(1)}" y="${(y(first)-8).toFixed(1)}" font-size="10" fill="#64748b">$${first.toFixed(2)}</text>
+      <text x="${x(E.length-1).toFixed(1)}" y="${(y(last)-8).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="${col}">$${last.toFixed(2)}</text>
+      ${E.map((p,i)=>`<text x="${x(i).toFixed(1)}" y="${H-5}" text-anchor="middle" font-size="9" fill="#64748b">${p.d}</text>`).join("")}`;
+    const diff=last-first, pct=first?diff/first*100:0;
+    $("eqnote").innerHTML=`Since start: <b class="${diff>=0?'grn':'red'} num">${diff>=0?'+':''}$${diff.toFixed(2)} (${diff>=0?'+':''}${pct.toFixed(1)}%)</b> · goal <b class="num">$${goal.toFixed(0)}</b> → need <b class="num">+$${(goal-last).toFixed(2)}</b> (+${(((goal-last)/last)*100).toFixed(0)}%)`;
   })();
 
   // watching for entry
