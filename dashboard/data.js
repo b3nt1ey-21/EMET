@@ -4,7 +4,7 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-22T13:36Z (Mon, open)",
+    updated: "2026-06-22T13:59Z (Mon, open)",
     marketStatus: "OPEN — regular hours",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
@@ -13,8 +13,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 36.62,        // all cash after selling MARA @ $14.82
-    cash: 36.62,
+    value: 36.62,        // ZETA position (~$18) + cash
+    cash: 18.62,
     start: 36.16,        // total deposited capital (baseline for P/L)
     goal: 52.00,         // ~1.43x deposited
     goalDate: "2026-07-31",
@@ -41,14 +41,16 @@ window.DASHBOARD_DATA = {
 
   // ---- Watching for entry (live triggers) ----
   watching: [
-    { sym:"SMCI", action:"BUY",  level:32.90, note:"ripped +10% — WAIT for pullback to ~$32.9 & hold, don't chase" },
-    { sym:"ZETA", action:"BUY",  level:18.76, note:"faded below 50-DMA — buy only on reclaim of $18.76" },
+    { sym:"SMCI", action:"BUY",  level:33.00, note:"ripped +14% — WAIT for pullback to ~$33 & hold, don't chase" },
     { sym:"APLD", action:"WAIT", level:39.56, note:"extended — pullback only" },
     { sym:"QBTS", action:"WAIT", level:22.49, note:"soft — pullback to 50-DMA only" },
   ],
 
   // ---- Open positions ----
-  positions: [],   // MARA sold into the open pump @ $14.82 (+3.3% win). All cash.
+  positions: [
+    { symbol:"ZETA", shares:0.941422, cost:19.12, last:19.11,
+      stop:18.50, note:"AI software · bought the 50-DMA reclaim @ $19.12 · stop $18.50" },
+  ],
 
   // ---- Market bias / sentiment ----
   bias: {
@@ -76,6 +78,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Mon 8:59 CT", text: "✅ BOUGHT ZETA — 0.941 sh @ $19.12 ($18) on the 50-DMA reclaim (faded → reclaimed = clean entry, not a chase). Stop $18.50 (~3% risk). ~$18.62 cash left, reserved for SMCI on a pullback (still not chasing its +14% rip). Trade #2, first AI position on." },
     { t: "Mon 8:35 CT", text: "✅ SOLD MARA into the open pump @ $14.82 = +$0.46 (+3.3%) — first closed trade, a WIN. SMCI ripped +10% (no fade) so I'm NOT chasing it; waiting for a pullback to ~$32.9 to enter. ZETA faded below its line. Cash $36.62 dry, holding for a non-chasing AI entry. 9 CT gate lifted — can order anytime now." },
     { t: "Mon 7:15 CT", text: "Pre-open firmed: futures ~flat (S&P -0.1%), oil easing on US-Iran progress, VIX calm — NOT the risk-off I feared. Semis are the tailwind (MU +4%, SMCI +4.8% pre-mkt nearing its 50-DMA reclaim). Plan: observe 8:30-9:30; after 9 CT, SMCI on a 50-DMA reclaim is the top AI setup, ZETA if it holds its line. Don't chase KEEL (+12% gap). MARA green, holding." },
     { t: "Mon 5:45 CT", text: "Pre-dawn: Trump's overnight posts lean Iran de-escalation / risk-ON; couldn't get clean live futures that early. Plan holds: observe, deploy after 9 CT on confirmation." },
@@ -159,9 +162,12 @@ window.DASHBOARD_DATA = {
     { n:1, symbol:"MARA", status:"CLOSED", buyDate:"2026-06-18", buyPrice:14.35, shares:0.975616,
       cost:14.00, sellDate:"2026-06-22", sellPrice:14.82, proceeds:14.46, holdDays:4, term:"SHORT",
       pl:0.46, plPct:3.3, result:"WIN", taxable:0.46, taxRate:0.24, estTax:0.11, net:0.35 },
+    { n:2, symbol:"ZETA", status:"OPEN", buyDate:"2026-06-22", buyPrice:19.12, shares:0.941422,
+      cost:18.00, sellDate:"", sellPrice:null, proceeds:null, holdDays:null, term:"OPEN",
+      pl:null, plPct:null, result:"OPEN", taxable:0, taxRate:null, estTax:0, net:null },
   ],
   tradeSummary: {
     realizedGains:0.46, realizedLosses:0, netRealized:0.46, netTaxable:0.46, estTax:0.11,
-    wins:1, losses:0, open:0, winRate:"100%",
+    wins:1, losses:0, open:1, winRate:"100%",
   },
 };
