@@ -4,7 +4,7 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-21T21:05Z (Sun)",
+    updated: "2026-06-22T02:30Z",
     marketStatus: "CLOSED — futures open; reopens Mon 8:30 AM CT",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
@@ -13,7 +13,7 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 13.87,        // MARA position (mark-to-mkt) + cash
+    value: 14.16,        // MARA position (mark-to-mkt) + cash
     cash: 0.16,
     start: 14.00,
     goal: 20.00,
@@ -36,7 +36,7 @@ window.DASHBOARD_DATA = {
   // ---- Equity curve (account value over time) ----
   equityHistory: [
     { d:"Jun 18", v:14.00 },
-    { d:"Jun 21", v:13.87 },
+    { d:"Now",    v:14.16 },
   ],
 
   // ---- Watching for entry (live triggers) ----
@@ -49,8 +49,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Open positions ----
   positions: [
-    { symbol: "MARA", shares: 0.975616, cost: 14.35, last: 14.22,
-      stop: 12.63, note: "Weakest hold: extended +12.6% over 50-DMA, crypto in Extreme Fear, rate-sensitive." },
+    { symbol: "MARA", shares: 0.975616, cost: 14.35, last: 14.35,
+      stop: 12.63, note: "Back to ~breakeven. Weakest hold: extended over 50-DMA, crypto in Extreme Fear, rate-sensitive." },
   ],
 
   // ---- Market bias / sentiment ----
