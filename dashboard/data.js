@@ -20,6 +20,34 @@ window.DASHBOARD_DATA = {
     goalDate: "2026-07-31",
   },
 
+  // ---- Macro strip (refreshes at pre-open; Sun PM = futures snapshot) ----
+  macro: {
+    asOf: "Sun PM (futures)",
+    items: [
+      { k:"S&P fut",   v:"-0.4%", dir:-1 },
+      { k:"Nasdaq fut",v:"-0.6%", dir:-1 },
+      { k:"Dow fut",   v:"-0.3%", dir:-1 },
+      { k:"WTI Oil",   v:"$78.0", dir:1, sub:"+2.9%" },
+      { k:"10Y Yield", v:"4.46%", dir:-1, sub:"+0.04" },
+      { k:"VIX",       v:"19.2",  dir:-1, sub:"+1.1" },
+    ],
+  },
+
+  // ---- Equity curve (account value over time) ----
+  equityHistory: [
+    { d:"06-18", v:14.00 },
+    { d:"06-19", v:13.95 },
+    { d:"06-21", v:13.87 },
+  ],
+
+  // ---- Watching for entry (live triggers) ----
+  watching: [
+    { sym:"ZETA", action:"BUY",  level:18.76, note:"bounce / hold rising 50-DMA" },
+    { sym:"NOK",  action:"BUY",  level:13.17, note:"hold rising 50-DMA" },
+    { sym:"CRSP", action:"BUY",  level:52.75, note:"hold rising 50-DMA" },
+    { sym:"MARA", action:"SELL", level:12.63, note:"break of 50-DMA = exit (stop)" },
+  ],
+
   // ---- Open positions ----
   positions: [
     { symbol: "MARA", shares: 0.975616, cost: 14.35, last: 14.22,

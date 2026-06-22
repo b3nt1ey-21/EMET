@@ -144,6 +144,21 @@
   .tick{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin:3px 3px 0 0}
   .sec .n{color:var(--mut);font-size:11px;margin-top:8px}
 
+  /* macro strip */
+  .macro{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .mstat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 11px}
+  .mstat .k{font-size:10px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .mstat .v{font-size:17px;font-weight:800;margin-top:2px}
+  .mstat .c{font-size:11px;font-weight:700;margin-left:5px}
+  /* equity curve */
+  .eqchart{width:100%;height:118px;display:block}
+  /* watching for entry */
+  .witem{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .witem:last-child{border-bottom:none}
+  .wact{font-size:10px;font-weight:800;padding:3px 9px;border-radius:7px;min-width:46px;text-align:center}
+  .wact.BUY{background:rgba(15,157,108,.14);color:var(--grn)} .wact.SELL{background:rgba(224,65,75,.14);color:var(--red)}
+  @media(max-width:560px){.macro{grid-template-columns:repeat(3,1fr)}}
+
   /* tables */
   table{width:100%;border-collapse:collapse;font-size:13px}
   thead th{position:sticky;top:0;background:var(--panel);text-align:left;color:var(--mut);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;padding:8px 9px;border-bottom:2px solid var(--line)}
@@ -210,6 +225,7 @@
       <span class="chip" id="adminchip" style="font-weight:700"></span>
       <span class="chip" id="mktchip"></span>
       <span class="chip"><span class="live-dot" id="livedot"></span><span id="mktpill"></span></span>
+      <span class="chip" id="cdchip">⏳ <span id="cd" class="cd num"></span></span>
       <span class="chip">⏱ <span id="updated" class="num"></span></span>
       <button class="btn" onclick="location.reload()">↻</button>
     </div>
@@ -219,6 +235,11 @@
 
   <div class="grid">
     <!-- OVERVIEW -->
+    <div class="card col12" data-tab="overview">
+      <h2>🌐 Macro &amp; Backdrop — <span id="macroAsOf" class="mut" style="text-transform:none;letter-spacing:0"></span></h2>
+      <div class="macro" id="macro"></div>
+    </div>
+
     <div class="card col3 kpi" data-tab="overview">
       <div class="lab">Account Value</div><div class="val num" id="acctval"></div>
       <div class="bar"><i id="goalbar"></i></div>
@@ -235,6 +256,16 @@
     <div class="card col3 kpi" data-tab="overview">
       <div class="lab">Crypto Fear &amp; Greed</div><div class="val num" id="cfgnum"></div>
       <div class="tagchip" id="cfglbl"></div><div class="gauge"><div class="gtrack"><i id="cfgmark"></i></div></div>
+    </div>
+
+    <div class="card col6" data-tab="overview">
+      <h2>📈 Equity Curve → $20</h2>
+      <svg class="eqchart" id="eqchart" preserveAspectRatio="none"></svg>
+      <div class="mut" id="eqnote" style="font-size:11px;margin-top:4px"></div>
+    </div>
+    <div class="card col6" data-tab="overview">
+      <h2>🎯 Watching for Entry</h2>
+      <div id="watching"></div>
     </div>
 
     <div class="card col8 tp" data-tab="overview">
@@ -394,6 +425,57 @@
       <div class="mut" style="font-size:11px">${p.note||""}</div>
       <div style="font-size:11px;margin-top:3px"><a href="https://stocktwits.com/symbol/${p.symbol}" target="_blank" rel="noopener">💬 ${p.symbol} on StockTwits ↗</a></div></div>`;
   }).join("") || '<div class="mut">No open positions</div>';
+
+  // macro strip
+  $("macroAsOf").textContent = (D.macro?.asOf)||"";
+  $("macro").innerHTML = (D.macro?.items||[]).map(it=>{
+    const c = it.dir>0?"grn":it.dir<0?"red":"mut";
+    const arrow = it.dir>0?'▲':it.dir<0?'▼':'';
+    return `<div class="mstat"><div class="k">${it.k}</div>
+      <div class="v">${it.v}<span class="c ${c}">${it.sub?it.sub:arrow}</span></div></div>`;
+  }).join("");
+
+  // equity curve
+  (function(){
+    const E=D.equityHistory||[]; if(!E.length) return;
+    const W=420,H=118,pad=10, goal=(D.account?.goal)||20, start=(D.account?.start)||14;
+    const vals=E.map(p=>p.v).concat([goal,start]);
+    const min=Math.min(...vals)*0.997, max=Math.max(...vals)*1.003;
+    const x=i=>pad+(W-2*pad)*(E.length<2?0.5:i/(E.length-1));
+    const y=v=>H-pad-(H-2*pad)*((v-min)/((max-min)||1));
+    const pts=E.map((p,i)=>`${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+    const gy=y(goal).toFixed(1), last=E[E.length-1].v, svg=$("eqchart");
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    svg.innerHTML=`<defs><linearGradient id="eg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="rgba(79,70,229,.25)"/><stop offset="1" stop-color="rgba(79,70,229,0)"/></linearGradient></defs>
+      <line x1="${pad}" y1="${gy}" x2="${W-pad}" y2="${gy}" stroke="#0f9d6c" stroke-width="1" stroke-dasharray="4 4"/>
+      <text x="${W-pad}" y="${gy-4}" text-anchor="end" font-size="10" fill="#0f9d6c">goal $${goal}</text>
+      <polyline points="${pad},${H-pad} ${pts} ${W-pad},${H-pad}" fill="url(#eg)" stroke="none"/>
+      <polyline points="${pts}" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linejoin="round"/>
+      ${E.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="3" fill="#4f46e5"/>`).join("")}`;
+    $("eqnote").innerHTML=`Now <b class="num">$${last.toFixed(2)}</b> · need <b class="num">+$${(goal-last).toFixed(2)}</b> (+${(((goal-last)/last)*100).toFixed(0)}%) by ${D.account?.goalDate||""}`;
+  })();
+
+  // watching for entry
+  $("watching").innerHTML = (D.watching||[]).map(w=>
+    `<div class="witem"><span class="wact ${w.action}">${w.action}</span>
+      <span><b>${w.sym}</b> <span class="mut">${w.note}</span></span>
+      <span class="num" style="margin-left:auto">$${Number(w.level).toFixed(2)}</span></div>`).join("");
+
+  // countdown to 9:00 AM CT (14:00 UTC) trade window, weekdays
+  (function(){
+    const el=$("cd"), chip=$("cdchip"); if(!el) return;
+    function upd(){
+      const now=new Date(), u=now.getUTCDay(), mins=now.getUTCHours()*60+now.getUTCMinutes();
+      if(u>=1&&u<=5&&mins>=840&&mins<960){ el.textContent="WINDOW OPEN"; chip.style.color="var(--grn)"; return; }
+      let t=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),14,0,0));
+      if(mins>=840) t.setUTCDate(t.getUTCDate()+1);
+      while(t.getUTCDay()===0||t.getUTCDay()===6) t.setUTCDate(t.getUTCDate()+1);
+      let s=Math.max(0,Math.floor((t-now)/1000));
+      const d=Math.floor(s/86400); s%=86400; const hh=Math.floor(s/3600); s%=3600; const mm=Math.floor(s/60), ss=s%60;
+      el.textContent=(d>0?d+"d ":"")+`${hh}h ${mm}m ${String(ss).padStart(2,'0')}s`; chip.style.color="";
+    }
+    upd(); setInterval(upd,1000);
+  })();
 
   const TH=D.thoughts||[];
   $("thoughts").innerHTML = TH.map((t,i)=>{
