@@ -15,6 +15,8 @@ window.DASHBOARD_DATA = {
   account: {
     value: 36.62,        // ZETA position (~$18) + cash
     cash: 18.62,
+    buyingPower: 4.16,   // settled/spendable now
+    unsettled: 14.46,    // MARA proceeds, frees up T+1 (tomorrow)
     start: 36.16,        // total deposited capital (baseline for P/L)
     goal: 52.00,         // ~1.43x deposited
     goalDate: "2026-07-31",
