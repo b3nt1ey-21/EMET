@@ -4,7 +4,7 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-22T02:35Z",
+    updated: "2026-06-22T10:45Z (Mon pre-open)",
     marketStatus: "CLOSED — funded +$22; reopens Mon 8:30 AM CT",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
@@ -22,14 +22,14 @@ window.DASHBOARD_DATA = {
 
   // ---- Macro strip (refreshes at pre-open; Sun PM = futures snapshot) ----
   macro: {
-    asOf: "Sun PM (futures)",
+    asOf: "Sun-eve snapshot — refresh at 7:30 CT",
     items: [
-      { k:"S&P fut",   v:"-0.4%", dir:-1 },
-      { k:"Nasdaq fut",v:"-0.6%", dir:-1 },
-      { k:"Dow fut",   v:"-0.3%", dir:-1 },
-      { k:"WTI Oil",   v:"$78.0", dir:1, sub:"+2.9%" },
-      { k:"10Y Yield", v:"4.46%", dir:-1, sub:"+0.04" },
-      { k:"VIX",       v:"19.2",  dir:-1, sub:"+1.1" },
+      { k:"S&P fut",   v:"-0.4%", dir:-1, sub:"stale" },
+      { k:"Nasdaq fut",v:"-0.6%", dir:-1, sub:"stale" },
+      { k:"Dow fut",   v:"-0.3%", dir:-1, sub:"stale" },
+      { k:"WTI Oil",   v:"$78", dir:-1, sub:"Hormuz open?" },
+      { k:"10Y Yield", v:"4.46%", dir:0 },
+      { k:"VIX",       v:"16.4",  dir:0, sub:"calm" },
     ],
   },
 
@@ -56,8 +56,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Market bias / sentiment ----
   bias: {
-    call: "RISK-OFF",
-    detail: "Futures red (ES -0.4%, NQ -0.6%); Trump's Iran/Lebanon warning revived geopolitics, oil +3%. Hawkish Fed + inflation report this week. Soft open expected.",
+    call: "CAUTIOUS",
+    detail: "Cross-currents: Sun-eve futures were red on oil, but Trump's overnight posts (Iran 'done', Hormuz OPEN, oil gushing) lean risk-ON & oil-bearish. VIX calm ~16. Firm read at 7:30 CT scan.",
     stockFG: { value: 37, label: "Fear" },
     cryptoFG: { value: 25, label: "Extreme Fear" },
   },
@@ -80,6 +80,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Mon 5:45 CT", text: "Pre-dawn read: Trump's overnight posts lean Iran de-escalation / risk-ON (Hormuz OPEN, 'oil gushing' = oil-bearish), softening Sun-eve's risk-off. VIX calm ~16. Couldn't get clean live futures this early — firm macro read at 7:30 CT. Plan holds: observe 8:30-9:30, deploy $22 into AI-theme setups after 9 CT on confirmation." },
     { t: "Sun PM", text: "Focus narrowed to AI / power / data-center / semis: ZETA, SMCI, APLD, KEEL, QBTS. Dropping medical/biotech (CRSP) from candidates for now. Cash deploys into AI-theme setups Monday after 9 CT." },
     { t: "Sun PM", text: "+$22 deposit in — cash now $22.16, goal rescaled to $52. Big unlock: Monday I can BUY a clean AI-theme setup WITHOUT selling MARA. Deploy per the framework on a confirmed entry after 9 CT — measured, given the risk-off open." },
     { t: "Sun 21:05Z", text: "Futures RED (ES -0.4%, NQ -0.6%, oil +3% on Iran/Lebanon). Monday looks risk-off — flips the earlier risk-on lean. Plan: stay defensive, observe 8:30-9:30, don't chase, MARA likely opens soft." },
