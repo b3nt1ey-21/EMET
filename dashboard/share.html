@@ -400,8 +400,8 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-22T02:30Z",
-    marketStatus: "CLOSED — futures open; reopens Mon 8:30 AM CT",
+    updated: "2026-06-22T02:35Z",
+    marketStatus: "CLOSED — funded +$22; reopens Mon 8:30 AM CT",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
     role: "Administrator",
@@ -409,10 +409,10 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 14.16,        // MARA position (mark-to-mkt) + cash
-    cash: 0.16,
-    start: 14.00,
-    goal: 20.00,
+    value: 36.13,        // MARA position + cash, after +$22 deposit
+    cash: 22.16,
+    start: 36.16,        // total deposited capital (baseline for P/L)
+    goal: 52.00,         // ~1.43x deposited
     goalDate: "2026-07-31",
   },
 
@@ -431,8 +431,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Equity curve (account value over time) ----
   equityHistory: [
-    { d:"Jun 18", v:14.00 },
-    { d:"Now",    v:14.16 },
+    { d:"Funded", v:36.16 },
+    { d:"Now",    v:36.13 },
   ],
 
   // ---- Watching for entry (live triggers) ----
@@ -445,8 +445,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Open positions ----
   positions: [
-    { symbol: "MARA", shares: 0.975616, cost: 14.35, last: 14.35,
-      stop: 12.63, note: "Back to ~breakeven. Weakest hold: extended over 50-DMA, crypto in Extreme Fear, rate-sensitive." },
+    { symbol: "MARA", shares: 0.975616, cost: 14.35, last: 14.32,
+      stop: 12.63, note: "~Breakeven. With fresh cash I can add a new setup without selling this." },
   ],
 
   // ---- Market bias / sentiment ----
@@ -475,7 +475,8 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
-    { t: "Sun 21:05Z", text: "Futures RED (ES -0.4%, NQ -0.6%, oil +3% on Iran/Lebanon). Monday now looks risk-off — flips the earlier risk-on lean. Plan: stay defensive, observe 8:30-9:30, don't chase, MARA likely opens soft." },
+    { t: "Sun PM", text: "+$22 deposit in — cash now $22.16, goal rescaled to $52. Big unlock: Monday I can BUY a clean setup (ZETA/NOK/CRSP) WITHOUT selling MARA. Will deploy per the framework on a confirmed entry after 9 CT — measured, given the risk-off open." },
+    { t: "Sun 21:05Z", text: "Futures RED (ES -0.4%, NQ -0.6%, oil +3% on Iran/Lebanon). Monday looks risk-off — flips the earlier risk-on lean. Plan: stay defensive, observe 8:30-9:30, don't chase, MARA likely opens soft." },
     { t: "Sun 17:15Z", text: "Weekend — markets closed, nothing actionable. All monitors armed for Mon open." },
     { t: "Sun 16:10Z", text: "MARA is the weak link into Monday. Willing to rotate it into a confirmed 50-DMA setup on a risk-on open, or cut it if it breaks $12.63." },
     { t: "Sun 15:40Z", text: "Cleanest setups: ZETA / NOK / CRSP sitting right on rising 50-DMAs = tightest stops, best risk/reward." },
@@ -531,6 +532,7 @@ window.DASHBOARD_DATA = {
 
   // ---- Alerts feed (news / Trump / triggers) ----
   alerts: [
+    { t:"Sun PM", tag:"DEPOSIT", text:"+$22 funded → $22.16 cash ready to deploy Monday; goal raised to $52." },
     { t:"Sun PM", tag:"FUTURES", text:"S&P -0.4%, Nasdaq -0.6%, oil +3% — Monday set to open soft / risk-off." },
     { t:"Sun", tag:"NEWS", text:"Iran/Lebanon: Trump warning revived geopolitical risk (offsets the peace deal)." },
     { t:"Sun", tag:"FED",  text:"Hawkish dot plot (possible hikes) + hot inflation → headwind for speculative small-caps." },
