@@ -4,7 +4,7 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-23T14:08Z (Tue)",
+    updated: "2026-06-25T13:55Z (Thu)",
     marketStatus: "OPEN — regular hours",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
@@ -13,9 +13,9 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 37.35,        // ZETA + SMCI positions + cash
-    cash: 0.62,
-    buyingPower: 0.62,   // fully deployed into ZETA + SMCI
+    value: 34.30,        // all cash after cutting ZETA + SMCI at stops
+    cash: 34.30,
+    buyingPower: 0.62,   // settled now; sale proceeds (~$33.68) settle T+1
     start: 36.16,        // total deposited capital (baseline for P/L)
     goal: 52.00,         // ~1.43x deposited
     goalDate: "2026-07-31",
@@ -39,22 +39,18 @@ window.DASHBOARD_DATA = {
     { d:"Funded", v:36.16 },
     { d:"Mon", v:36.62 },
     { d:"Tue", v:37.06 },
+    { d:"Thu", v:34.30 },
   ],
 
   // ---- Watching for entry (live triggers) ----
   watching: [
-    { sym:"ZETA", action:"HOLD", level:18.76, note:"position · trail stop, take profit into strength" },
-    { sym:"SMCI", action:"HOLD", level:32.50, note:"position · stop $32.50, riding the bounce" },
-    { sym:"APLD", action:"WAIT", level:39.56, note:"on deck if cash frees up & it pulls back" },
+    { sym:"SMCI", action:"WAIT", level:32.81, note:"cut today; re-enter only on real strength, not a falling-knife dip" },
+    { sym:"ZETA", action:"WAIT", level:18.76, note:"cut today; needs to rebuild above 50-DMA first" },
+    { sym:"CASH", action:"WAIT", level:34.30, note:"standing down — AI theme weak, no forcing trades" },
   ],
 
   // ---- Open positions ----
-  positions: [
-    { symbol:"ZETA", shares:0.941422, cost:19.12, last:19.90,
-      stop:18.76, note:"AI software · +4% green · above 50-DMA · stop $18.76" },
-    { symbol:"SMCI", shares:0.526469, cost:34.19, last:34.19,
-      stop:32.50, note:"AI semis · bought 50-DMA hold-and-turn (MU tailwind) · stop $32.50" },
-  ],
+  positions: [],   // flat — cut ZETA & SMCI at stops Thu. Standing down in cash.
 
   // ---- Market bias / sentiment ----
   bias: {
@@ -82,6 +78,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Thu 8:54 CT", text: "✂️ CUT both AI positions at stops: ZETA -$1.08 (-6%), SMCI -$1.24 (-6.9%). Losing round — AI/semis rolled over post-MU; buying dips in a cooling tape kept failing. MARA win (+$0.46) cushioned. Net realized -$1.86, account ~$34.30 all cash (-5.1% vs deposited). Standing down — NOT revenge-trading. Wait for genuine strength or a tape turn." },
     { t: "Tue 9:08 CT", text: "✅ BOUGHT SMCI — 0.526 sh @ $34.19 ($18). Entry = pulled back -5%, HELD its 50-DMA ($32.81), turned up = the controlled-pullback entry I waited for (not chasing Mon's rip). Stop $32.50. Now fully deployed: ZETA + SMCI (AI software + semis), ~$0.62 cash. Trade #3." },
     { t: "Tue 8:36 CT", text: "ZETA recovered to $19.83 (+3.7% green), back above its 50-DMA — raised stop to $18.76. HONEST FLAG: it closed Mon at $18.47 (below our $18.50 stop) but the stop didn't fire — session was asleep overnight, can't execute while offline (fractional = no broker stop). Worked out by luck. Buying power fully back to $18.62 (MARA settled). SMCI pulling back to $33.81 — near our ~$33 entry, watching to deploy." },
     { t: "Mon 8:59 CT", text: "✅ BOUGHT ZETA — 0.941 sh @ $19.12 ($18) on the 50-DMA reclaim (faded → reclaimed = clean entry, not a chase). Stop $18.50 (~3% risk). ~$18.62 cash left, reserved for SMCI on a pullback (still not chasing its +14% rip). Trade #2, first AI position on." },
@@ -168,15 +165,15 @@ window.DASHBOARD_DATA = {
     { n:1, symbol:"MARA", status:"CLOSED", buyDate:"2026-06-18", buyPrice:14.35, shares:0.975616,
       cost:14.00, sellDate:"2026-06-22", sellPrice:14.82, proceeds:14.46, holdDays:4, term:"SHORT",
       pl:0.46, plPct:3.3, result:"WIN", taxable:0.46, taxRate:0.24, estTax:0.11, net:0.35 },
-    { n:2, symbol:"ZETA", status:"OPEN", buyDate:"2026-06-22", buyPrice:19.12, shares:0.941422,
-      cost:18.00, sellDate:"", sellPrice:null, proceeds:null, holdDays:null, term:"OPEN",
-      pl:null, plPct:null, result:"OPEN", taxable:0, taxRate:null, estTax:0, net:null },
-    { n:3, symbol:"SMCI", status:"OPEN", buyDate:"2026-06-23", buyPrice:34.19, shares:0.526469,
-      cost:18.00, sellDate:"", sellPrice:null, proceeds:null, holdDays:null, term:"OPEN",
-      pl:null, plPct:null, result:"OPEN", taxable:0, taxRate:null, estTax:0, net:null },
+    { n:2, symbol:"ZETA", status:"CLOSED", buyDate:"2026-06-22", buyPrice:19.12, shares:0.941422,
+      cost:18.00, sellDate:"2026-06-25", sellPrice:17.97, proceeds:16.92, holdDays:3, term:"SHORT",
+      pl:-1.08, plPct:-6.0, result:"LOSS", taxable:0, taxRate:null, estTax:0, net:-1.08 },
+    { n:3, symbol:"SMCI", status:"CLOSED", buyDate:"2026-06-23", buyPrice:34.19, shares:0.526469,
+      cost:18.00, sellDate:"2026-06-25", sellPrice:31.84, proceeds:16.76, holdDays:2, term:"SHORT",
+      pl:-1.24, plPct:-6.9, result:"LOSS", taxable:0, taxRate:null, estTax:0, net:-1.24 },
   ],
   tradeSummary: {
-    realizedGains:0.46, realizedLosses:0, netRealized:0.46, netTaxable:0.46, estTax:0.11,
-    wins:1, losses:0, open:2, winRate:"100%",
+    realizedGains:0.46, realizedLosses:-2.32, netRealized:-1.86, netTaxable:0, estTax:0,
+    wins:1, losses:2, open:0, winRate:"33%",
   },
 };
