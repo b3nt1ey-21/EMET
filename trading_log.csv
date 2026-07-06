@@ -7,19 +7,22 @@ Long-term rate (held > 1 yr),15%,,,,,,,,,,,,,,,,,
 Losses,No tax (and can offset gains - see summary),,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,
 Trade #,Symbol,Status,Buy Date,Buy Price,Shares,Cost Basis $,Sell Date,Sell Price,Proceeds $,Hold Days,Term,Gain/Loss $,Gain/Loss %,Result,Taxable Gain $,Tax Rate,Est. Tax $,Net After Tax $
-1,MARA,OPEN,2026-06-18,14.3499,0.975616,14.00,,,,OPEN,—,-0.13,-0.9%,OPEN,0.00,—,0.00,—
+1,MARA,CLOSED,2026-06-18,14.3499,0.975616,14.00,2026-06-22,14.82,14.46,4,SHORT,0.46,3.3%,WIN,0.46,24%,0.11,0.35
+2,ZETA,CLOSED,2026-06-22,19.12,0.941422,18.00,2026-06-25,17.97,16.92,3,SHORT,-1.08,-6.0%,LOSS,0.00,—,0.00,-1.08
+3,SMCI,CLOSED,2026-06-23,34.19,0.526469,18.00,2026-06-25,31.84,16.76,2,SHORT,-1.24,-6.9%,LOSS,0.00,—,0.00,-1.24
+4,PM,OPEN,2026-07-06,182.40,0.186405,34.00,,,,OPEN,—,-0.06,-0.2%,OPEN,0.00,—,0.00,—
 ,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,
 SUMMARY (realized/closed trades only),,,,,,,,,,,,,,,,,,
-Total Realized Gains $,0.00,,,,,,,,,,,,,,,,,
-Total Realized Losses $,0.00,,,,,,,,,,,,,,,,,
-Net Realized P/L $,0.00,,,,,,,,,,,,,,,,,
+Total Realized Gains $,0.46,,,,,,,,,,,,,,,,,
+Total Realized Losses $,-2.32,,,,,,,,,,,,,,,,,
+Net Realized P/L $,-1.86,,,,,,,,,,,,,,,,,
 Net Taxable (gains minus losses; min 0),0.00,,,,,,,,,,,,,,,,,
 Est. Total Tax Owed $,0.00,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,
-Wins,0,,,,,,,,,,,,,,,,,
-Losses,0,,,,,,,,,,,,,,,,,
-Win Rate,—,,,,,,,,,,,,,,,,,
+Wins,1,,,,,,,,,,,,,,,,,
+Losses,2,,,,,,,,,,,,,,,,,
+Win Rate,33%,,,,,,,,,,,,,,,,,
 Open Positions,1,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,
 NOTES,,,,,,,,,,,,,,,,,,

@@ -1,4 +1,3 @@
-<!-- Claude Trading Desk - shareable single-file build. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -401,7 +400,7 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-06-25T13:55Z (Thu)",
+    updated: "2026-07-06T13:33Z (Mon)",
     marketStatus: "OPEN — regular hours",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
@@ -410,9 +409,9 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 34.30,        // all cash after cutting ZETA + SMCI at stops
-    cash: 34.30,
-    buyingPower: 0.62,   // settled now; sale proceeds (~$33.68) settle T+1
+    value: 34.24,        // PM position (~$33.94) + $0.30 cash
+    cash: 0.30,
+    buyingPower: 0.30,   // deployed into PM
     start: 36.16,        // total deposited capital (baseline for P/L)
     goal: 52.00,         // ~1.43x deposited
     goalDate: "2026-07-31",
@@ -420,45 +419,49 @@ window.DASHBOARD_DATA = {
 
   // ---- Macro strip (refreshes at pre-open; Sun PM = futures snapshot) ----
   macro: {
-    asOf: "Mon 7:15 CT — live pre-market",
+    asOf: "Mon 8:33 CT — live at the open",
     items: [
-      { k:"S&P fut",   v:"-0.1%", dir:-1 },
-      { k:"Nasdaq fut",v:"~flat", dir:0 },
-      { k:"Dow fut",   v:"+9pts", dir:1 },
-      { k:"WTI Oil",   v:"$75.30", dir:-1, sub:"-0.7%" },
-      { k:"10Y Yield", v:"4.46%", dir:0 },
-      { k:"VIX",       v:"16.4",  dir:0, sub:"calm" },
+      { k:"S&P",       v:"soft open", dir:-1 },
+      { k:"Nasdaq",    v:"AI weak", dir:-1 },
+      { k:"Dow",       v:"defensives bid", dir:1 },
+      { k:"WTI Oil",   v:"~$67", dir:-1, sub:"energy soft" },
+      { k:"10Y Yield", v:"~4.5%", dir:0, sub:"hawkish Fed" },
+      { k:"VIX",       v:"elevated",  dir:1, sub:"choppy" },
     ],
   },
 
   // ---- Equity curve (account value over time) ----
   equityHistory: [
     { d:"Funded", v:36.16 },
-    { d:"Mon", v:36.62 },
-    { d:"Tue", v:37.06 },
-    { d:"Thu", v:34.30 },
+    { d:"Jun W1", v:36.62 },
+    { d:"Jun W2", v:37.06 },
+    { d:"Jun 25", v:34.30 },
+    { d:"Jul 6",  v:34.24 },
   ],
 
   // ---- Watching for entry (live triggers) ----
   watching: [
-    { sym:"SMCI", action:"WAIT", level:32.81, note:"cut today; re-enter only on real strength, not a falling-knife dip" },
-    { sym:"ZETA", action:"WAIT", level:18.76, note:"cut today; needs to rebuild above 50-DMA first" },
-    { sym:"CASH", action:"WAIT", level:34.30, note:"standing down — AI theme weak, no forcing trades" },
+    { sym:"PM",  action:"HOLD", level:177.85, note:"NEW — bought $34 @ $182.40. Stop = daily close < 50-DMA ($177.85)." },
+    { sym:"LMT", action:"WAIT", level:520.38, note:"defense catalyst but +5% in 2 days = extended; wait for pullback to 50-DMA" },
+    { sym:"XOM", action:"WAIT", level:137.00, note:"energy soft on oil; wait for base + oil turn" },
   ],
 
   // ---- Open positions ----
-  positions: [],   // flat — cut ZETA & SMCI at stops Thu. Standing down in cash.
+  positions: [
+    { sym:"PM", qty:0.186405, avg:182.40, last:182.08, cost:34.00,
+      stop:177.85, plPct:-0.2, note:"Rotation-leader defensive; +2.5% over rising 50-DMA. Bought at open, no chase." },
+  ],
 
   // ---- Market bias / sentiment ----
   bias: {
-    call: "NEUTRAL +",
-    detail: "Futures ~flat (S&P -0.1%), oil easing on US-Iran progress (60-day deal roadmap), VIX calm ~16. Semis are the tailwind (MU +4% pre-mkt). Fed + this week's inflation print cap upside. Mildly constructive, not risk-off.",
-    stockFG: { value: 37, label: "Fear" },
-    cryptoFG: { value: 25, label: "Extreme Fear" },
+    call: "DEFENSIVE",
+    detail: "Rotation OUT of AI/semis (structurally weak — hawkish Fed/Warsh, valuations) INTO defensives, staples & value with real earnings. Fear & Greed ~32 (Fear), crypto ~15 (Extreme Fear). Playing the strength: consumer staples (PM) leading, defense (LMT) breaking out. Not chasing extended names; buying supported uptrends only.",
+    stockFG: { value: 32, label: "Fear" },
+    cryptoFG: { value: 15, label: "Extreme Fear" },
   },
 
   // ---- US market movement (drives the plane ✈️ + tiger 🐅 scene) ----
-  market: { label: "S&P futures (pre-open)", changePct: -0.1 },  // + = plane climbs, tiger sprints
+  market: { label: "S&P (open, soft)", changePct: -0.4 },  // + = plane climbs, tiger sprints
 
   // ---- Main sectors / themes in play (heat: hot | warm | cold) ----
   sectors: [
@@ -475,6 +478,8 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Mon 8:33 CT", text: "✅ BOUGHT PM (Philip Morris) — 0.1864 sh @ $182.40 ($34, ~full account). THESIS: money is rotating out of weak AI/semis into defensives with real earnings; PM is a rotation leader — near highs, uptrend intact, +2.5% over its rising 50-DMA ($177.85), pays 3.25% while held. ENTRY DISCIPLINE: opened at $181.91, BELOW Thu's $182.27 close = no chasing a pump (our #1 rule). STOP: daily close < 50-DMA ($177.85, -2.5%). Honest caveat: fractional = no broker stop, only fires when I'm awake. First non-AI trade — deliberate strategy shift since AI is where we got hurt (ZETA/SMCI). Trade #4." },
+    { t: "Mon 8:05 CT", text: "🔎 Deep research done. The tape is ugly for AI: hawkish Fed (Warsh), stretched semi valuations, Fear&Greed 32, crypto 15 = risk-off in growth. But money isn't leaving the market — it's ROTATING into staples/defense/value. Screened rotation leaders: PM (cleanest, +2.5% over 50DMA), LMT (best catalyst but +5% in 2 days = chase), XOM (energy soft, no). Verdict: buy PM at the open on a non-gap entry, pass on chasing LMT." },
     { t: "Thu 8:54 CT", text: "✂️ CUT both AI positions at stops: ZETA -$1.08 (-6%), SMCI -$1.24 (-6.9%). Losing round — AI/semis rolled over post-MU; buying dips in a cooling tape kept failing. MARA win (+$0.46) cushioned. Net realized -$1.86, account ~$34.30 all cash (-5.1% vs deposited). Standing down — NOT revenge-trading. Wait for genuine strength or a tape turn." },
     { t: "Tue 9:08 CT", text: "✅ BOUGHT SMCI — 0.526 sh @ $34.19 ($18). Entry = pulled back -5%, HELD its 50-DMA ($32.81), turned up = the controlled-pullback entry I waited for (not chasing Mon's rip). Stop $32.50. Now fully deployed: ZETA + SMCI (AI software + semis), ~$0.62 cash. Trade #3." },
     { t: "Tue 8:36 CT", text: "ZETA recovered to $19.83 (+3.7% green), back above its 50-DMA — raised stop to $18.76. HONEST FLAG: it closed Mon at $18.47 (below our $18.50 stop) but the stop didn't fire — session was asleep overnight, can't execute while offline (fractional = no broker stop). Worked out by luck. Buying power fully back to $18.62 (MARA settled). SMCI pulling back to $33.81 — near our ~$33 entry, watching to deploy." },
@@ -568,10 +573,13 @@ window.DASHBOARD_DATA = {
     { n:3, symbol:"SMCI", status:"CLOSED", buyDate:"2026-06-23", buyPrice:34.19, shares:0.526469,
       cost:18.00, sellDate:"2026-06-25", sellPrice:31.84, proceeds:16.76, holdDays:2, term:"SHORT",
       pl:-1.24, plPct:-6.9, result:"LOSS", taxable:0, taxRate:null, estTax:0, net:-1.24 },
+    { n:4, symbol:"PM", status:"OPEN", buyDate:"2026-07-06", buyPrice:182.40, shares:0.186405,
+      cost:34.00, sellDate:"", sellPrice:null, proceeds:null, holdDays:0, term:"OPEN",
+      pl:-0.06, plPct:-0.2, result:"OPEN", taxable:0, taxRate:null, estTax:0, net:null },
   ],
   tradeSummary: {
     realizedGains:0.46, realizedLosses:-2.32, netRealized:-1.86, netTaxable:0, estTax:0,
-    wins:1, losses:2, open:0, winRate:"33%",
+    wins:1, losses:2, open:1, winRate:"33%",
   },
 };
 
