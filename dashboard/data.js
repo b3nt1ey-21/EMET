@@ -4,7 +4,7 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-07-06T13:33Z (Mon)",
+    updated: "2026-07-06T18:06Z (Mon)",
     marketStatus: "OPEN — regular hours",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
@@ -13,7 +13,7 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 34.24,        // PM position (~$33.94) + $0.30 cash
+    value: 34.69,        // PM position (~$34.39, +1.2%) + $0.30 cash
     cash: 0.30,
     buyingPower: 0.30,   // deployed into PM
     start: 36.16,        // total deposited capital (baseline for P/L)
@@ -40,7 +40,7 @@ window.DASHBOARD_DATA = {
     { d:"Jun W1", v:36.62 },
     { d:"Jun W2", v:37.06 },
     { d:"Jun 25", v:34.30 },
-    { d:"Jul 6",  v:34.24 },
+    { d:"Jul 6",  v:34.69 },
   ],
 
   // ---- Watching for entry (live triggers) ----
@@ -52,8 +52,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Open positions ----
   positions: [
-    { sym:"PM", qty:0.186405, avg:182.40, last:182.08, cost:34.00,
-      stop:177.85, plPct:-0.2, note:"Rotation-leader defensive; +2.5% over rising 50-DMA. Bought at open, no chase." },
+    { sym:"PM", qty:0.186405, avg:182.40, last:184.51, cost:34.00,
+      stop:177.85, plPct:1.2, note:"GREEN +1.2%. Grinding to day highs. Rotation-leader defensive; bought at open, no chase. Q2 earnings Jul 22." },
   ],
 
   // ---- Market bias / sentiment ----
