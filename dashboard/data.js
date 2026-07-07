@@ -4,8 +4,8 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-07-06T19:55Z (Mon close)",
-    marketStatus: "CLOSED — Mon 7/6 wrap",
+    updated: "2026-07-07T13:25Z (Tue pre-open)",
+    marketStatus: "PRE-OPEN — Tue 7/7",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
     role: "Administrator",
@@ -13,7 +13,7 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 34.69,        // PM position (~$34.39, +1.1%) + $0.30 cash — up ~$0.45 today
+    value: 35.16,        // PM position (~$34.86, +2.4% vs entry) + $0.30 cash — down just $1.00 vs deposited
     cash: 0.30,
     buyingPower: 0.30,   // deployed into PM
     start: 36.16,        // total deposited capital (baseline for P/L)
@@ -23,14 +23,14 @@ window.DASHBOARD_DATA = {
 
   // ---- Macro strip (refreshes at pre-open; Sun PM = futures snapshot) ----
   macro: {
-    asOf: "Mon 8:33 CT — live at the open",
+    asOf: "Tue 8:25 CT — live pre-market",
     items: [
-      { k:"S&P",       v:"soft open", dir:-1 },
-      { k:"Nasdaq",    v:"AI weak", dir:-1 },
-      { k:"Dow",       v:"defensives bid", dir:1 },
-      { k:"WTI Oil",   v:"~$67", dir:-1, sub:"energy soft" },
-      { k:"10Y Yield", v:"~4.5%", dir:0, sub:"hawkish Fed" },
-      { k:"VIX",       v:"elevated",  dir:1, sub:"choppy" },
+      { k:"S&P",        v:"7,537 rec", dir:1, sub:"+0.7% Mon" },
+      { k:"Nasdaq fut", v:"-1.0%", dir:-1, sub:"tech soft" },
+      { k:"Dow",        v:"53,056 rec", dir:1 },
+      { k:"WTI Oil",    v:"$68.8", dir:0, sub:"flat" },
+      { k:"10Y Yield",  v:"4.46%", dir:0 },
+      { k:"VIX",        v:"15.9",  dir:0, sub:"calm" },
     ],
   },
 
@@ -41,31 +41,32 @@ window.DASHBOARD_DATA = {
     { d:"Jun W2", v:37.06 },
     { d:"Jun 25", v:34.30 },
     { d:"Jul 6",  v:34.69 },
+    { d:"Jul 7",  v:35.16 },
   ],
 
   // ---- Watching for entry (live triggers) ----
   watching: [
-    { sym:"PM",  action:"HOLD", level:177.85, note:"NEW — bought $34 @ $182.40. Stop = daily close < 50-DMA ($177.85)." },
+    { sym:"PM",  action:"HOLD", level:177.85, note:"Bought $34 @ $182.40, now ~$187 (+2.4%). Stop = daily close < 50-DMA ($177.85)." },
     { sym:"LMT", action:"WAIT", level:520.38, note:"defense catalyst but +5% in 2 days = extended; wait for pullback to 50-DMA" },
     { sym:"XOM", action:"WAIT", level:137.00, note:"energy soft on oil; wait for base + oil turn" },
   ],
 
   // ---- Open positions ----
   positions: [
-    { sym:"PM", qty:0.186405, avg:182.40, last:184.49, cost:34.00,
-      stop:177.85, plPct:1.1, note:"Closed +1.1% on day 1 (+$0.39 unrealized). Rotation-leader defensive; bought at open, no chase. Q2 earnings Jul 22." },
+    { sym:"PM", qty:0.186405, avg:182.40, last:187.02, cost:34.00,
+      stop:177.85, plPct:2.5, note:"+2.5% — gapping higher pre-mkt Tue. Rotation-leader defensive; bought at open 7/6 (no chase). Q2 earnings Jul 22." },
   ],
 
   // ---- Market bias / sentiment ----
   bias: {
-    call: "DEFENSIVE",
-    detail: "Rotation OUT of AI/semis (structurally weak — hawkish Fed/Warsh, valuations) INTO defensives, staples & value with real earnings. Fear & Greed ~32 (Fear), crypto ~15 (Extreme Fear). Playing the strength: consumer staples (PM) leading, defense (LMT) breaking out. Not chasing extended names; buying supported uptrends only.",
-    stockFG: { value: 32, label: "Fear" },
-    cryptoFG: { value: 15, label: "Extreme Fear" },
+    call: "CONSTRUCTIVE",
+    detail: "Indices at/near records after Mon's rally (S&P +0.7%, Nasdaq +1.1%, Dow record). Tue: tech futures soft (-1%) = mild high-beta pullback, but staples/defensives firm — PM gapping UP pre-market. Playing our strength: hold PM toward analyst targets ($196+). Not chasing tech into a soft open. VIX calm ~16.",
+    stockFG: { value: 40, label: "Fear" },
+    cryptoFG: { value: 20, label: "Extreme Fear" },
   },
 
   // ---- US market movement (drives the plane ✈️ + tiger 🐅 scene) ----
-  market: { label: "S&P (open, soft)", changePct: -0.4 },  // + = plane climbs, tiger sprints
+  market: { label: "S&P (record; tech soft AM)", changePct: 0.7 },  // + = plane climbs, tiger sprints
 
   // ---- Main sectors / themes in play (heat: hot | warm | cold) ----
   sectors: [
@@ -82,6 +83,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Tue 8:25 CT", text: "☀️ Pre-open 7/7: PM gapping UP to ~$187 (+2.4% over our $182.40 entry) — account $35.16, down just $1.00 vs deposited. Correction to yesterday's read: the market RALLIED Mon (S&P +0.7%, Nasdaq +1.1%, Dow record), didn't stay terrible. Tue tech futures soft (-1%) but defensives firm = PM's relative strength playing out exactly as the thesis intended. Watching the open for a gap-fade (rule #1) — but as a HOLDER a pop is fine; I only avoid chasing to ADD. Stop stays $177.85." },
     { t: "Mon 2:55 CT", text: "📈 Day 1 close: PM $184.49, +1.15% — held gains all session, closed near highs. Position +$0.39 unrealized, account $34.69 (recovered ~$0.45 today, now just -$1.47 vs deposited). Clean disciplined win so far: no chase, quiet defensive uptrend doing its job. Stop stays at 50-DMA $177.85. Watch: Q2 earnings Jul 22 — will decide hold-through vs take-profit as it nears." },
     { t: "Mon 8:33 CT", text: "✅ BOUGHT PM (Philip Morris) — 0.1864 sh @ $182.40 ($34, ~full account). THESIS: money is rotating out of weak AI/semis into defensives with real earnings; PM is a rotation leader — near highs, uptrend intact, +2.5% over its rising 50-DMA ($177.85), pays 3.25% while held. ENTRY DISCIPLINE: opened at $181.91, BELOW Thu's $182.27 close = no chasing a pump (our #1 rule). STOP: daily close < 50-DMA ($177.85, -2.5%). Honest caveat: fractional = no broker stop, only fires when I'm awake. First non-AI trade — deliberate strategy shift since AI is where we got hurt (ZETA/SMCI). Trade #4." },
     { t: "Mon 8:05 CT", text: "🔎 Deep research done. The tape is ugly for AI: hawkish Fed (Warsh), stretched semi valuations, Fear&Greed 32, crypto 15 = risk-off in growth. But money isn't leaving the market — it's ROTATING into staples/defense/value. Screened rotation leaders: PM (cleanest, +2.5% over 50DMA), LMT (best catalyst but +5% in 2 days = chase), XOM (energy soft, no). Verdict: buy PM at the open on a non-gap entry, pass on chasing LMT." },
