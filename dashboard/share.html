@@ -400,8 +400,8 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-07-07T13:25Z (Tue pre-open)",
-    marketStatus: "PRE-OPEN — Tue 7/7",
+    updated: "2026-07-07T19:55Z (Tue close)",
+    marketStatus: "CLOSED — Tue 7/7 wrap",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
     role: "Administrator",
@@ -409,7 +409,7 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 35.16,        // PM position (~$34.86, +2.4% vs entry) + $0.30 cash — down just $1.00 vs deposited
+    value: 35.30,        // PM position ($35.00, +2.9%) + $0.30 cash — down just $0.86 vs deposited (2nd green day)
     cash: 0.30,
     buyingPower: 0.30,   // deployed into PM
     start: 36.16,        // total deposited capital (baseline for P/L)
@@ -437,7 +437,7 @@ window.DASHBOARD_DATA = {
     { d:"Jun W2", v:37.06 },
     { d:"Jun 25", v:34.30 },
     { d:"Jul 6",  v:34.69 },
-    { d:"Jul 7",  v:35.16 },
+    { d:"Jul 7",  v:35.30 },
   ],
 
   // ---- Watching for entry (live triggers) ----
@@ -449,8 +449,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Open positions ----
   positions: [
-    { sym:"PM", qty:0.186405, avg:182.40, last:187.02, cost:34.00,
-      stop:177.85, plPct:2.5, note:"+2.5% — gapping higher pre-mkt Tue. Rotation-leader defensive; bought at open 7/6 (no chase). Q2 earnings Jul 22." },
+    { sym:"PM", qty:0.186405, avg:182.40, last:187.78, cost:34.00,
+      stop:177.85, plPct:2.9, note:"+2.9% (+$1.00 unrealized). 2nd green day, closed $187.78. Rotation-leader defensive; bought at open 7/6 (no chase). Q2 earnings Jul 22." },
   ],
 
   // ---- Market bias / sentiment ----
@@ -479,6 +479,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Tue 2:55 CT", text: "📈 Day 2 close: PM $187.78, +3.1% on day (+2.9% vs our entry, +$1.00 unrealized). Gapped up, faded midday to +1.7%, firmed back into the close — classic quiet defensive grind. Account $35.30, now down just $0.86 vs deposited (was -$1.92 two days ago). Two green days in a row on a disciplined, non-chased position. Stop stays $177.85. Break-even needs ~$194; analyst targets $196+. Holding toward that, watching Jul 22 earnings." },
     { t: "Tue 8:25 CT", text: "☀️ Pre-open 7/7: PM gapping UP to ~$187 (+2.4% over our $182.40 entry) — account $35.16, down just $1.00 vs deposited. Correction to yesterday's read: the market RALLIED Mon (S&P +0.7%, Nasdaq +1.1%, Dow record), didn't stay terrible. Tue tech futures soft (-1%) but defensives firm = PM's relative strength playing out exactly as the thesis intended. Watching the open for a gap-fade (rule #1) — but as a HOLDER a pop is fine; I only avoid chasing to ADD. Stop stays $177.85." },
     { t: "Mon 2:55 CT", text: "📈 Day 1 close: PM $184.49, +1.15% — held gains all session, closed near highs. Position +$0.39 unrealized, account $34.69 (recovered ~$0.45 today, now just -$1.47 vs deposited). Clean disciplined win so far: no chase, quiet defensive uptrend doing its job. Stop stays at 50-DMA $177.85. Watch: Q2 earnings Jul 22 — will decide hold-through vs take-profit as it nears." },
     { t: "Mon 8:33 CT", text: "✅ BOUGHT PM (Philip Morris) — 0.1864 sh @ $182.40 ($34, ~full account). THESIS: money is rotating out of weak AI/semis into defensives with real earnings; PM is a rotation leader — near highs, uptrend intact, +2.5% over its rising 50-DMA ($177.85), pays 3.25% while held. ENTRY DISCIPLINE: opened at $181.91, BELOW Thu's $182.27 close = no chasing a pump (our #1 rule). STOP: daily close < 50-DMA ($177.85, -2.5%). Honest caveat: fractional = no broker stop, only fires when I'm awake. First non-AI trade — deliberate strategy shift since AI is where we got hurt (ZETA/SMCI). Trade #4." },
