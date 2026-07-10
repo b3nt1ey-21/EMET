@@ -1,0 +1,21 @@
+{
+  "name": "PickleballGame",
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "Pickleball": {
+        "$path": "src/ServerScriptService/Pickleball"
+      }
+    },
+    "ReplicatedStorage": {
+      "Pickleball": {
+        "$path": "src/ReplicatedStorage/Pickleball"
+      }
+    },
+    "StarterGui": {
+      "Pickleball": {
+        "$path": "src/StarterGui/Pickleball"
+      }
+    }
+  }
+}
