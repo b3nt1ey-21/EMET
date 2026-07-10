@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Life Ledger — a life &amp; money simulation</title>
+  <meta name="description" content="Start at 18 with pocket change. Build a career, a portfolio, a business, a family — one decision at a time.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📒</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" hidden>
+    <header id="topbar">
+      <div class="brand">📒 <span>Life&nbsp;Ledger</span></div>
+      <div id="datebox">
+        <div id="dateline">—</div>
+        <div id="subline">—</div>
+      </div>
+      <div id="timectl" role="group" aria-label="Time controls">
+        <button data-speed="0"  title="Pause (space)">⏸</button>
+        <button data-speed="2"  title="Normal — ~2 game-hours per second">▶</button>
+        <button data-speed="8"  title="Fast — ~8 game-hours per second">▶▶</button>
+        <button data-speed="32" title="Very fast — ~1.3 days per second">▶▶▶</button>
+        <button data-speed="128" title="Ultra — ~5 days per second">⏩</button>
+      </div>
+      <div id="chips">
+        <div class="chip" id="chip-cash" title="Checking account">💵 <b>—</b></div>
+        <div class="chip" id="chip-nw" title="Net worth">📊 <b>—</b></div>
+        <div class="chip" id="chip-eco" title="Economy">🌐 <b>—</b></div>
+      </div>
+      <div id="topright">
+        <button id="btn-theme" title="Toggle dark / light">🌓</button>
+        <button id="btn-save" title="Saves &amp; new game">💾</button>
+      </div>
+    </header>
+
+    <div id="statbar"></div>
+
+    <div id="layout">
+      <nav id="sidenav" aria-label="Sections"></nav>
+      <main id="panel" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div id="toasts" aria-live="polite"></div>
+  <div id="overlay" hidden><div id="overlay-card"></div></div>
+
+  <script src="js/util.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/economy.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/systems.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
