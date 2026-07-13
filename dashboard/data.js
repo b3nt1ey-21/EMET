@@ -4,8 +4,8 @@
 // ============================================================
 window.DASHBOARD_DATA = {
   meta: {
-    updated: "2026-07-07T19:55Z (Tue close)",
-    marketStatus: "CLOSED — Tue 7/7 wrap",
+    updated: "2026-07-13T12:35Z (Mon pre-open)",
+    marketStatus: "PRE-OPEN — Mon 7/13",
     account: "Agentic (#950342600)",
     owner: "Bentley",            // <- you, the admin. Edit to your name.
     role: "Administrator",
@@ -13,7 +13,7 @@ window.DASHBOARD_DATA = {
 
   // ---- Account / goal ----
   account: {
-    value: 35.30,        // PM position ($35.00, +2.9%) + $0.30 cash — down just $0.86 vs deposited (2nd green day)
+    value: 34.22,        // PM position ($33.92, ~flat vs entry) + $0.30 cash — gave back last week's gain on a mid-week pullback
     cash: 0.30,
     buyingPower: 0.30,   // deployed into PM
     start: 36.16,        // total deposited capital (baseline for P/L)
@@ -23,14 +23,14 @@ window.DASHBOARD_DATA = {
 
   // ---- Macro strip (refreshes at pre-open; Sun PM = futures snapshot) ----
   macro: {
-    asOf: "Tue 8:25 CT — live pre-market",
+    asOf: "Mon 7:35 CT — live pre-market",
     items: [
-      { k:"S&P",        v:"7,537 rec", dir:1, sub:"+0.7% Mon" },
-      { k:"Nasdaq fut", v:"-1.0%", dir:-1, sub:"tech soft" },
-      { k:"Dow",        v:"53,056 rec", dir:1 },
-      { k:"WTI Oil",    v:"$68.8", dir:0, sub:"flat" },
-      { k:"10Y Yield",  v:"4.46%", dir:0 },
-      { k:"VIX",        v:"15.9",  dir:0, sub:"calm" },
+      { k:"S&P fut",    v:"-0.3%", dir:-1, sub:"Iran risk-off" },
+      { k:"Nasdaq fut", v:"-0.8%", dir:-1, sub:"tech leads down" },
+      { k:"Dow fut",    v:"~flat", dir:0 },
+      { k:"WTI Oil",    v:"+3.7%", dir:1, sub:"Strait of Hormuz strikes" },
+      { k:"10Y Yield",  v:"~4.5%", dir:0, sub:"CPI Tue, PPI Wed" },
+      { k:"VIX",        v:"15.0",  dir:-1, sub:"down, not panicking" },
     ],
   },
 
@@ -42,31 +42,33 @@ window.DASHBOARD_DATA = {
     { d:"Jun 25", v:34.30 },
     { d:"Jul 6",  v:34.69 },
     { d:"Jul 7",  v:35.30 },
+    { d:"Jul 10", v:34.16 },
+    { d:"Jul 13", v:34.22 },
   ],
 
   // ---- Watching for entry (live triggers) ----
   watching: [
-    { sym:"PM",  action:"HOLD", level:177.85, note:"Bought $34 @ $182.40, now ~$187 (+2.4%). Stop = daily close < 50-DMA ($177.85)." },
+    { sym:"PM",  action:"HOLD", level:177.85, note:"Bought $34 @ $182.40, round-tripped back to ~$182 after a Jul 9 -3.2% drop. Stop = daily close < 50-DMA ($177.85)." },
     { sym:"LMT", action:"WAIT", level:520.38, note:"defense catalyst but +5% in 2 days = extended; wait for pullback to 50-DMA" },
     { sym:"XOM", action:"WAIT", level:137.00, note:"energy soft on oil; wait for base + oil turn" },
   ],
 
   // ---- Open positions ----
   positions: [
-    { sym:"PM", qty:0.186405, avg:182.40, last:187.78, cost:34.00,
-      stop:177.85, plPct:2.9, note:"+2.9% (+$1.00 unrealized). 2nd green day, closed $187.78. Rotation-leader defensive; bought at open 7/6 (no chase). Q2 earnings Jul 22." },
+    { sym:"PM", qty:0.186405, avg:182.40, last:181.99, cost:34.00,
+      stop:177.85, plPct:-0.2, note:"Round-tripped: peaked +3.1% Tue, then -3.23% single-day drop Jul 9 (valuation/P-E concerns + rotation back to risk-on tech + hawkish Fed). Back near breakeven. Stop untouched. Q2 earnings Jul 22 now a bigger swing factor." },
   ],
 
   // ---- Market bias / sentiment ----
   bias: {
-    call: "CONSTRUCTIVE",
-    detail: "Indices at/near records after Mon's rally (S&P +0.7%, Nasdaq +1.1%, Dow record). Tue: tech futures soft (-1%) = mild high-beta pullback, but staples/defensives firm — PM gapping UP pre-market. Playing our strength: hold PM toward analyst targets ($196+). Not chasing tech into a soft open. VIX calm ~16.",
-    stockFG: { value: 40, label: "Fear" },
-    cryptoFG: { value: 20, label: "Extreme Fear" },
+    call: "CAUTIOUS",
+    detail: "Geopolitical risk-off: US-Iran conflict escalated over the weekend (strikes near Strait of Hormuz, Iran hit Kuwait/Jordan/Qatar), oil +3.7%. Futures red (S&P -0.3%, Nasdaq -0.8%) but VIX actually down to 15 — not panic yet. Two big catalysts this week: CPI Tue, PPI Wed (Fed-hike read), plus bank earnings kick off the season (JPM/GS/BAC). PM round-tripped back near breakeven after a -3.2% valuation-driven drop Jul 9. Thesis intact (stop untouched) but watching closely — defensive rotation isn't one-way.",
+    stockFG: { value: 35, label: "Fear" },
+    cryptoFG: { value: 18, label: "Extreme Fear" },
   },
 
   // ---- US market movement (drives the plane ✈️ + tiger 🐅 scene) ----
-  market: { label: "S&P (record; tech soft AM)", changePct: 0.7 },  // + = plane climbs, tiger sprints
+  market: { label: "S&P futures (Iran risk-off)", changePct: -0.3 },  // + = plane climbs, tiger sprints
 
   // ---- Main sectors / themes in play (heat: hot | warm | cold) ----
   sectors: [
@@ -83,6 +85,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Mon 7:35 CT", text: "⚠️ Catching up after a few days offline. PM round-tripped: peaked $187.78 (+3.1%) Tue, then dropped -3.23% on Jul 9 (P/E ~26x vs 5yr median 18.5x = valuation risk; rotation back toward risk-on tech; hawkish Fed pressuring high-yield dividend names). Now ~$182, essentially flat vs our $182.40 entry. Account $34.22. Stop at $177.85 was NEVER touched — thesis intact, just proof defensive rotation isn't one-way. Today: fresh geopolitical risk-off (US-Iran strikes near Strait of Hormuz, oil +3.7%), futures red, but VIX actually down (15.0) — not a panic tape. Big week ahead: CPI Tue, PPI Wed, bank earnings kick off season. HOLDING — no stop hit, thesis unchanged, but Jul 22 PM earnings is now a bigger swing factor given the guidance cut already on the books." },
     { t: "Tue 2:55 CT", text: "📈 Day 2 close: PM $187.78, +3.1% on day (+2.9% vs our entry, +$1.00 unrealized). Gapped up, faded midday to +1.7%, firmed back into the close — classic quiet defensive grind. Account $35.30, now down just $0.86 vs deposited (was -$1.92 two days ago). Two green days in a row on a disciplined, non-chased position. Stop stays $177.85. Break-even needs ~$194; analyst targets $196+. Holding toward that, watching Jul 22 earnings." },
     { t: "Tue 8:25 CT", text: "☀️ Pre-open 7/7: PM gapping UP to ~$187 (+2.4% over our $182.40 entry) — account $35.16, down just $1.00 vs deposited. Correction to yesterday's read: the market RALLIED Mon (S&P +0.7%, Nasdaq +1.1%, Dow record), didn't stay terrible. Tue tech futures soft (-1%) but defensives firm = PM's relative strength playing out exactly as the thesis intended. Watching the open for a gap-fade (rule #1) — but as a HOLDER a pop is fine; I only avoid chasing to ADD. Stop stays $177.85." },
     { t: "Mon 2:55 CT", text: "📈 Day 1 close: PM $184.49, +1.15% — held gains all session, closed near highs. Position +$0.39 unrealized, account $34.69 (recovered ~$0.45 today, now just -$1.47 vs deposited). Clean disciplined win so far: no chase, quiet defensive uptrend doing its job. Stop stays at 50-DMA $177.85. Watch: Q2 earnings Jul 22 — will decide hold-through vs take-profit as it nears." },
