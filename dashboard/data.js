@@ -17,8 +17,9 @@ window.DASHBOARD_DATA = {
     cash: 0.30,
     buyingPower: 0.30,   // deployed into PM
     start: 36.16,        // total deposited capital (baseline for P/L)
-    goal: 52.00,         // ~1.43x deposited
-    goalDate: "2026-07-31",
+    goal: 35.09,          // NEW MANDATE 7/13: dropped hard $52-by-7/31 target. Now 3%+/month compounding, no fixed deadline. This is the rolling next-30-day checkpoint (3% off current value).
+    goalDate: "2026-08-12",  // rolling monthly checkpoint, not a hard deadline
+    goalNote: "3%+/month compounding target (adopted 7/13, replacing the $52-by-7/31 sprint). Recalculates monthly.",
   },
 
   // ---- Macro strip (refreshes at pre-open; Sun PM = futures snapshot) ----
@@ -48,9 +49,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Watching for entry (live triggers) ----
   watching: [
-    { sym:"PM",  action:"HOLD", level:177.85, note:"Bought $34 @ $182.40, round-tripped back to ~$182 after a Jul 9 -3.2% drop. Stop = daily close < 50-DMA ($177.85)." },
-    { sym:"LMT", action:"WAIT", level:520.38, note:"defense catalyst but +5% in 2 days = extended; wait for pullback to 50-DMA" },
-    { sym:"XOM", action:"WAIT", level:137.00, note:"energy soft on oil; wait for base + oil turn" },
+    { sym:"PM",  action:"HOLD", level:177.85, note:"Bought $34 @ $182.40, round-tripped back to ~$182 after a Jul 9 -3.2% drop. Stop = daily close < 50-DMA ($177.85). Kept as-is under old framework." },
+    { sym:"AI/momentum names", action:"SCAN", level:0, note:"NEW mandate 7/13: back on the table for aggressive trades once capital is added — ZETA/SMCI-style names, small-caps, faster turnover, wider stops sized to volatility." },
   ],
 
   // ---- Open positions ----
@@ -61,8 +61,8 @@ window.DASHBOARD_DATA = {
 
   // ---- Market bias / sentiment ----
   bias: {
-    call: "CAUTIOUS",
-    detail: "Geopolitical risk-off: US-Iran conflict escalated over the weekend (strikes near Strait of Hormuz, Iran hit Kuwait/Jordan/Qatar), oil +3.7%. Futures red (S&P -0.3%, Nasdaq -0.8%) but VIX actually down to 15 — not panic yet. Two big catalysts this week: CPI Tue, PPI Wed (Fed-hike read), plus bank earnings kick off the season (JPM/GS/BAC). PM round-tripped back near breakeven after a -3.2% valuation-driven drop Jul 9. Thesis intact (stop untouched) but watching closely — defensive rotation isn't one-way.",
+    call: "AGGRESSIVE (new mandate)",
+    detail: "STRATEGY CHANGE 7/13: dropped the hard $52-by-7/31 sprint goal (was requiring ~53% in 18 days — unrealistic without reckless risk). New target: 3%+/month, compounding, no fixed deadline. This unlocks genuinely aggressive trading without needing a home run every trade. Going forward: higher-beta names (AI/momentum/small-caps back on the table), faster turnover, wider stops sized to volatility instead of tight 50-DMA lines, less waiting for the 'perfect' pullback. PM stays for now (thesis intact) but new capital and new trades deploy under this framework, not the old defensive one. Still not reckless — sizing and stops scale with the trade's volatility, not thrown out entirely.",
     stockFG: { value: 35, label: "Fear" },
     cryptoFG: { value: 18, label: "Extreme Fear" },
   },
@@ -85,6 +85,7 @@ window.DASHBOARD_DATA = {
 
   // ---- LIVE THOUGHT PROCESS (newest first) ----
   thoughts: [
+    { t: "Mon evening", text: "🔄 STRATEGY CHANGE: user wants more aggressive trading going forward. Flagged the math honestly first — 3%/month compounding and 'green by July 31 sprint' are two different games (3%/mo gets to $52 in ~15 months, not 18 days). User chose: drop the hard July 31 deadline, target 3%+/month compounding instead. This is the right call — it removes pressure to force home-run trades and lets me size risk sensibly. New framework going forward: higher-beta names (AI/momentum/small-caps back on the table after ZETA/SMCI losses), faster turnover, wider stops sized to each trade's volatility, less waiting for textbook pullback entries. PM stays as-is for now (thesis intact, no reason to exit a working position). New capital and new trade decisions deploy under this aggressive framework. Not reckless — still sizing and stopping out based on real risk math, just with more room to swing." },
     { t: "Mon 2:50 CT", text: "📊 Mon 7/13 close: PM $181.16 (-0.68% vs entry), account $34.07. Choppy risk-off session on the Iran/Strait of Hormuz escalation — PM ranged from $179.89 (low, -1.4%) to $183.85 (high, +0.8%) intraday but closed roughly flat. Stop ($177.85) never came close to threatened even at the day's low. No action taken — thesis intact, this is normal volatility on a geopolitical headline day, not a breakdown. Watching CPI (Tue) and PPI (Wed) this week for the next real catalyst; PM's own Q2 earnings Jul 22 remains the big one." },
     { t: "Mon 7:35 CT", text: "⚠️ Catching up after a few days offline. PM round-tripped: peaked $187.78 (+3.1%) Tue, then dropped -3.23% on Jul 9 (P/E ~26x vs 5yr median 18.5x = valuation risk; rotation back toward risk-on tech; hawkish Fed pressuring high-yield dividend names). Now ~$182, essentially flat vs our $182.40 entry. Account $34.22. Stop at $177.85 was NEVER touched — thesis intact, just proof defensive rotation isn't one-way. Today: fresh geopolitical risk-off (US-Iran strikes near Strait of Hormuz, oil +3.7%), futures red, but VIX actually down (15.0) — not a panic tape. Big week ahead: CPI Tue, PPI Wed, bank earnings kick off season. HOLDING — no stop hit, thesis unchanged, but Jul 22 PM earnings is now a bigger swing factor given the guidance cut already on the books." },
     { t: "Tue 2:55 CT", text: "📈 Day 2 close: PM $187.78, +3.1% on day (+2.9% vs our entry, +$1.00 unrealized). Gapped up, faded midday to +1.7%, firmed back into the close — classic quiet defensive grind. Account $35.30, now down just $0.86 vs deposited (was -$1.92 two days ago). Two green days in a row on a disciplined, non-chased position. Stop stays $177.85. Break-even needs ~$194; analyst targets $196+. Holding toward that, watching Jul 22 earnings." },
